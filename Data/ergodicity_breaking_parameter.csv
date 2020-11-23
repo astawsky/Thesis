@@ -1,0 +1,15 @@
+variable,kind,value
+fold_growth,Trace,0.033174256253188414
+division_ratio,Trace,0.10860359789437672
+added_length,Trace,0.12048384088417963
+generationtime,Trace,0.22496590381700535
+length_birth,Trace,0.285645532421253
+length_final,Trace,0.2999959050743631
+growth_rate,Trace,0.3955575481170585
+fold_growth,Population,0.04153682143474076
+division_ratio,Population,0.03875660796109189
+added_length,Population,0.04365924935089852
+generationtime,Population,0.03935007891322428
+length_birth,Population,0.03914560916210168
+length_final,Population,0.04295334884032757
+growth_rate,Population,0.037865505432889066

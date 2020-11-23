@@ -1,0 +1,505 @@
+variable_a,variable_b,AB_parameter_pair,covariance,correlation,kind,cov difference between data and modeldataset,generation,corr difference between data and model,cov difference between data and model,dataset
+fold_growth,fold_growth,$\phi$,0.011036924107169822,0.49407547061168916,physical_units,,0,0.0,0.0,SP
+fold_growth,fold_growth,$\delta \phi$,0.010756150556391245,0.48150645021350386,trace_centered,,0,0.0,0.0,SP
+fold_growth,fold_growth,$\overline{\phi}$,0.000280773550778577,0.012569020398185287,time_averages,,0,0.0,0.0,SP
+fold_growth,fold_growth,$\phi$,0.011036924107169822,0.49407547061168916,model,,0,0.0,0.0,SP
+fold_growth,fold_growth,$\phi$,0.004150653596416494,0.18580685244210182,physical_units,,1,0.0,0.0,SP
+fold_growth,fold_growth,$\delta \phi$,0.003869880045637917,0.17323783204391655,trace_centered,,1,0.0,0.0,SP
+fold_growth,fold_growth,$\overline{\phi}$,0.000280773550778577,0.012569020398185287,time_averages,,1,0.0,0.0,SP
+fold_growth,fold_growth,$\phi$,0.004150653596416494,0.18580685244210182,model,,1,0.0,0.0,SP
+fold_growth,fold_growth,$\phi$,0.002220250866626372,0.09939105145171917,physical_units,,2,0.0,0.0,SP
+fold_growth,fold_growth,$\delta \phi$,0.0019394773158477947,0.08682203105353388,trace_centered,,2,0.0,0.0,SP
+fold_growth,fold_growth,$\overline{\phi}$,0.000280773550778577,0.012569020398185287,time_averages,,2,0.0,0.0,SP
+fold_growth,fold_growth,$\phi$,0.002220250866626372,0.09939105145171917,model,,2,0.0,0.0,SP
+fold_growth,fold_growth,$\phi$,0.0023026253624287623,0.10307860220270491,physical_units,,3,0.0,0.0,SP
+fold_growth,fold_growth,$\delta \phi$,0.0020218518116501853,0.09050958180451962,trace_centered,,3,0.0,0.0,SP
+fold_growth,fold_growth,$\overline{\phi}$,0.000280773550778577,0.012569020398185287,time_averages,,3,0.0,0.0,SP
+fold_growth,fold_growth,$\phi$,0.0023026253624287623,0.10307860220270491,model,,3,0.0,0.0,SP
+fold_growth,fold_growth,$\phi$,0.001832477490020848,0.08203211052971016,physical_units,,4,0.0,0.0,SP
+fold_growth,fold_growth,$\delta \phi$,0.001551703939242271,0.06946309013152487,trace_centered,,4,0.0,0.0,SP
+fold_growth,fold_growth,$\overline{\phi}$,0.000280773550778577,0.012569020398185287,time_averages,,4,0.0,0.0,SP
+fold_growth,fold_growth,$\phi$,0.001832477490020848,0.08203211052971016,model,,4,0.0,0.0,SP
+fold_growth,fold_growth,$\phi$,0.0008110146626306514,0.03630562711325654,physical_units,,5,0.0,0.0,SP
+fold_growth,fold_growth,$\delta \phi$,0.0005302411118520743,0.02373660671507125,trace_centered,,5,0.0,0.0,SP
+fold_growth,fold_growth,$\overline{\phi}$,0.000280773550778577,0.012569020398185287,time_averages,,5,0.0,0.0,SP
+fold_growth,fold_growth,$\phi$,0.0008110146626306514,0.03630562711325654,model,,5,0.0,0.0,SP
+division_ratio,division_ratio,$f$,-1.3490264279927547e-05,-0.008043968273049849,physical_units,,0,0.0,0.0,SP
+division_ratio,division_ratio,$\delta f$,-7.093464018112042e-05,-0.04229687300686478,trace_centered,,0,0.0,0.0,SP
+division_ratio,division_ratio,$\overline{f}$,5.744437590119287e-05,0.03425290473381493,time_averages,,0,0.0,0.0,SP
+division_ratio,division_ratio,$f$,-1.3490264279927547e-05,-0.008043968273049849,model,,0,0.0,0.0,SP
+division_ratio,division_ratio,$f$,0.00025354056895662825,0.15118104807277197,physical_units,,1,0.0,0.0,SP
+division_ratio,division_ratio,$\delta f$,0.00019609619305543537,0.11692814333895703,trace_centered,,1,0.0,0.0,SP
+division_ratio,division_ratio,$\overline{f}$,5.744437590119287e-05,0.03425290473381493,time_averages,,1,0.0,0.0,SP
+division_ratio,division_ratio,$f$,0.00025354056895662825,0.15118104807277197,model,,1,0.0,0.0,SP
+division_ratio,division_ratio,$f$,1.5172424748141942e-05,0.009047006105053533,physical_units,,2,0.0,0.0,SP
+division_ratio,division_ratio,$\delta f$,-4.227195115305093e-05,-0.025205898628761398,trace_centered,,2,0.0,0.0,SP
+division_ratio,division_ratio,$\overline{f}$,5.744437590119287e-05,0.03425290473381493,time_averages,,2,0.0,0.0,SP
+division_ratio,division_ratio,$f$,1.5172424748141942e-05,0.009047006105053533,model,,2,0.0,0.0,SP
+division_ratio,division_ratio,$f$,-2.252513662732655e-05,-0.01343127759520075,physical_units,,3,-3.469446951953614e-18,-6.776263578034403e-21,SP
+division_ratio,division_ratio,$\delta f$,-7.996951252851943e-05,-0.04768418232901568,trace_centered,,3,-3.469446951953614e-18,-6.776263578034403e-21,SP
+division_ratio,division_ratio,$\overline{f}$,5.744437590119287e-05,0.03425290473381493,time_averages,,3,-3.469446951953614e-18,-6.776263578034403e-21,SP
+division_ratio,division_ratio,$f$,-2.2525136627326557e-05,-0.013431277595200753,model,,3,-3.469446951953614e-18,-6.776263578034403e-21,SP
+division_ratio,division_ratio,$f$,-1.1226983705588573e-05,-0.006694420424674373,physical_units,,4,2.6020852139652106e-18,5.082197683525802e-21,SP
+division_ratio,division_ratio,$\delta f$,-6.867135960678144e-05,-0.040947325158489305,trace_centered,,4,2.6020852139652106e-18,5.082197683525802e-21,SP
+division_ratio,division_ratio,$\overline{f}$,5.744437590119287e-05,0.03425290473381493,time_averages,,4,2.6020852139652106e-18,5.082197683525802e-21,SP
+division_ratio,division_ratio,$f$,-1.1226983705588568e-05,-0.006694420424674371,model,,4,2.6020852139652106e-18,5.082197683525802e-21,SP
+division_ratio,division_ratio,$f$,7.505152839417649e-05,0.044751689123313294,physical_units,,5,0.0,0.0,SP
+division_ratio,division_ratio,$\delta f$,1.7607152492983616e-05,0.010498784389498366,trace_centered,,5,0.0,0.0,SP
+division_ratio,division_ratio,$\overline{f}$,5.744437590119287e-05,0.03425290473381493,time_averages,,5,0.0,0.0,SP
+division_ratio,division_ratio,$f$,7.505152839417649e-05,0.044751689123313294,model,,5,0.0,0.0,SP
+added_length,added_length,$\Delta$,0.10182981975688163,0.149954360799664,physical_units,,0,0.0,0.0,SP
+added_length,added_length,$\delta \Delta$,0.07371457380078375,0.10855191359767846,trace_centered,,0,0.0,0.0,SP
+added_length,added_length,$\overline{\Delta}$,0.028115245956097875,0.041402447201985534,time_averages,,0,0.0,0.0,SP
+added_length,added_length,$\Delta$,0.10182981975688163,0.149954360799664,model,,0,0.0,0.0,SP
+added_length,added_length,$\Delta$,0.07364103310427603,0.10844361773538679,physical_units,,1,0.0,0.0,SP
+added_length,added_length,$\delta \Delta$,0.04552578714817815,0.06704117053340124,trace_centered,,1,0.0,0.0,SP
+added_length,added_length,$\overline{\Delta}$,0.028115245956097875,0.041402447201985534,time_averages,,1,0.0,0.0,SP
+added_length,added_length,$\Delta$,0.07364103310427603,0.10844361773538679,model,,1,0.0,0.0,SP
+added_length,added_length,$\Delta$,0.04000812237247739,0.05891586994343223,physical_units,,2,0.0,0.0,SP
+added_length,added_length,$\delta \Delta$,0.011892876416379514,0.017513422741446696,trace_centered,,2,0.0,0.0,SP
+added_length,added_length,$\overline{\Delta}$,0.028115245956097875,0.041402447201985534,time_averages,,2,0.0,0.0,SP
+added_length,added_length,$\Delta$,0.04000812237247739,0.05891586994343223,model,,2,0.0,0.0,SP
+added_length,added_length,$\Delta$,0.09446082454187124,0.13910279521857116,physical_units,,3,0.0,0.0,SP
+added_length,added_length,$\delta \Delta$,0.06634557858577336,0.09770034801658561,trace_centered,,3,0.0,0.0,SP
+added_length,added_length,$\overline{\Delta}$,0.028115245956097875,0.041402447201985534,time_averages,,3,0.0,0.0,SP
+added_length,added_length,$\Delta$,0.09446082454187124,0.13910279521857116,model,,3,0.0,0.0,SP
+added_length,added_length,$\Delta$,0.05061257605577658,0.07453196430071708,physical_units,,4,0.0,0.0,SP
+added_length,added_length,$\delta \Delta$,0.022497330099678702,0.03312951709873154,trace_centered,,4,0.0,0.0,SP
+added_length,added_length,$\overline{\Delta}$,0.028115245956097875,0.041402447201985534,time_averages,,4,0.0,0.0,SP
+added_length,added_length,$\Delta$,0.05061257605577658,0.07453196430071708,model,,4,0.0,0.0,SP
+added_length,added_length,$\Delta$,0.03720302363235021,0.054785087923391505,physical_units,,5,0.0,0.0,SP
+added_length,added_length,$\delta \Delta$,0.009087777676252334,0.013382640721405973,trace_centered,,5,0.0,0.0,SP
+added_length,added_length,$\overline{\Delta}$,0.028115245956097875,0.041402447201985534,time_averages,,5,0.0,0.0,SP
+added_length,added_length,$\Delta$,0.03720302363235021,0.054785087923391505,model,,5,0.0,0.0,SP
+generationtime,generationtime,$\tau$,0.013331452331452338,0.7184205985101088,physical_units,,0,0.0,0.0,SP
+generationtime,generationtime,$\delta \tau$,0.009691602246417899,0.5222721811011378,trace_centered,,0,0.0,0.0,SP
+generationtime,generationtime,$\overline{\tau}$,0.00363985008503444,0.196148417408971,time_averages,,0,0.0,0.0,SP
+generationtime,generationtime,$\tau$,0.013331452331452338,0.7184205985101088,model,,0,0.0,0.0,SP
+generationtime,generationtime,$\tau$,0.007105583605583603,0.38291384162575093,physical_units,,1,0.0,0.0,SP
+generationtime,generationtime,$\delta \tau$,0.0034657335205491627,0.18676542421677994,trace_centered,,1,0.0,0.0,SP
+generationtime,generationtime,$\overline{\tau}$,0.00363985008503444,0.196148417408971,time_averages,,1,0.0,0.0,SP
+generationtime,generationtime,$\tau$,0.007105583605583603,0.38291384162575093,model,,1,0.0,0.0,SP
+generationtime,generationtime,$\tau$,0.0074214434214434225,0.39993525777108274,physical_units,,2,0.0,0.0,SP
+generationtime,generationtime,$\delta \tau$,0.0037815933364089825,0.20378684036211175,trace_centered,,2,0.0,0.0,SP
+generationtime,generationtime,$\overline{\tau}$,0.00363985008503444,0.196148417408971,time_averages,,2,0.0,0.0,SP
+generationtime,generationtime,$\tau$,0.0074214434214434225,0.39993525777108274,model,,2,0.0,0.0,SP
+generationtime,generationtime,$\tau$,0.005793547668547671,0.312209343742328,physical_units,,3,0.0,0.0,SP
+generationtime,generationtime,$\delta \tau$,0.0021536975835132308,0.116060926333357,trace_centered,,3,0.0,0.0,SP
+generationtime,generationtime,$\overline{\tau}$,0.00363985008503444,0.196148417408971,time_averages,,3,0.0,0.0,SP
+generationtime,generationtime,$\tau$,0.005793547668547671,0.312209343742328,model,,3,0.0,0.0,SP
+generationtime,generationtime,$\tau$,0.006434474309474308,0.34674833390840737,physical_units,,4,0.0,0.0,SP
+generationtime,generationtime,$\delta \tau$,0.002794624224439868,0.15059991649943638,trace_centered,,4,0.0,0.0,SP
+generationtime,generationtime,$\overline{\tau}$,0.00363985008503444,0.196148417408971,time_averages,,4,0.0,0.0,SP
+generationtime,generationtime,$\tau$,0.006434474309474308,0.34674833390840737,model,,4,0.0,0.0,SP
+generationtime,generationtime,$\tau$,0.00601124888624889,0.3239410767320112,physical_units,,5,0.0,0.0,SP
+generationtime,generationtime,$\delta \tau$,0.0023713988012144496,0.12779265932304026,trace_centered,,5,0.0,0.0,SP
+generationtime,generationtime,$\overline{\tau}$,0.00363985008503444,0.196148417408971,time_averages,,5,0.0,0.0,SP
+generationtime,generationtime,$\tau$,0.00601124888624889,0.3239410767320112,model,,5,0.0,0.0,SP
+length_birth,length_birth,$x_0$,0.28983663686352384,1.0619965658878825,physical_units,,0,0.0,0.0,SP
+length_birth,length_birth,$\delta x_0$,0.2539204107216591,0.9303951602302761,trace_centered,,0,0.0,0.0,SP
+length_birth,length_birth,$\overline{x_0}$,0.03591622614186472,0.13160140565760625,time_averages,,0,0.0,0.0,SP
+length_birth,length_birth,$x_0$,0.28983663686352384,1.0619965658878825,model,,0,0.0,0.0,SP
+length_birth,length_birth,$x_0$,0.09533916699410036,0.3493342630456402,physical_units,,1,0.0,0.0,SP
+length_birth,length_birth,$\delta x_0$,0.059422940852235644,0.2177328573880339,trace_centered,,1,0.0,0.0,SP
+length_birth,length_birth,$\overline{x_0}$,0.03591622614186472,0.13160140565760625,time_averages,,1,0.0,0.0,SP
+length_birth,length_birth,$x_0$,0.09533916699410036,0.3493342630456402,model,,1,0.0,0.0,SP
+length_birth,length_birth,$x_0$,0.042223216959938845,0.15471098442709438,physical_units,,2,0.0,0.0,SP
+length_birth,length_birth,$\delta x_0$,0.006306990818074128,0.023109578769488125,trace_centered,,2,0.0,0.0,SP
+length_birth,length_birth,$\overline{x_0}$,0.03591622614186472,0.13160140565760625,time_averages,,2,0.0,0.0,SP
+length_birth,length_birth,$x_0$,0.042223216959938845,0.15471098442709438,model,,2,0.0,0.0,SP
+length_birth,length_birth,$x_0$,0.04218913136460419,0.15458609067458826,physical_units,,3,0.0,0.0,SP
+length_birth,length_birth,$\delta x_0$,0.006272905222739475,0.022984685016981983,trace_centered,,3,0.0,0.0,SP
+length_birth,length_birth,$\overline{x_0}$,0.03591622614186472,0.13160140565760625,time_averages,,3,0.0,0.0,SP
+length_birth,length_birth,$x_0$,0.04218913136460419,0.15458609067458826,model,,3,0.0,0.0,SP
+length_birth,length_birth,$x_0$,0.07773663099566418,0.28483643770667355,physical_units,,4,0.0,0.0,SP
+length_birth,length_birth,$\delta x_0$,0.04182040485379946,0.1532350320490673,trace_centered,,4,0.0,0.0,SP
+length_birth,length_birth,$\overline{x_0}$,0.03591622614186472,0.13160140565760625,time_averages,,4,0.0,0.0,SP
+length_birth,length_birth,$x_0$,0.07773663099566418,0.28483643770667355,model,,4,0.0,0.0,SP
+length_birth,length_birth,$x_0$,0.06855915978230522,0.2512090708644636,physical_units,,5,0.0,0.0,SP
+length_birth,length_birth,$\delta x_0$,0.0326429336404405,0.11960766520685732,trace_centered,,5,0.0,0.0,SP
+length_birth,length_birth,$\overline{x_0}$,0.03591622614186472,0.13160140565760625,time_averages,,5,0.0,0.0,SP
+length_birth,length_birth,$x_0$,0.06855915978230522,0.2512090708644636,model,,5,0.0,0.0,SP
+length_final,length_final,$x_\tau$,0.37150788543085883,0.37569979613796717,physical_units,,0,0.0,0.0,SP
+length_final,length_final,$\delta x_\tau$,0.25322463029862396,0.2560818914246463,trace_centered,,0,0.0,0.0,SP
+length_final,length_final,$\overline{x_\tau}$,0.11828325513223485,0.11961790471332086,time_averages,,0,0.0,0.0,SP
+length_final,length_final,$x_\tau$,0.37150788543085883,0.37569979613796717,model,,0,0.0,0.0,SP
+length_final,length_final,$x_\tau$,0.1951691165713831,0.19737130807669565,physical_units,,1,0.0,0.0,SP
+length_final,length_final,$\delta x_\tau$,0.07688586143914826,0.07775340336337479,trace_centered,,1,0.0,0.0,SP
+length_final,length_final,$\overline{x_\tau}$,0.11828325513223485,0.11961790471332086,time_averages,,1,0.0,0.0,SP
+length_final,length_final,$x_\tau$,0.1951691165713831,0.19737130807669565,model,,1,0.0,0.0,SP
+length_final,length_final,$x_\tau$,0.12926734097857437,0.13072592953612022,physical_units,,2,0.0,0.0,SP
+length_final,length_final,$\delta x_\tau$,0.010984085846339517,0.011108024822799378,trace_centered,,2,0.0,0.0,SP
+length_final,length_final,$\overline{x_\tau}$,0.11828325513223485,0.11961790471332086,time_averages,,2,0.0,0.0,SP
+length_final,length_final,$x_\tau$,0.12926734097857437,0.13072592953612022,model,,2,0.0,0.0,SP
+length_final,length_final,$x_\tau$,0.19130321285971597,0.1934617834250778,physical_units,,3,0.0,0.0,SP
+length_final,length_final,$\delta x_\tau$,0.07301995772748111,0.07384387871175695,trace_centered,,3,0.0,0.0,SP
+length_final,length_final,$\overline{x_\tau}$,0.11828325513223485,0.11961790471332086,time_averages,,3,0.0,0.0,SP
+length_final,length_final,$x_\tau$,0.19130321285971597,0.1934617834250778,model,,3,0.0,0.0,SP
+length_final,length_final,$x_\tau$,0.2304530180357222,0.233053335583946,physical_units,,4,0.0,0.0,SP
+length_final,length_final,$\delta x_\tau$,0.11216976290348736,0.11343543087062515,trace_centered,,4,0.0,0.0,SP
+length_final,length_final,$\overline{x_\tau}$,0.11828325513223485,0.11961790471332086,time_averages,,4,0.0,0.0,SP
+length_final,length_final,$x_\tau$,0.2304530180357222,0.233053335583946,model,,4,0.0,0.0,SP
+length_final,length_final,$x_\tau$,0.22278890895751488,0.22530274850038456,physical_units,,5,0.0,0.0,SP
+length_final,length_final,$\delta x_\tau$,0.10450565382528003,0.1056848437870637,trace_centered,,5,0.0,0.0,SP
+length_final,length_final,$\overline{x_\tau}$,0.11828325513223485,0.11961790471332086,time_averages,,5,0.0,0.0,SP
+length_final,length_final,$x_\tau$,0.22278890895751488,0.22530274850038456,model,,5,0.0,0.0,SP
+growth_rate,growth_rate,$\alpha$,0.01976098155304622,0.4157457956439886,physical_units,,0,0.0,0.0,SP
+growth_rate,growth_rate,$\delta \alpha$,0.004520614800103968,0.09510795766010394,trace_centered,,0,0.0,0.0,SP
+growth_rate,growth_rate,$\overline{\alpha}$,0.015240366752942252,0.3206378379838847,time_averages,,0,0.0,0.0,SP
+growth_rate,growth_rate,$\alpha$,0.01976098155304622,0.4157457956439886,model,,0,0.0,0.0,SP
+growth_rate,growth_rate,$\alpha$,0.020313846832694677,0.42737737451846775,physical_units,,1,0.0,0.0,SP
+growth_rate,growth_rate,$\delta \alpha$,0.005073480079752425,0.10673953653458305,trace_centered,,1,0.0,0.0,SP
+growth_rate,growth_rate,$\overline{\alpha}$,0.015240366752942252,0.3206378379838847,time_averages,,1,0.0,0.0,SP
+growth_rate,growth_rate,$\alpha$,0.020313846832694677,0.42737737451846775,model,,1,0.0,0.0,SP
+growth_rate,growth_rate,$\alpha$,0.02115525375564955,0.4450795007871049,physical_units,,2,0.0,0.0,SP
+growth_rate,growth_rate,$\delta \alpha$,0.005914887002707297,0.1244416628032202,trace_centered,,2,0.0,0.0,SP
+growth_rate,growth_rate,$\overline{\alpha}$,0.015240366752942252,0.3206378379838847,time_averages,,2,0.0,0.0,SP
+growth_rate,growth_rate,$\alpha$,0.02115525375564955,0.4450795007871049,model,,2,0.0,0.0,SP
+growth_rate,growth_rate,$\alpha$,0.019376777163903555,0.40766262634264355,physical_units,,3,0.0,0.0,SP
+growth_rate,growth_rate,$\delta \alpha$,0.004136410410961303,0.08702478835875885,trace_centered,,3,0.0,0.0,SP
+growth_rate,growth_rate,$\overline{\alpha}$,0.015240366752942252,0.3206378379838847,time_averages,,3,0.0,0.0,SP
+growth_rate,growth_rate,$\alpha$,0.019376777163903555,0.40766262634264355,model,,3,0.0,0.0,SP
+growth_rate,growth_rate,$\alpha$,0.021247704328539212,0.4470245426809288,physical_units,,4,0.0,0.0,SP
+growth_rate,growth_rate,$\delta \alpha$,0.0060073375755969605,0.12638670469704408,trace_centered,,4,0.0,0.0,SP
+growth_rate,growth_rate,$\overline{\alpha}$,0.015240366752942252,0.3206378379838847,time_averages,,4,0.0,0.0,SP
+growth_rate,growth_rate,$\alpha$,0.021247704328539212,0.4470245426809288,model,,4,0.0,0.0,SP
+growth_rate,growth_rate,$\alpha$,0.01619027686963149,0.34062273277228966,physical_units,,5,0.0,0.0,SP
+growth_rate,growth_rate,$\delta \alpha$,0.0009499101166892364,0.019984894788404997,trace_centered,,5,0.0,0.0,SP
+growth_rate,growth_rate,$\overline{\alpha}$,0.015240366752942252,0.3206378379838847,time_averages,,5,0.0,0.0,SP
+growth_rate,growth_rate,$\alpha$,0.01619027686963149,0.34062273277228966,model,,5,0.0,0.0,SP
+fold_growth,fold_growth,$\phi$,0.0010784247818431977,0.056094520612655976,physical_units,,0,0.0,0.0,NC
+fold_growth,fold_growth,$\delta \phi$,0.000842732399263429,0.0438349254740224,trace_centered,,0,0.0,0.0,NC
+fold_growth,fold_growth,$\overline{\phi}$,0.0002356923825797688,0.012259595138633573,time_averages,,0,0.0,0.0,NC
+fold_growth,fold_growth,$\phi$,0.0010784247818431977,0.056094520612655976,model,,0,0.0,0.0,NC
+fold_growth,fold_growth,$\phi$,-0.0031983381823396362,-0.16636231855582614,physical_units,,1,0.0,0.0,NC
+fold_growth,fold_growth,$\delta \phi$,-0.003434030564919405,-0.1786219136944597,trace_centered,,1,0.0,0.0,NC
+fold_growth,fold_growth,$\overline{\phi}$,0.0002356923825797688,0.012259595138633573,time_averages,,1,0.0,0.0,NC
+fold_growth,fold_growth,$\phi$,-0.0031983381823396362,-0.16636231855582614,model,,1,0.0,0.0,NC
+fold_growth,fold_growth,$\phi$,0.0026928220988048446,0.14006777966419806,physical_units,,2,0.0,0.0,NC
+fold_growth,fold_growth,$\delta \phi$,0.002457129716225076,0.1278081845255645,trace_centered,,2,0.0,0.0,NC
+fold_growth,fold_growth,$\overline{\phi}$,0.0002356923825797688,0.012259595138633573,time_averages,,2,0.0,0.0,NC
+fold_growth,fold_growth,$\phi$,0.0026928220988048446,0.14006777966419806,model,,2,0.0,0.0,NC
+fold_growth,fold_growth,$\phi$,-0.003151799971866393,-0.1639416225085732,physical_units,,3,0.0,0.0,NC
+fold_growth,fold_growth,$\delta \phi$,-0.003387492354446162,-0.17620121764720675,trace_centered,,3,0.0,0.0,NC
+fold_growth,fold_growth,$\overline{\phi}$,0.0002356923825797688,0.012259595138633573,time_averages,,3,0.0,0.0,NC
+fold_growth,fold_growth,$\phi$,-0.003151799971866393,-0.1639416225085732,model,,3,0.0,0.0,NC
+fold_growth,fold_growth,$\phi$,-0.0018679864849908002,-0.09716375972683713,physical_units,,4,0.0,0.0,NC
+fold_growth,fold_growth,$\delta \phi$,-0.002103678867570569,-0.10942335486547072,trace_centered,,4,0.0,0.0,NC
+fold_growth,fold_growth,$\overline{\phi}$,0.0002356923825797688,0.012259595138633573,time_averages,,4,0.0,0.0,NC
+fold_growth,fold_growth,$\phi$,-0.0018679864849908002,-0.09716375972683713,model,,4,0.0,0.0,NC
+fold_growth,fold_growth,$\phi$,0.004445802602738049,0.23124947603007656,physical_units,,5,0.0,0.0,NC
+fold_growth,fold_growth,$\delta \phi$,0.00421011022015828,0.21898988089144297,trace_centered,,5,0.0,0.0,NC
+fold_growth,fold_growth,$\overline{\phi}$,0.0002356923825797688,0.012259595138633573,time_averages,,5,0.0,0.0,NC
+fold_growth,fold_growth,$\phi$,0.004445802602738049,0.23124947603007656,model,,5,0.0,0.0,NC
+division_ratio,division_ratio,$f$,4.6067501296509055e-05,0.03467934447032416,physical_units,,0,0.0,0.0,NC
+division_ratio,division_ratio,$\delta f$,-7.628889465417819e-06,-0.005742983193171367,trace_centered,,0,0.0,0.0,NC
+division_ratio,division_ratio,$\overline{f}$,5.3696390761926874e-05,0.04042232766349552,time_averages,,0,0.0,0.0,NC
+division_ratio,division_ratio,$f$,4.6067501296509055e-05,0.03467934447032416,model,,0,0.0,0.0,NC
+division_ratio,division_ratio,$f$,-0.00013735239996091094,-0.10339808016527101,physical_units,,1,0.0,0.0,NC
+division_ratio,division_ratio,$\delta f$,-0.00019104879072283782,-0.14382040782876654,trace_centered,,1,0.0,0.0,NC
+division_ratio,division_ratio,$\overline{f}$,5.3696390761926874e-05,0.04042232766349552,time_averages,,1,0.0,0.0,NC
+division_ratio,division_ratio,$f$,-0.00013735239996091094,-0.10339808016527101,model,,1,0.0,0.0,NC
+division_ratio,division_ratio,$f$,4.901777585498744e-05,0.0369002938341061,physical_units,,2,0.0,0.0,NC
+division_ratio,division_ratio,$\delta f$,-4.678614906939432e-06,-0.0035220338293894264,trace_centered,,2,0.0,0.0,NC
+division_ratio,division_ratio,$\overline{f}$,5.3696390761926874e-05,0.04042232766349552,time_averages,,2,0.0,0.0,NC
+division_ratio,division_ratio,$f$,4.901777585498744e-05,0.0369002938341061,model,,2,0.0,0.0,NC
+division_ratio,division_ratio,$f$,4.241390192120604e-05,0.03192893631431905,physical_units,,3,0.0,0.0,NC
+division_ratio,division_ratio,$\delta f$,-1.1282488840720837e-05,-0.008493391349176479,trace_centered,,3,0.0,0.0,NC
+division_ratio,division_ratio,$\overline{f}$,5.3696390761926874e-05,0.04042232766349552,time_averages,,3,0.0,0.0,NC
+division_ratio,division_ratio,$f$,4.241390192120604e-05,0.03192893631431905,model,,3,0.0,0.0,NC
+division_ratio,division_ratio,$f$,0.0002968613128446761,0.22347545315711162,physical_units,,4,0.0,0.0,NC
+division_ratio,division_ratio,$\delta f$,0.00024316492208274922,0.1830531254936161,trace_centered,,4,0.0,0.0,NC
+division_ratio,division_ratio,$\overline{f}$,5.3696390761926874e-05,0.04042232766349552,time_averages,,4,0.0,0.0,NC
+division_ratio,division_ratio,$f$,0.0002968613128446761,0.22347545315711162,model,,4,0.0,0.0,NC
+division_ratio,division_ratio,$f$,7.30316333239296e-05,0.05497778472875159,physical_units,,5,0.0,0.0,NC
+division_ratio,division_ratio,$\delta f$,1.933524256200272e-05,0.014555457065256058,trace_centered,,5,0.0,0.0,NC
+division_ratio,division_ratio,$\overline{f}$,5.3696390761926874e-05,0.04042232766349552,time_averages,,5,0.0,0.0,NC
+division_ratio,division_ratio,$f$,7.30316333239296e-05,0.05497778472875159,model,,5,0.0,0.0,NC
+added_length,added_length,$\Delta$,0.07635602130029817,0.15572860339395442,physical_units,,0,0.0,0.0,NC
+added_length,added_length,$\delta \Delta$,0.04426008312996684,0.09026872818349878,trace_centered,,0,0.0,0.0,NC
+added_length,added_length,$\overline{\Delta}$,0.03209593817033133,0.06545987521045563,time_averages,,0,0.0,0.0,NC
+added_length,added_length,$\Delta$,0.07635602130029817,0.15572860339395442,model,,0,0.0,0.0,NC
+added_length,added_length,$\Delta$,-0.014908949139012867,-0.03040689899698724,physical_units,,1,-3.469446951953614e-18,-1.734723475976807e-18,NC
+added_length,added_length,$\delta \Delta$,-0.0470048873093442,-0.09586677420744287,trace_centered,,1,-3.469446951953614e-18,-1.734723475976807e-18,NC
+added_length,added_length,$\overline{\Delta}$,0.03209593817033133,0.06545987521045563,time_averages,,1,-3.469446951953614e-18,-1.734723475976807e-18,NC
+added_length,added_length,$\Delta$,-0.014908949139012868,-0.030406898996987244,model,,1,-3.469446951953614e-18,-1.734723475976807e-18,NC
+added_length,added_length,$\Delta$,0.13682457078181978,0.2790546044041565,physical_units,,2,0.0,0.0,NC
+added_length,added_length,$\delta \Delta$,0.10472863261148846,0.2135947291937009,trace_centered,,2,0.0,0.0,NC
+added_length,added_length,$\overline{\Delta}$,0.03209593817033133,0.06545987521045563,time_averages,,2,0.0,0.0,NC
+added_length,added_length,$\Delta$,0.13682457078181978,0.2790546044041565,model,,2,0.0,0.0,NC
+added_length,added_length,$\Delta$,-0.05462981327742195,-0.11141786044491303,physical_units,,3,0.0,0.0,NC
+added_length,added_length,$\delta \Delta$,-0.08672575144775328,-0.17687773565536866,trace_centered,,3,0.0,0.0,NC
+added_length,added_length,$\overline{\Delta}$,0.03209593817033133,0.06545987521045563,time_averages,,3,0.0,0.0,NC
+added_length,added_length,$\Delta$,-0.05462981327742195,-0.11141786044491303,model,,3,0.0,0.0,NC
+added_length,added_length,$\Delta$,0.022883513543397883,0.04667107510545573,physical_units,,4,0.0,0.0,NC
+added_length,added_length,$\delta \Delta$,-0.009212424626933446,-0.018788800104999902,trace_centered,,4,0.0,0.0,NC
+added_length,added_length,$\overline{\Delta}$,0.03209593817033133,0.06545987521045563,time_averages,,4,0.0,0.0,NC
+added_length,added_length,$\Delta$,0.022883513543397883,0.04667107510545573,model,,4,0.0,0.0,NC
+added_length,added_length,$\Delta$,0.050784326401346065,0.1035749648830048,physical_units,,5,0.0,0.0,NC
+added_length,added_length,$\delta \Delta$,0.018688388231014735,0.03811508967254917,trace_centered,,5,0.0,0.0,NC
+added_length,added_length,$\overline{\Delta}$,0.03209593817033133,0.06545987521045563,time_averages,,5,0.0,0.0,NC
+added_length,added_length,$\Delta$,0.050784326401346065,0.1035749648830048,model,,5,0.0,0.0,NC
+generationtime,generationtime,$\tau$,0.0032175426383571184,0.1799258110063158,physical_units,,0,0.0,0.0,NC
+generationtime,generationtime,$\delta \tau$,0.0003202765291230106,0.017909945795829305,trace_centered,,0,0.0,0.0,NC
+generationtime,generationtime,$\overline{\tau}$,0.0028972661092341078,0.1620158652104865,time_averages,,0,0.0,0.0,NC
+generationtime,generationtime,$\tau$,0.0032175426383571184,0.1799258110063158,model,,0,0.0,0.0,NC
+generationtime,generationtime,$\tau$,0.0023626000696136433,0.1321172029054651,physical_units,,1,0.0,0.0,NC
+generationtime,generationtime,$\delta \tau$,-0.0005346660396204645,-0.029898662305021393,trace_centered,,1,0.0,0.0,NC
+generationtime,generationtime,$\overline{\tau}$,0.0028972661092341078,0.1620158652104865,time_averages,,1,0.0,0.0,NC
+generationtime,generationtime,$\tau$,0.0023626000696136433,0.1321172029054651,model,,1,0.0,0.0,NC
+generationtime,generationtime,$\tau$,0.009085972850678732,0.5080899362298644,physical_units,,2,0.0,0.0,NC
+generationtime,generationtime,$\delta \tau$,0.006188706741444624,0.3460740710193779,trace_centered,,2,0.0,0.0,NC
+generationtime,generationtime,$\overline{\tau}$,0.0028972661092341078,0.1620158652104865,time_averages,,2,0.0,0.0,NC
+generationtime,generationtime,$\tau$,0.009085972850678732,0.5080899362298644,model,,2,0.0,0.0,NC
+generationtime,generationtime,$\tau$,0.0018046467107553095,0.10091630772555132,physical_units,,3,0.0,0.0,NC
+generationtime,generationtime,$\delta \tau$,-0.0010926193984787983,-0.06109955748493517,trace_centered,,3,0.0,0.0,NC
+generationtime,generationtime,$\overline{\tau}$,0.0028972661092341078,0.1620158652104865,time_averages,,3,0.0,0.0,NC
+generationtime,generationtime,$\tau$,0.0018046467107553095,0.10091630772555132,model,,3,0.0,0.0,NC
+generationtime,generationtime,$\tau$,0.001991907413853116,0.11138797435486739,physical_units,,4,0.0,0.0,NC
+generationtime,generationtime,$\delta \tau$,-0.0009053586953809917,-0.05062789085561911,trace_centered,,4,0.0,0.0,NC
+generationtime,generationtime,$\overline{\tau}$,0.0028972661092341078,0.1620158652104865,time_averages,,4,0.0,0.0,NC
+generationtime,generationtime,$\tau$,0.001991907413853116,0.11138797435486739,model,,4,0.0,0.0,NC
+generationtime,generationtime,$\tau$,0.004480595196658545,0.2505560345771908,physical_units,,5,0.0,0.0,NC
+generationtime,generationtime,$\delta \tau$,0.0015833290874244371,0.08854016936670427,trace_centered,,5,0.0,0.0,NC
+generationtime,generationtime,$\overline{\tau}$,0.0028972661092341078,0.1620158652104865,time_averages,,5,0.0,0.0,NC
+generationtime,generationtime,$\tau$,0.004480595196658545,0.2505560345771908,model,,5,0.0,0.0,NC
+length_birth,length_birth,$x_0$,0.041099152790054855,0.1745787052798212,physical_units,,0,0.0,0.0,NC
+length_birth,length_birth,$\delta x_0$,0.007986113056763895,0.033922968796706796,trace_centered,,0,0.0,0.0,NC
+length_birth,length_birth,$\overline{x_0}$,0.03311303973329096,0.14065573648311439,time_averages,,0,0.0,0.0,NC
+length_birth,length_birth,$x_0$,0.041099152790054855,0.1745787052798212,model,,0,0.0,0.0,NC
+length_birth,length_birth,$x_0$,0.03200595162328656,0.13595310891649406,physical_units,,1,0.0,0.0,NC
+length_birth,length_birth,$\delta x_0$,-0.0011070881100044005,-0.004702627566620323,trace_centered,,1,0.0,0.0,NC
+length_birth,length_birth,$\overline{x_0}$,0.03311303973329096,0.14065573648311439,time_averages,,1,0.0,0.0,NC
+length_birth,length_birth,$x_0$,0.03200595162328656,0.13595310891649406,model,,1,0.0,0.0,NC
+length_birth,length_birth,$x_0$,0.007399838965900887,0.03143262617955351,physical_units,,2,-6.938893903907228e-18,-8.673617379884035e-19,NC
+length_birth,length_birth,$\delta x_0$,-0.025713200767390074,-0.1092231103035609,trace_centered,,2,-6.938893903907228e-18,-8.673617379884035e-19,NC
+length_birth,length_birth,$\overline{x_0}$,0.03311303973329096,0.14065573648311439,time_averages,,2,-6.938893903907228e-18,-8.673617379884035e-19,NC
+length_birth,length_birth,$x_0$,0.007399838965900886,0.0314326261795535,model,,2,-6.938893903907228e-18,-8.673617379884035e-19,NC
+length_birth,length_birth,$x_0$,0.033521486844687774,0.14239071550438984,physical_units,,3,0.0,0.0,NC
+length_birth,length_birth,$\delta x_0$,0.00040844711139681467,0.0017349790212754317,trace_centered,,3,0.0,0.0,NC
+length_birth,length_birth,$\overline{x_0}$,0.03311303973329096,0.14065573648311439,time_averages,,3,0.0,0.0,NC
+length_birth,length_birth,$x_0$,0.033521486844687774,0.14239071550438984,model,,3,0.0,0.0,NC
+length_birth,length_birth,$x_0$,0.006597766573281335,0.02802562748642977,physical_units,,4,6.938893903907228e-18,1.734723475976807e-18,NC
+length_birth,length_birth,$\delta x_0$,-0.026515273160009623,-0.11263010899668462,trace_centered,,4,6.938893903907228e-18,1.734723475976807e-18,NC
+length_birth,length_birth,$\overline{x_0}$,0.03311303973329096,0.14065573648311439,time_averages,,4,6.938893903907228e-18,1.734723475976807e-18,NC
+length_birth,length_birth,$x_0$,0.006597766573281337,0.028025627486429776,model,,4,6.938893903907228e-18,1.734723475976807e-18,NC
+length_birth,length_birth,$x_0$,0.03471368787312359,0.14745488101263746,physical_units,,5,0.0,0.0,NC
+length_birth,length_birth,$\delta x_0$,0.0016006481398326278,0.006799144529523071,trace_centered,,5,0.0,0.0,NC
+length_birth,length_birth,$\overline{x_0}$,0.03311303973329096,0.14065573648311439,time_averages,,5,0.0,0.0,NC
+length_birth,length_birth,$x_0$,0.03471368787312359,0.14745488101263746,model,,5,0.0,0.0,NC
+length_final,length_final,$x_\tau$,0.16940517454213042,0.22629981566050142,physical_units,,0,0.0,0.0,NC
+length_final,length_final,$\delta x_\tau$,0.04742938543589176,0.0633585202461679,trace_centered,,0,0.0,0.0,NC
+length_final,length_final,$\overline{x_\tau}$,0.12197578910623866,0.16294129541433353,time_averages,,0,0.0,0.0,NC
+length_final,length_final,$x_\tau$,0.16940517454213042,0.22629981566050142,model,,0,0.0,0.0,NC
+length_final,length_final,$x_\tau$,0.11348460010948713,0.15159834494132146,physical_units,,1,0.0,0.0,NC
+length_final,length_final,$\delta x_\tau$,-0.008491188996751525,-0.011342950473012056,trace_centered,,1,0.0,0.0,NC
+length_final,length_final,$\overline{x_\tau}$,0.12197578910623866,0.16294129541433353,time_averages,,1,0.0,0.0,NC
+length_final,length_final,$x_\tau$,0.11348460010948713,0.15159834494132146,model,,1,0.0,0.0,NC
+length_final,length_final,$x_\tau$,0.17561618141042187,0.23459678600488076,physical_units,,2,0.0,0.0,NC
+length_final,length_final,$\delta x_\tau$,0.053640392304183215,0.07165549059054725,trace_centered,,2,0.0,0.0,NC
+length_final,length_final,$\overline{x_\tau}$,0.12197578910623866,0.16294129541433353,time_averages,,2,0.0,0.0,NC
+length_final,length_final,$x_\tau$,0.17561618141042187,0.23459678600488076,model,,2,0.0,0.0,NC
+length_final,length_final,$x_\tau$,0.01970104964126448,0.026317637074467087,physical_units,,3,6.938893903907228e-18,3.469446951953614e-18,NC
+length_final,length_final,$\delta x_\tau$,-0.10227473946497417,-0.13662365833986642,trace_centered,,3,6.938893903907228e-18,3.469446951953614e-18,NC
+length_final,length_final,$\overline{x_\tau}$,0.12197578910623866,0.16294129541433353,time_averages,,3,6.938893903907228e-18,3.469446951953614e-18,NC
+length_final,length_final,$x_\tau$,0.019701049641264484,0.026317637074467094,model,,3,6.938893903907228e-18,3.469446951953614e-18,NC
+length_final,length_final,$x_\tau$,0.13673904433785455,0.18266278235529315,physical_units,,4,0.0,0.0,NC
+length_final,length_final,$\delta x_\tau$,0.014763255231615896,0.019721486940959623,trace_centered,,4,0.0,0.0,NC
+length_final,length_final,$\overline{x_\tau}$,0.12197578910623866,0.16294129541433353,time_averages,,4,0.0,0.0,NC
+length_final,length_final,$x_\tau$,0.13673904433785455,0.18266278235529315,model,,4,0.0,0.0,NC
+length_final,length_final,$x_\tau$,0.012092670622769457,0.016153987858826088,physical_units,,5,3.469446951953614e-18,3.469446951953614e-18,NC
+length_final,length_final,$\delta x_\tau$,-0.1098831184834692,-0.14678730755550742,trace_centered,,5,3.469446951953614e-18,3.469446951953614e-18,NC
+length_final,length_final,$\overline{x_\tau}$,0.12197578910623866,0.16294129541433353,time_averages,,5,3.469446951953614e-18,3.469446951953614e-18,NC
+length_final,length_final,$x_\tau$,0.01209267062276946,0.01615398785882609,model,,5,3.469446951953614e-18,3.469446951953614e-18,NC
+growth_rate,growth_rate,$\alpha$,0.021317218488273323,0.535492012382936,physical_units,,0,0.0,0.0,NC
+growth_rate,growth_rate,$\delta \alpha$,0.009329157335511672,0.23434995696921343,trace_centered,,0,0.0,0.0,NC
+growth_rate,growth_rate,$\overline{\alpha}$,0.011988061152761652,0.3011420554137226,time_averages,,0,0.0,0.0,NC
+growth_rate,growth_rate,$\alpha$,0.021317218488273323,0.535492012382936,model,,0,0.0,0.0,NC
+growth_rate,growth_rate,$\alpha$,0.014503444222557008,0.364328889226007,physical_units,,1,0.0,0.0,NC
+growth_rate,growth_rate,$\delta \alpha$,0.0025153830697953565,0.06318683381228439,trace_centered,,1,0.0,0.0,NC
+growth_rate,growth_rate,$\overline{\alpha}$,0.011988061152761652,0.3011420554137226,time_averages,,1,0.0,0.0,NC
+growth_rate,growth_rate,$\alpha$,0.014503444222557008,0.364328889226007,model,,1,0.0,0.0,NC
+growth_rate,growth_rate,$\alpha$,0.016687636044325212,0.41919614475995093,physical_units,,2,0.0,0.0,NC
+growth_rate,growth_rate,$\delta \alpha$,0.004699574891563561,0.11805408934622834,trace_centered,,2,0.0,0.0,NC
+growth_rate,growth_rate,$\overline{\alpha}$,0.011988061152761652,0.3011420554137226,time_averages,,2,0.0,0.0,NC
+growth_rate,growth_rate,$\alpha$,0.016687636044325212,0.41919614475995093,model,,2,0.0,0.0,NC
+growth_rate,growth_rate,$\alpha$,0.00964827100198138,0.24236614442494386,physical_units,,3,0.0,0.0,NC
+growth_rate,growth_rate,$\delta \alpha$,-0.0023397901507802715,-0.05877591098877872,trace_centered,,3,0.0,0.0,NC
+growth_rate,growth_rate,$\overline{\alpha}$,0.011988061152761652,0.3011420554137226,time_averages,,3,0.0,0.0,NC
+growth_rate,growth_rate,$\alpha$,0.00964827100198138,0.24236614442494386,model,,3,0.0,0.0,NC
+growth_rate,growth_rate,$\alpha$,0.01074709074545482,0.26996867596546265,physical_units,,4,0.0,0.0,NC
+growth_rate,growth_rate,$\delta \alpha$,-0.0012409704073068316,-0.03117337944825997,trace_centered,,4,0.0,0.0,NC
+growth_rate,growth_rate,$\overline{\alpha}$,0.011988061152761652,0.3011420554137226,time_averages,,4,0.0,0.0,NC
+growth_rate,growth_rate,$\alpha$,0.01074709074545482,0.26996867596546265,model,,4,0.0,0.0,NC
+growth_rate,growth_rate,$\alpha$,0.009049877191927236,0.2273343941185116,physical_units,,5,0.0,0.0,NC
+growth_rate,growth_rate,$\delta \alpha$,-0.002938183960834416,-0.07380766129521099,trace_centered,,5,0.0,0.0,NC
+growth_rate,growth_rate,$\overline{\alpha}$,0.011988061152761652,0.3011420554137226,time_averages,,5,0.0,0.0,NC
+growth_rate,growth_rate,$\alpha$,0.009049877191927236,0.2273343941185116,model,,5,0.0,0.0,NC
+fold_growth,fold_growth,$\phi$,0.0026431888318880583,0.13387663291215146,physical_units,,0,0.0,0.0,CTRL
+fold_growth,fold_growth,$\delta \phi$,0.0025274505269629447,0.1280145263628944,trace_centered,,0,0.0,0.0,CTRL
+fold_growth,fold_growth,$\overline{\phi}$,0.00011573830492511358,0.005862106549257051,time_averages,,0,0.0,0.0,CTRL
+fold_growth,fold_growth,$\phi$,0.0026431888318880583,0.13387663291215146,model,,0,0.0,0.0,CTRL
+fold_growth,fold_growth,$\phi$,-0.0012921493788657435,-0.06544693514708369,physical_units,,1,0.0,0.0,CTRL
+fold_growth,fold_growth,$\delta \phi$,-0.001407887683790857,-0.07130904169634074,trace_centered,,1,0.0,0.0,CTRL
+fold_growth,fold_growth,$\overline{\phi}$,0.00011573830492511358,0.005862106549257051,time_averages,,1,0.0,0.0,CTRL
+fold_growth,fold_growth,$\phi$,-0.0012921493788657435,-0.06544693514708369,model,,1,0.0,0.0,CTRL
+fold_growth,fold_growth,$\phi$,0.0019775236063784072,0.1001609112191679,physical_units,,2,0.0,0.0,CTRL
+fold_growth,fold_growth,$\delta \phi$,0.0018617853014532937,0.09429880466991085,trace_centered,,2,0.0,0.0,CTRL
+fold_growth,fold_growth,$\overline{\phi}$,0.00011573830492511358,0.005862106549257051,time_averages,,2,0.0,0.0,CTRL
+fold_growth,fold_growth,$\phi$,0.0019775236063784072,0.1001609112191679,model,,2,0.0,0.0,CTRL
+fold_growth,fold_growth,$\phi$,0.0018977041139116792,0.096118080543098,physical_units,,3,0.0,0.0,CTRL
+fold_growth,fold_growth,$\delta \phi$,0.0017819658089865656,0.09025597399384096,trace_centered,,3,0.0,0.0,CTRL
+fold_growth,fold_growth,$\overline{\phi}$,0.00011573830492511358,0.005862106549257051,time_averages,,3,0.0,0.0,CTRL
+fold_growth,fold_growth,$\phi$,0.0018977041139116792,0.096118080543098,model,,3,0.0,0.0,CTRL
+fold_growth,fold_growth,$\phi$,0.0015429287419147714,0.07814882625823671,physical_units,,4,0.0,0.0,CTRL
+fold_growth,fold_growth,$\delta \phi$,0.0014271904369896578,0.07228671970897967,trace_centered,,4,0.0,0.0,CTRL
+fold_growth,fold_growth,$\overline{\phi}$,0.00011573830492511358,0.005862106549257051,time_averages,,4,0.0,0.0,CTRL
+fold_growth,fold_growth,$\phi$,0.0015429287419147714,0.07814882625823671,model,,4,0.0,0.0,CTRL
+fold_growth,fold_growth,$\phi$,-0.001316033616658642,-0.06665666382662808,physical_units,,5,0.0,0.0,CTRL
+fold_growth,fold_growth,$\delta \phi$,-0.0014317719215837556,-0.07251877037588512,trace_centered,,5,0.0,0.0,CTRL
+fold_growth,fold_growth,$\overline{\phi}$,0.00011573830492511358,0.005862106549257051,time_averages,,5,0.0,0.0,CTRL
+fold_growth,fold_growth,$\phi$,-0.001316033616658642,-0.06665666382662808,model,,5,0.0,0.0,CTRL
+division_ratio,division_ratio,$f$,-4.298033660267943e-05,-0.030798193586113274,physical_units,,0,0.0,0.0,CTRL
+division_ratio,division_ratio,$\delta f$,-7.313393148651083e-05,-0.05240519636820828,trace_centered,,0,0.0,0.0,CTRL
+division_ratio,division_ratio,$\overline{f}$,3.01535948838314e-05,0.021607002782095007,time_averages,,0,0.0,0.0,CTRL
+division_ratio,division_ratio,$f$,-4.298033660267943e-05,-0.030798193586113274,model,,0,0.0,0.0,CTRL
+division_ratio,division_ratio,$f$,-1.6432057116409504e-05,-0.01177463268302326,physical_units,,1,-3.469446951953614e-18,-3.3881317890172014e-21,CTRL
+division_ratio,division_ratio,$\delta f$,-4.658565200024091e-05,-0.03338163546511827,trace_centered,,1,-3.469446951953614e-18,-3.3881317890172014e-21,CTRL
+division_ratio,division_ratio,$\overline{f}$,3.01535948838314e-05,0.021607002782095007,time_averages,,1,-3.469446951953614e-18,-3.3881317890172014e-21,CTRL
+division_ratio,division_ratio,$f$,-1.6432057116409507e-05,-0.011774632683023263,model,,1,-3.469446951953614e-18,-3.3881317890172014e-21,CTRL
+division_ratio,division_ratio,$f$,7.62779868220649e-05,0.05465811555227558,physical_units,,2,0.0,0.0,CTRL
+division_ratio,division_ratio,$\delta f$,4.6124391938233504e-05,0.03305111277018058,trace_centered,,2,0.0,0.0,CTRL
+division_ratio,division_ratio,$\overline{f}$,3.01535948838314e-05,0.021607002782095007,time_averages,,2,0.0,0.0,CTRL
+division_ratio,division_ratio,$f$,7.62779868220649e-05,0.05465811555227558,model,,2,0.0,0.0,CTRL
+division_ratio,division_ratio,$f$,-9.341928243047452e-05,-0.06694096352866118,physical_units,,3,-1.3877787807814457e-17,-1.3552527156068805e-20,CTRL
+division_ratio,division_ratio,$\delta f$,-0.00012357287731430594,-0.08854796631075619,trace_centered,,3,-1.3877787807814457e-17,-1.3552527156068805e-20,CTRL
+division_ratio,division_ratio,$\overline{f}$,3.01535948838314e-05,0.021607002782095007,time_averages,,3,-1.3877787807814457e-17,-1.3552527156068805e-20,CTRL
+division_ratio,division_ratio,$f$,-9.341928243047454e-05,-0.06694096352866119,model,,3,-1.3877787807814457e-17,-1.3552527156068805e-20,CTRL
+division_ratio,division_ratio,$f$,-0.00013924007209043917,-0.09977452561221622,physical_units,,4,0.0,0.0,CTRL
+division_ratio,division_ratio,$\delta f$,-0.00016939366697427057,-0.12138152839431124,trace_centered,,4,0.0,0.0,CTRL
+division_ratio,division_ratio,$\overline{f}$,3.01535948838314e-05,0.021607002782095007,time_averages,,4,0.0,0.0,CTRL
+division_ratio,division_ratio,$f$,-0.00013924007209043917,-0.09977452561221622,model,,4,0.0,0.0,CTRL
+division_ratio,division_ratio,$f$,-5.93970040933039e-05,-0.042561798605986134,physical_units,,5,0.0,0.0,CTRL
+division_ratio,division_ratio,$\delta f$,-8.95505989771353e-05,-0.06416880138808113,trace_centered,,5,0.0,0.0,CTRL
+division_ratio,division_ratio,$\overline{f}$,3.01535948838314e-05,0.021607002782095007,time_averages,,5,0.0,0.0,CTRL
+division_ratio,division_ratio,$f$,-5.93970040933039e-05,-0.042561798605986134,model,,5,0.0,0.0,CTRL
+added_length,added_length,$\Delta$,0.037373202624007285,0.06866954301684579,physical_units,,0,0.0,0.0,CTRL
+added_length,added_length,$\delta \Delta$,0.048250003462397724,0.08865458284797148,trace_centered,,0,0.0,0.0,CTRL
+added_length,added_length,$\overline{\Delta}$,-0.010876800838390438,-0.019985039831125685,time_averages,,0,0.0,0.0,CTRL
+added_length,added_length,$\Delta$,0.037373202624007285,0.06866954301684579,model,,0,0.0,0.0,CTRL
+added_length,added_length,$\Delta$,0.020669696772982738,0.037978512197018297,physical_units,,1,-6.938893903907228e-18,-3.469446951953614e-18,CTRL
+added_length,added_length,$\delta \Delta$,0.031546497611373174,0.057963552028143975,trace_centered,,1,-6.938893903907228e-18,-3.469446951953614e-18,CTRL
+added_length,added_length,$\overline{\Delta}$,-0.010876800838390438,-0.019985039831125685,time_averages,,1,-6.938893903907228e-18,-3.469446951953614e-18,CTRL
+added_length,added_length,$\Delta$,0.020669696772982735,0.03797851219701829,model,,1,-6.938893903907228e-18,-3.469446951953614e-18,CTRL
+added_length,added_length,$\Delta$,0.001893022099231294,0.0034782398442754804,physical_units,,2,8.673617379884035e-19,4.336808689942018e-19,CTRL
+added_length,added_length,$\delta \Delta$,0.012769822937621732,0.023463279675401166,trace_centered,,2,8.673617379884035e-19,4.336808689942018e-19,CTRL
+added_length,added_length,$\overline{\Delta}$,-0.010876800838390438,-0.019985039831125685,time_averages,,2,8.673617379884035e-19,4.336808689942018e-19,CTRL
+added_length,added_length,$\Delta$,0.0018930220992312945,0.0034782398442754813,model,,2,8.673617379884035e-19,4.336808689942018e-19,CTRL
+added_length,added_length,$\Delta$,0.03550731540209531,0.06524116081105215,physical_units,,3,0.0,0.0,CTRL
+added_length,added_length,$\delta \Delta$,0.04638411624048575,0.08522620064217783,trace_centered,,3,0.0,0.0,CTRL
+added_length,added_length,$\overline{\Delta}$,-0.010876800838390438,-0.019985039831125685,time_averages,,3,0.0,0.0,CTRL
+added_length,added_length,$\Delta$,0.03550731540209531,0.06524116081105215,model,,3,0.0,0.0,CTRL
+added_length,added_length,$\Delta$,-0.05099205874713842,-0.09369283673336679,physical_units,,4,0.0,0.0,CTRL
+added_length,added_length,$\delta \Delta$,-0.04011525790874798,-0.0737077969022411,trace_centered,,4,0.0,0.0,CTRL
+added_length,added_length,$\overline{\Delta}$,-0.010876800838390438,-0.019985039831125685,time_averages,,4,0.0,0.0,CTRL
+added_length,added_length,$\Delta$,-0.05099205874713842,-0.09369283673336679,model,,4,0.0,0.0,CTRL
+added_length,added_length,$\Delta$,0.022454383182269094,0.04125769598511959,physical_units,,5,-6.938893903907228e-18,-3.469446951953614e-18,CTRL
+added_length,added_length,$\delta \Delta$,0.03333118402065953,0.06124273581624527,trace_centered,,5,-6.938893903907228e-18,-3.469446951953614e-18,CTRL
+added_length,added_length,$\overline{\Delta}$,-0.010876800838390438,-0.019985039831125685,time_averages,,5,-6.938893903907228e-18,-3.469446951953614e-18,CTRL
+added_length,added_length,$\Delta$,0.02245438318226909,0.04125769598511958,model,,5,-6.938893903907228e-18,-3.469446951953614e-18,CTRL
+generationtime,generationtime,$\tau$,0.0028801775147928974,0.15995548613202815,physical_units,,0,0.0,0.0,CTRL
+generationtime,generationtime,$\delta \tau$,0.00316631712058336,0.17584672877619253,trace_centered,,0,0.0,0.0,CTRL
+generationtime,generationtime,$\overline{\tau}$,-0.00028613960579046237,-0.01589124264416439,time_averages,,0,0.0,0.0,CTRL
+generationtime,generationtime,$\tau$,0.0028801775147928974,0.15995548613202815,model,,0,0.0,0.0,CTRL
+generationtime,generationtime,$\tau$,-0.00045040027845457764,-0.025013734439692414,physical_units,,1,0.0,0.0,CTRL
+generationtime,generationtime,$\delta \tau$,-0.00016426067266411528,-0.009122491795528025,trace_centered,,1,0.0,0.0,CTRL
+generationtime,generationtime,$\overline{\tau}$,-0.00028613960579046237,-0.01589124264416439,time_averages,,1,0.0,0.0,CTRL
+generationtime,generationtime,$\tau$,-0.00045040027845457764,-0.025013734439692414,model,,1,0.0,0.0,CTRL
+generationtime,generationtime,$\tau$,0.0018098677340758784,0.10051403837155366,physical_units,,2,0.0,0.0,CTRL
+generationtime,generationtime,$\delta \tau$,0.002096007339866341,0.11640528101571805,trace_centered,,2,0.0,0.0,CTRL
+generationtime,generationtime,$\overline{\tau}$,-0.00028613960579046237,-0.01589124264416439,time_averages,,2,0.0,0.0,CTRL
+generationtime,generationtime,$\tau$,0.0018098677340758784,0.10051403837155366,model,,2,0.0,0.0,CTRL
+generationtime,generationtime,$\tau$,0.001287069265576054,0.07147954909147805,physical_units,,3,0.0,0.0,CTRL
+generationtime,generationtime,$\delta \tau$,0.0015732088713665165,0.08737079173564244,trace_centered,,3,0.0,0.0,CTRL
+generationtime,generationtime,$\overline{\tau}$,-0.00028613960579046237,-0.01589124264416439,time_averages,,3,0.0,0.0,CTRL
+generationtime,generationtime,$\tau$,0.001287069265576054,0.07147954909147805,model,,3,0.0,0.0,CTRL
+generationtime,generationtime,$\tau$,0.00023799164636268782,0.013217265010154343,physical_units,,4,0.0,0.0,CTRL
+generationtime,generationtime,$\delta \tau$,0.0005241312521531502,0.029108507654318733,trace_centered,,4,0.0,0.0,CTRL
+generationtime,generationtime,$\overline{\tau}$,-0.00028613960579046237,-0.01589124264416439,time_averages,,4,0.0,0.0,CTRL
+generationtime,generationtime,$\tau$,0.00023799164636268782,0.013217265010154343,model,,4,0.0,0.0,CTRL
+generationtime,generationtime,$\tau$,-0.0003136964845109632,-0.017421660095651232,physical_units,,5,0.0,0.0,CTRL
+generationtime,generationtime,$\delta \tau$,-2.7556878720500855e-05,-0.0015304174514868432,trace_centered,,5,0.0,0.0,CTRL
+generationtime,generationtime,$\overline{\tau}$,-0.00028613960579046237,-0.01589124264416439,time_averages,,5,0.0,0.0,CTRL
+generationtime,generationtime,$\tau$,-0.0003136964845109632,-0.017421660095651232,model,,5,0.0,0.0,CTRL
+length_birth,length_birth,$x_0$,0.0017892252174812734,0.007412017536148974,physical_units,,0,-8.673617379884035e-19,-2.168404344971009e-19,CTRL
+length_birth,length_birth,$\delta x_0$,0.005452604154145138,0.02258787614512565,trace_centered,,0,-8.673617379884035e-19,-2.168404344971009e-19,CTRL
+length_birth,length_birth,$\overline{x_0}$,-0.003663378936663865,-0.015175858608976677,time_averages,,0,-8.673617379884035e-19,-2.168404344971009e-19,CTRL
+length_birth,length_birth,$x_0$,0.0017892252174812732,0.007412017536148973,model,,0,-8.673617379884035e-19,-2.168404344971009e-19,CTRL
+length_birth,length_birth,$x_0$,-0.02129476711725629,-0.08821538270263292,physical_units,,1,0.0,0.0,CTRL
+length_birth,length_birth,$\delta x_0$,-0.017631388180592424,-0.07303952409365624,trace_centered,,1,0.0,0.0,CTRL
+length_birth,length_birth,$\overline{x_0}$,-0.003663378936663865,-0.015175858608976677,time_averages,,1,0.0,0.0,CTRL
+length_birth,length_birth,$x_0$,-0.02129476711725629,-0.08821538270263292,model,,1,0.0,0.0,CTRL
+length_birth,length_birth,$x_0$,0.00463424958457922,0.019197772785779433,physical_units,,2,0.0,0.0,CTRL
+length_birth,length_birth,$\delta x_0$,0.008297628521243085,0.034373631394756105,trace_centered,,2,0.0,0.0,CTRL
+length_birth,length_birth,$\overline{x_0}$,-0.003663378936663865,-0.015175858608976677,time_averages,,2,0.0,0.0,CTRL
+length_birth,length_birth,$x_0$,0.00463424958457922,0.019197772785779433,model,,2,0.0,0.0,CTRL
+length_birth,length_birth,$x_0$,0.004171486891982755,0.01728073899982095,physical_units,,3,0.0,0.0,CTRL
+length_birth,length_birth,$\delta x_0$,0.00783486582864662,0.03245659760879763,trace_centered,,3,0.0,0.0,CTRL
+length_birth,length_birth,$\overline{x_0}$,-0.003663378936663865,-0.015175858608976677,time_averages,,3,0.0,0.0,CTRL
+length_birth,length_birth,$x_0$,0.004171486891982755,0.01728073899982095,model,,3,0.0,0.0,CTRL
+length_birth,length_birth,$x_0$,0.027453767639431883,0.113729565841511,physical_units,,4,0.0,0.0,CTRL
+length_birth,length_birth,$\delta x_0$,0.03111714657609575,0.1289054244504877,trace_centered,,4,0.0,0.0,CTRL
+length_birth,length_birth,$\overline{x_0}$,-0.003663378936663865,-0.015175858608976677,time_averages,,4,0.0,0.0,CTRL
+length_birth,length_birth,$x_0$,0.027453767639431883,0.113729565841511,model,,4,0.0,0.0,CTRL
+length_birth,length_birth,$x_0$,-0.013507690260905932,-0.055956754973330435,physical_units,,5,0.0,0.0,CTRL
+length_birth,length_birth,$\delta x_0$,-0.009844311324242067,-0.04078089636435376,trace_centered,,5,0.0,0.0,CTRL
+length_birth,length_birth,$\overline{x_0}$,-0.003663378936663865,-0.015175858608976677,time_averages,,5,0.0,0.0,CTRL
+length_birth,length_birth,$x_0$,-0.013507690260905932,-0.055956754973330435,model,,5,0.0,0.0,CTRL
+length_final,length_final,$x_\tau$,-0.026716421293976503,-0.03343003755981783,physical_units,,0,0.0,0.0,CTRL
+length_final,length_final,$\delta x_\tau$,0.007370252519498657,0.009222336174483547,trace_centered,,0,0.0,0.0,CTRL
+length_final,length_final,$\overline{x_\tau}$,-0.03408667381347516,-0.04265237373430137,time_averages,,0,0.0,0.0,CTRL
+length_final,length_final,$x_\tau$,-0.026716421293976503,-0.03343003755981783,model,,0,0.0,0.0,CTRL
+length_final,length_final,$x_\tau$,0.03845007691116765,0.04811226403320802,physical_units,,1,-1.3877787807814457e-17,-6.938893903907228e-18,CTRL
+length_final,length_final,$\delta x_\tau$,0.0725367507246428,0.09076463776750938,trace_centered,,1,-1.3877787807814457e-17,-6.938893903907228e-18,CTRL
+length_final,length_final,$\overline{x_\tau}$,-0.03408667381347516,-0.04265237373430137,time_averages,,1,-1.3877787807814457e-17,-6.938893903907228e-18,CTRL
+length_final,length_final,$x_\tau$,0.03845007691116764,0.04811226403320801,model,,1,-1.3877787807814457e-17,-6.938893903907228e-18,CTRL
+length_final,length_final,$x_\tau$,-0.054459538247193705,-0.0681447709280019,physical_units,,2,0.0,0.0,CTRL
+length_final,length_final,$\delta x_\tau$,-0.020372864433718545,-0.025492397193700528,trace_centered,,2,0.0,0.0,CTRL
+length_final,length_final,$\overline{x_\tau}$,-0.03408667381347516,-0.04265237373430137,time_averages,,2,0.0,0.0,CTRL
+length_final,length_final,$x_\tau$,-0.054459538247193705,-0.0681447709280019,model,,2,0.0,0.0,CTRL
+length_final,length_final,$x_\tau$,0.02795710608849262,0.03498249620778501,physical_units,,3,0.0,0.0,CTRL
+length_final,length_final,$\delta x_\tau$,0.06204377990196778,0.07763486994208639,trace_centered,,3,0.0,0.0,CTRL
+length_final,length_final,$\overline{x_\tau}$,-0.03408667381347516,-0.04265237373430137,time_averages,,3,0.0,0.0,CTRL
+length_final,length_final,$x_\tau$,0.02795710608849262,0.03498249620778501,model,,3,0.0,0.0,CTRL
+length_final,length_final,$x_\tau$,-0.0995589722961561,-0.12457732069181554,physical_units,,4,0.0,0.0,CTRL
+length_final,length_final,$\delta x_\tau$,-0.06547229848268094,-0.08192494695751418,trace_centered,,4,0.0,0.0,CTRL
+length_final,length_final,$\overline{x_\tau}$,-0.03408667381347516,-0.04265237373430137,time_averages,,4,0.0,0.0,CTRL
+length_final,length_final,$x_\tau$,-0.0995589722961561,-0.12457732069181554,model,,4,0.0,0.0,CTRL
+length_final,length_final,$x_\tau$,0.08162104753887102,0.1021317434274524,physical_units,,5,0.0,0.0,CTRL
+length_final,length_final,$\delta x_\tau$,0.11570772135234618,0.14478411716175377,trace_centered,,5,0.0,0.0,CTRL
+length_final,length_final,$\overline{x_\tau}$,-0.03408667381347516,-0.04265237373430137,time_averages,,5,0.0,0.0,CTRL
+length_final,length_final,$x_\tau$,0.08162104753887102,0.1021317434274524,model,,5,0.0,0.0,CTRL
+growth_rate,growth_rate,$\alpha$,-0.0010891546868393872,-0.029256784306149156,physical_units,,0,0.0,0.0,CTRL
+growth_rate,growth_rate,$\delta \alpha$,-0.00016085755492360775,-0.004320942511913858,trace_centered,,0,0.0,0.0,CTRL
+growth_rate,growth_rate,$\overline{\alpha}$,-0.0009282971319157794,-0.0249358417942353,time_averages,,0,0.0,0.0,CTRL
+growth_rate,growth_rate,$\alpha$,-0.0010891546868393872,-0.029256784306149156,model,,0,0.0,0.0,CTRL
+growth_rate,growth_rate,$\alpha$,0.0014562185954789721,0.03911682506197985,physical_units,,1,0.0,0.0,CTRL
+growth_rate,growth_rate,$\delta \alpha$,0.0023845157273947514,0.06405266685621515,trace_centered,,1,0.0,0.0,CTRL
+growth_rate,growth_rate,$\overline{\alpha}$,-0.0009282971319157794,-0.0249358417942353,time_averages,,1,0.0,0.0,CTRL
+growth_rate,growth_rate,$\alpha$,0.0014562185954789721,0.03911682506197985,model,,1,0.0,0.0,CTRL
+growth_rate,growth_rate,$\alpha$,-0.004331224021399101,-0.1163449861685,physical_units,,2,0.0,0.0,CTRL
+growth_rate,growth_rate,$\delta \alpha$,-0.0034029268894833218,-0.09140914437426471,trace_centered,,2,0.0,0.0,CTRL
+growth_rate,growth_rate,$\overline{\alpha}$,-0.0009282971319157794,-0.0249358417942353,time_averages,,2,0.0,0.0,CTRL
+growth_rate,growth_rate,$\alpha$,-0.004331224021399101,-0.1163449861685,model,,2,0.0,0.0,CTRL
+growth_rate,growth_rate,$\alpha$,0.0051309685406652795,0.13782765817360695,physical_units,,3,0.0,0.0,CTRL
+growth_rate,growth_rate,$\delta \alpha$,0.006059265672581059,0.16276349996784226,trace_centered,,3,0.0,0.0,CTRL
+growth_rate,growth_rate,$\overline{\alpha}$,-0.0009282971319157794,-0.0249358417942353,time_averages,,3,0.0,0.0,CTRL
+growth_rate,growth_rate,$\alpha$,0.0051309685406652795,0.13782765817360695,model,,3,0.0,0.0,CTRL
+growth_rate,growth_rate,$\alpha$,0.0019383581628689172,0.05206801877122367,physical_units,,4,6.938893903907228e-18,2.168404344971009e-19,CTRL
+growth_rate,growth_rate,$\delta \alpha$,0.0028666552947846967,0.07700386056545896,trace_centered,,4,6.938893903907228e-18,2.168404344971009e-19,CTRL
+growth_rate,growth_rate,$\overline{\alpha}$,-0.0009282971319157794,-0.0249358417942353,time_averages,,4,6.938893903907228e-18,2.168404344971009e-19,CTRL
+growth_rate,growth_rate,$\alpha$,0.0019383581628689174,0.052068018771223676,model,,4,6.938893903907228e-18,2.168404344971009e-19,CTRL
+growth_rate,growth_rate,$\alpha$,0.002478361782049518,0.0665735519170738,physical_units,,5,0.0,0.0,CTRL
+growth_rate,growth_rate,$\delta \alpha$,0.0034066589139652974,0.09150939371130909,trace_centered,,5,0.0,0.0,CTRL
+growth_rate,growth_rate,$\overline{\alpha}$,-0.0009282971319157794,-0.0249358417942353,time_averages,,5,0.0,0.0,CTRL
+growth_rate,growth_rate,$\alpha$,0.002478361782049518,0.0665735519170738,model,,5,0.0,0.0,CTRL
