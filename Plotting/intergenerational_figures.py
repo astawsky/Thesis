@@ -28,8 +28,6 @@ def put_all_graphs_into_a_big_grid(variables=phenotypic_variables):
     
     old_latex_symbols = {variable: symbols['old_var'][variable] for variable in variables}
     young_latex_symbols = {variable: symbols['young_var'][variable] for variable in variables}
-    #
-    # df = df[variables].copy().rename(columns=latex_symbols)
     
     kinds = np.unique(output_df['dataset'])
     
@@ -37,10 +35,7 @@ def put_all_graphs_into_a_big_grid(variables=phenotypic_variables):
     
     xmin, xmax = np.min(np.unique(output_df['distance'])), np.max(np.unique(output_df['distance']))
 
-    print()
-
     xticks = np.array(np.unique(output_df['distance'])[0::2], dtype=int)
-    # xticks = np.array(xticks, dtype=int)
     
     fig, axes = plt.subplots(nrows=len(variables), ncols=len(variables), figsize=[7, 7])
     
@@ -51,7 +46,7 @@ def put_all_graphs_into_a_big_grid(variables=phenotypic_variables):
             
             for kind in kinds:
                 plot_df = output_df[(output_df['young_var'] == col_var) & (output_df['old_var'] == row_var) & (output_df['dataset'] == kind)]
-                ax.plot(plot_df['distance'], plot_df['correlations'], marker='o', markersize=3)
+                ax.plot(plot_df['distance'], plot_df['correlations'], marker='o', markersize=3, color=cmap[kind])
                 
             # Setting the limits of all axes
             ax.set_ylim([bottom, top])
@@ -112,6 +107,11 @@ output_df = pd.read_csv(args.corr_dir)
 
 # cut it at 10 generations
 output_df = output_df[output_df['distance'] < 9]
+
+cmap = {
+    'physical units': 'blue',
+    'trace centered': 'green'
+}
 
 # plot it
 put_all_graphs_into_a_big_grid()

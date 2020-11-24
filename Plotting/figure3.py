@@ -17,7 +17,7 @@ def kl_div_plot(ax):
     # Here we start plotting both KL-Divergences, The good part with this is that it takes into consideration the standard deviation as well
     # sns.barplot(data=kld_df, x='combo', y='kldiv 1', hue='dataset', hue_order=['S', 'NC', 'C'], order=[r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'], ci=33,
     #             ax=ax, edgecolor='black')
-    sns.boxplot(data=kld_df.replace(symbols['physical_units']), x='variable', y='value', hue='dataset', hue_order=datasets, order=hierarchy, showfliers=False, ax=ax)
+    sns.boxplot(data=kld_df.replace(symbols['physical_units']), x='variable', y='value', hue='dataset', hue_order=datasets, order=hierarchy, showfliers=False, ax=ax, palette=cmap)
     ax.legend()
     ax.set_xlabel('')
     ax.set_ylabel(r'$D_{KL}$')
@@ -43,7 +43,7 @@ def diagonal_corrs(kind, ax):
     # plot_df = plot_df[plot_df['kind'] == kind].copy()
     
     sns.barplot(data=over_time_and_lineages[over_time_and_lineages['kind'] == kind], x='AB_parameter_pair', y='correlation', hue='dataset', hue_order=datasets,
-                order=symbols[kind].values(), ci=95, dodge=True, ax=ax, edgecolor='black')
+                order=symbols[kind].values(), ci=95, dodge=True, ax=ax, edgecolor='black', palette=cmap)
     ax.set_xlabel('')
     ax.set_ylabel('')
     ax.get_legend().remove()
@@ -52,7 +52,7 @@ def diagonal_corrs(kind, ax):
     # plt.close()
 
 
-""" the pearson correlation coefficient between all same-generation lineage pair-bacteria in each dataset separately in Physical Units """""" Plots the diagonal pairs figure. """
+""" the pearson correlation coefficient between all same-generation lineage pair-bacteria in each dataset separately in Physical Units """
 
 
 def diagonal_units(ax, filename='physical_units', n_boots=500):
@@ -90,7 +90,8 @@ def diagonal_units(ax, filename='physical_units', n_boots=500):
         showfliers=False,
         order=hierarchy,
         data=corr_df,
-        ax=ax
+        ax=ax,
+        palette=cmap
     )
     ax.axhline(0, ls='-', color='black')
     ax.set_xlabel('')
@@ -128,6 +129,8 @@ seaborn_preamble()
 # create the figure and construct the layout of the figure
 fig, axes = plt.subplots(2, 2, tight_layout=True, figsize=[7, 7])
 axes = axes.flatten()
+
+cmap = sns.color_palette('tab10')[5:8]
 
 # plot the figures
 kl_div_plot(axes[0])
