@@ -4,7 +4,7 @@ import sys
 
 sys.path.append(r'/Users/alestawsky/PycharmProjects/Thesis')
 import os
-from CustomFuncsAndVars.global_variables import phenotypic_variables, symbols, create_folder
+from CustomFuncsAndVars.global_variables import phenotypic_variables, symbols, create_folder, seaborn_preamble
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,8 +18,6 @@ import argparse
 
 
 def slope_comparisons():
-    # import the labeled measured bacteria in physical units
-    cv_df = pd.read_csv('{}/variation_of_cumulative_time_averages.csv'.format(args.data_location))
     
     # This is where we will keep the regression phenotypic_variables
     slope_df = pd.DataFrame(columns=['Trace', 'Shuffled', 'Population', 'Trace-Centered'])
@@ -34,7 +32,10 @@ def slope_comparisons():
         for label, marker in zip(slope_df.columns, ['o', 'x', '^', '+']):
             
             # the variance and generations of the TAs of this type of lineage
-            dist = cv_df[(cv_df['param'] == param) & (cv_df['label'] == label)].sort_values('generation')
+            dist = variation_of_cumulative_time_averages[(variation_of_cumulative_time_averages['param'] == param) & (variation_of_cumulative_time_averages['label'] == label)].sort_values('generation')
+            
+            # So each kind of lineage starts at the 1 and keeps their slope
+            dist['var'] = dist['var'] / dist[dist['generation'] == 1]['var'].values
             
             # We get the best fit line
             lin_reg = LinearRegression(fit_intercept=True).fit(np.array(np.log(dist['generation'] + 1)).reshape(-1, 1), np.array(np.log(dist['var'])).reshape(-1, 1))
@@ -48,8 +49,7 @@ def slope_comparisons():
         slope_df = slope_df.append(pd.DataFrame(to_add_slope, index=[symbols['time_averages'][param]]))
     
     # set a style on seaborn module
-    sns.set_context('paper')
-    sns.set_style('ticks', {'axes.grid': True})
+    seaborn_preamble()
 
     fig, ax = plt.subplots(figsize=[7, 3.5])
 
@@ -76,15 +76,12 @@ def slope_comparisons():
 
 
 def variance_timeaverage_per_generation():
-    # import the labeled measured bacteria in physical units
-    cv_df = pd.read_csv('{}/variation_of_cumulative_time_averages.csv'.format(args.data_location))
     
     # The cycle phenotypic_variables we will look at
     highlights = ['length_birth', 'growth_rate', 'fold_growth']
     
     # set a style on seaborn module
-    sns.set_context('paper')
-    sns.set_style('ticks', {'axes.grid': True})
+    seaborn_preamble()
     
     # create the figure and construct the layout of the figure
     fig, axes = plt.subplots(nrows=1, ncols=len(highlights), sharey=True, figsize=[7, 3])
@@ -98,7 +95,10 @@ def variance_timeaverage_per_generation():
         for label, marker in zip(['Trace', 'Population', 'Trace-Centered', 'Shuffled'], ['o', 'x', '^', '+']):
             
             # the variance and generations of the TAs of this type of lineage
-            dist = cv_df[(cv_df['param'] == param) & (cv_df['label'] == label)].sort_values('generation')
+            dist = variation_of_cumulative_time_averages[(variation_of_cumulative_time_averages['param'] == param) & (variation_of_cumulative_time_averages['label'] == label)].sort_values('generation')
+            
+            # So each kind of lineage starts at the 1 and keeps their slope
+            dist['var'] = dist['var'] / dist[dist['generation'] == 1]['var'].values
             
             # We get the best fit line
             lin_reg = LinearRegression(fit_intercept=True).fit(np.array(np.log(dist['generation'] + 1)).reshape(-1, 1), np.array(np.log(dist['var'])).reshape(-1, 1))
@@ -117,7 +117,7 @@ def variance_timeaverage_per_generation():
         ax.set(xscale="log", yscale="log")
         # ax.tick_params(direction='out')
         ax.set_xlabel(r'$N$')
-        ax.set_ylabel(r'$Var(${}$)$'.format(symbols['time_averages'][param]))
+        ax.set_ylabel(r'$Var(${}$)$'.format(symbols['time_averages'][param], symbols['physical_units'][param]))
         # ax.set_ylim([low_bound, high_bound])
         # ax.set_xlim(left=0)
 
@@ -141,6 +141,10 @@ args = parser.parse_args()
 
 
 create_folder(args.data_location)
+
+
+# import the labeled measured bacteria in physical units
+variation_of_cumulative_time_averages = pd.read_csv('{}/variation_of_cumulative_time_averages.csv'.format(args.data_location))
     
 # phenotypic_variables, symbols, args
 variance_timeaverage_per_generation()
