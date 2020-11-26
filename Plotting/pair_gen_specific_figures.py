@@ -21,10 +21,24 @@ def plot_panel(var_a, var_b, count1, ax):
     # The constant
     df = pair_correlation[(pair_correlation['kind'] == 'time_averages') & (pair_correlation['variable_a'] == var_a) & (pair_correlation['variable_b'] == var_b)].copy()
 
-    sns.barplot(data=pair_correlation[(pair_correlation['kind'] == 'trace_centered') & (pair_correlation['variable_a'] == var_a) & (pair_correlation['variable_b'] == var_b)], x='generation',
-                y='correlation', hue='dataset', palette=cmap, edgecolor='black', ax=ax)
-    
-    ax.get_legend().remove()
+    # if count1 == 0:
+    #     sns.catplot(data=pair_correlation[(pair_correlation['kind'] == 'trace_centered') & (pair_correlation['variable_a'] == var_a) & (pair_correlation['variable_b'] == var_b)], x='generation',
+    #                 y='correlation', hue='dataset', palette=cmap, edgecolor='black', ax=ax, legend=True, kind='bar')
+    # else:
+    #     sns.catplot(data=pair_correlation[(pair_correlation['kind'] == 'trace_centered') & (pair_correlation['variable_a'] == var_a) & (pair_correlation['variable_b'] == var_b)], x='generation',
+    #                 y='correlation', hue='dataset', palette=cmap, edgecolor='black', ax=ax, legend=False, kind='bar')
+
+    if count1 == 0:
+        sns.barplot(data=pair_correlation[(pair_correlation['kind'] == 'trace_centered') & (pair_correlation['variable_a'] == var_a) & (pair_correlation['variable_b'] == var_b)], x='generation',
+                    y='correlation', hue='dataset', palette=cmap, edgecolor='black', ax=ax)
+    else:
+        sns.barplot(data=pair_correlation[(pair_correlation['kind'] == 'trace_centered') & (pair_correlation['variable_a'] == var_a) & (pair_correlation['variable_b'] == var_b)], x='generation',
+                    y='correlation', hue='dataset', palette=cmap, edgecolor='black', ax=ax)
+        ax.get_legend().remove()
+
+    # sns.barplot(data=pair_correlation[(pair_correlation['kind'] == 'trace_centered') & (pair_correlation['variable_a'] == var_a) & (pair_correlation['variable_b'] == var_b)], x='generation',
+    #             y='correlation', hue='dataset', palette=cmap, edgecolor='black', ax=ax, legend_out=True)
+    # ax.get_legend().remove()
     
     # Plot the constant impact of the time-average in the
     for count, hue in enumerate(datasets):
@@ -53,8 +67,13 @@ def plot_main_figure():
         ax.set_title(uppercase_letters[count1], x=-0.07, fontsize='xx-large')
         
         # the legend
-        if count1 in [0, 1]:
+        if count1 == 0:
             ax.legend(title='')
+        elif count1 == 1:
+            h, l = ax.get_legend_handles_labels()
+            ax.legend(h[:3], l[:3], title='')
+        # if count1 in [0, 1]:
+        #     ax.legend(title='')
     
     plt.savefig('{}/gen_specific_main_figure.png'.format(args.figs_location), dpi=300)
     # plt.show()

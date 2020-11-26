@@ -61,7 +61,7 @@ def put_all_graphs_into_a_big_grid(variables=phenotypic_variables):
             
             # To share the x,y-axes
             if row == axes.shape[0] - 1:
-                ax.set_xlabel(col_var)
+                ax.set_xlabel(col_var, size='x-large', loc='center')
                 ax.set_xticks(xticks)
                 ax.set_xticklabels(xticks)
             else:
@@ -70,7 +70,7 @@ def put_all_graphs_into_a_big_grid(variables=phenotypic_variables):
             if col == 0:
                 ax.set_yticks(yticks)
                 ax.set_yticklabels(yticks)
-                ax.set_ylabel(row_var)
+                ax.set_ylabel(row_var+'        ', size='x-large', rotation=0, loc='center')
             else:
                 ax.set_ylabel('')
                 ax.set_yticks(yticks)
