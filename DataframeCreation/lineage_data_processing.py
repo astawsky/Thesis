@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
-import os
+# import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import glob
 from sklearn.linear_model import LinearRegression
-import argparse
-import sys
-sys.path.append(r'/Users/alestawsky/PycharmProjects/Thesis')
+# import argparse
 from CustomFuncsAndVars.global_variables import phenotypic_variables, datasets, create_folder
+# sys.path.append(r'/Users/alestawsky/PycharmProjects/Thesis')
+# from CustomFuncsAndVars.global_variables import phenotypic_variables, datasets, create_folder
 
 
 """We use this for linear regression in the cycle parameter process """
@@ -354,40 +354,93 @@ def create_information_dataframe(**kwargs):
     
     return info
 
-# visually_check_divisions()
-parser = argparse.ArgumentParser(description='Process Lineage Data.')
-parser.add_argument('-SP', '--sp_infiles', metavar='', type=str,
-                    help='Location of Sister Pair Raw Data', required=False, default=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/SP')
-parser.add_argument('-NC', '--nc_infiles', metavar='', type=str,
-                    help='Location of Neighboring Cell Pair Raw Data', required=False, default=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/NC')
-parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data')
-# group = parser.add_mutually_exclusive_group()
-# group.add_argument('-de', '--division_events', action='store_true', help='0: Do not show the division events.\n 1: Show the division events.')
 
-args = parser.parse_args()
-
-create_folder(args.save_folder)
-
-print('-' * 50)
-print('-' * 50)
-
-# For physical_units and trace_centered unless any one otherwise specified
-for k in ['physical_units', 'trace_centered']:
-    print(k)
-    print('-'*50)
-    print('-'*50)
-
-    info_df = pd.DataFrame(columns=phenotypic_variables + ['dataset', 'trap_ID', 'trace', 'generation'])
+def main(args):
+    #sp_infiles=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/SP',
+    # nc_infiles=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/NC',
+    # save_folder=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data'
     
-    # For every type of lineage we want to look at. These are all the options SP and NC, not CTRL, hence [:-1]
-    for dataset, infiles in zip(datasets[:-1], [glob.glob(args.sp_infiles + '/*.xls'), glob.glob(args.nc_infiles + '/*.xls')]):
-        print(dataset)
-        info_df = create_information_dataframe(infiles=infiles, discretize_by='length', kind=k, start_index=None, end_index=None, dataset=dataset, info_df=info_df)
-
-    # Save the dataframe to a csv
-    info_df.to_csv('{}/{}.csv'.format(args.save_folder, k), index=False)
+    # visually_check_divisions()
     
+    print('-' * 50)
+    print('-' * 50)
+    
+    # For physical_units and trace_centered unless any one otherwise specified
+    for k, name in zip(['physical_units', 'trace_centered'], [args.pu, args.tc]):
+        
+        info_df = pd.DataFrame(columns=phenotypic_variables + ['dataset', 'trap_ID', 'trace', 'generation'])
+        
+        # For every type of lineage we want to look at. These are all the options SP and NC, not CTRL, hence [:-1]
+        for dataset, infiles in zip(datasets[:-1], [glob.glob(args.sp_infiles + '/*.xls'), glob.glob(args.nc_infiles + '/*.xls')]):
+            info_df = create_information_dataframe(infiles=infiles, discretize_by='length', kind=k, start_index=None, end_index=None, dataset=dataset, info_df=info_df)
+        
+        # Save the dataframe to a csv
+        info_df.to_csv('{}/{}'.format(args.save_folder, name), index=False)
+        
+        print('-' * 50)
+        print('-' * 50)
 
-    print('-'*50)
-    print('-'*50)
+# # visually_check_divisions()
+# parser = argparse.ArgumentParser(description='Process Lineage Data.')
+# parser.add_argument('-SP', '--sp_infiles', metavar='', type=str,
+#                     help='Location of Sister Pair Raw Data', required=False, default=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/SP')
+# parser.add_argument('-NC', '--nc_infiles', metavar='', type=str,
+#                     help='Location of Neighboring Cell Pair Raw Data', required=False, default=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/NC')
+# parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+#                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data')
+# # group = parser.add_mutually_exclusive_group()
+# # group.add_argument('-de', '--division_events', action='store_true', help='0: Do not show the division events.\n 1: Show the division events.')
+#
+# args = parser.parse_args()
+#
+# create_folder(args.save_folder)
+#
+# print('-' * 50)
+# print('-' * 50)
+#
+# # For physical_units and trace_centered unless any one otherwise specified
+# for k in ['physical_units', 'trace_centered']:
+#     print(k)
+#     print('-' * 50)
+#     print('-' * 50)
+#
+#     info_df = pd.DataFrame(columns=phenotypic_variables + ['dataset', 'trap_ID', 'trace', 'generation'])
+#
+#     # For every type of lineage we want to look at. These are all the options SP and NC, not CTRL, hence [:-1]
+#     for dataset, infiles in zip(datasets[:-1], [glob.glob(args.sp_infiles + '/*.xls'), glob.glob(args.nc_infiles + '/*.xls')]):
+#         print(dataset)
+#         info_df = create_information_dataframe(infiles=infiles, discretize_by='length', kind=k, start_index=None, end_index=None, dataset=dataset, info_df=info_df)
+#
+#     # Save the dataframe to a csv
+#     info_df.to_csv('{}/{}.csv'.format(args.save_folder, k), index=False)
+#
+#     print('-' * 50)
+#     print('-' * 50)
+
+
+if __name__ == '__main__':
+    import os
+    import argparse
+    import time
+    
+    print('running from __main__')
+
+    first_time = time.time()
+    
+    parser = argparse.ArgumentParser(description='Process Lineage Data.')
+    parser.add_argument('-SP', '--sp_infiles', metavar='', type=str,
+                        help='Location of Sister Pair Raw Data', required=False, default=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/SP')
+    parser.add_argument('-NC', '--nc_infiles', metavar='', type=str,
+                        help='Location of Neighboring Cell Pair Raw Data', required=False, default=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/NC')
+    parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+                        required=False, default=os.path.dirname(os.path.abspath(__file__)) + '/Data')
+    parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
+                        required=False, default='physical_units.csv')
+    parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
+                        required=False, default='trace_centered.csv')
+
+    args = parser.parse_args()
+    
+    main(args)
+
+    print("--- %s seconds ---" % (time.time() - first_time))
