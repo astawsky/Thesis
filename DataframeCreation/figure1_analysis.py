@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
-import sys
-sys.path.append(r'/Users/alestawsky/PycharmProjects/Thesis')
-import os
-from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, shuffle_info
+from CustomFuncsAndVars.global_variables import phenotypic_variables, shuffle_info
 import pandas as pd
 import numpy as np
 
@@ -114,47 +111,76 @@ def ergodicity_breaking_parameter(df, phenotypic_variables, kind, n_boots=0):
     return [time_averages, eb_df]
 
 
-import argparse
+def main(args):
+    # import the labeled measured bacteria in physical units
+    info = pd.read_csv('{}/{}'.format(args.save_folder, args.pu))
+    
+    print('Population physical_units lineages')
+    # Create lineages sampled from a population distribution
+    shuffled = shuffle_info(info)
+    shuffled.to_csv('{}/{}'.format(args.save_folder, args.population_sampled), index=False)
+    
+    print('ergodicity breaking and time-averages')
+    # get the bootstrapped EB variable for both kinds of lineages
+    time_averages_trace, eb_df = ergodicity_breaking_parameter(info, phenotypic_variables, kind='Trace')
+    _, eb_df_pop = ergodicity_breaking_parameter(shuffled, phenotypic_variables, kind='Population')
+    eb_df = eb_df.append(eb_df_pop, ignore_index=True).reset_index(drop=True)
+    
+    # save it to the right folder
+    time_averages_trace.to_csv('{}/{}'.format(args.save_folder, args.ta), index=False)
+    eb_df.to_csv('{}/{}'.format(args.save_folder, args.ebp), index=False)
+    
+    print('kl_divergences')
+    # Put in the kl divergences for each variable for each type of lineage
+    kl_df = kl_divergence(info, phenotypic_variables, 'Trace')
+    kl_df = kl_df.append(kl_divergence(shuffled, phenotypic_variables, 'Population'), ignore_index=True).reset_index(drop=True)
+    
+    # save the kl_df dataframe
+    kl_df.to_csv('{}/{}'.format(args.save_folder, args.kld), index=False)
 
 
-parser = argparse.ArgumentParser(description='Dataframes containing: KL divergences, Population physical_units lineages, and the ergodicity breaking parameter for both kinds of lineages.')
-parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data')
+    # import argparse
+    
+    
+    # parser = argparse.ArgumentParser(description='Dataframes containing: KL divergences, Population physical_units lineages, and the ergodicity breaking parameter for both kinds of lineages.')
+    # parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+    #                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data')
+    #
+    #
+    # args = parser.parse_args()
+    #
+    #
+    # create_folder(args.save_folder)
+    
+    
+    # # import the labeled measured bacteria in physical units
+    # info = pd.read_csv('{}/physical_units.csv'.format(args.save_folder))
+    #
+    #
+    # print('Population physical_units lineages')
+    # # Create lineages sampled from a population distribution
+    # shuffled = shuffle_info(info)
+    # shuffled.to_csv('{}/PopulationLineages.csv'.format(args.save_folder), index=False)
+    #
+    #
+    # print('ergodicity breaking and time-averages')
+    # # get the bootstrapped EB variable for both kinds of lineages
+    # time_averages_trace, eb_df = ergodicity_breaking_parameter(info, phenotypic_variables, kind='Trace')
+    # _, eb_df_pop = ergodicity_breaking_parameter(shuffled, phenotypic_variables, kind='Population')
+    # eb_df = eb_df.append(eb_df_pop, ignore_index=True).reset_index(drop=True)
+    #
+    #
+    # # save it to the right folder
+    # time_averages_trace.to_csv('{}/time_averages.csv'.format(args.save_folder), index=False)
+    # eb_df.to_csv('{}/ergodicity_breaking_parameter.csv'.format(args.save_folder), index=False)
+    #
+    #
+    # print('kl_divergences')
+    # # Put in the kl divergences for each variable for each type of lineage
+    # kl_df = kl_divergence(info, phenotypic_variables, 'Trace')
+    # kl_df = kl_df.append(kl_divergence(shuffled, phenotypic_variables, 'Population'), ignore_index=True).reset_index(drop=True)
+    #
+    #
+    # # save the kl_df dataframe
+    # kl_df.to_csv('{}/kullback_leibler_divergences.csv'.format(args.save_folder), index=False)
 
-
-args = parser.parse_args()
-
-
-create_folder(args.save_folder)
-
-
-# import the labeled measured bacteria in physical units
-info = pd.read_csv('{}/physical_units.csv'.format(args.save_folder))
-
-
-print('Population physical_units lineages')
-# Create lineages sampled from a population distribution
-shuffled = shuffle_info(info)
-shuffled.to_csv('{}/PopulationLineages.csv'.format(args.save_folder), index=False)
-
-
-print('ergodicity breaking and time-averages')
-# get the bootstrapped EB variable for both kinds of lineages
-time_averages_trace, eb_df = ergodicity_breaking_parameter(info, phenotypic_variables, kind='Trace')
-_, eb_df_pop = ergodicity_breaking_parameter(shuffled, phenotypic_variables, kind='Population')
-eb_df = eb_df.append(eb_df_pop, ignore_index=True).reset_index(drop=True)
-
-
-# save it to the right folder
-time_averages_trace.to_csv('{}/time_averages.csv'.format(args.save_folder), index=False)
-eb_df.to_csv('{}/ergodicity_breaking_parameter.csv'.format(args.save_folder), index=False)
-
-
-print('kl_divergences')
-# Put in the kl divergences for each variable for each type of lineage
-kl_df = kl_divergence(info, phenotypic_variables, 'Trace')
-kl_df = kl_df.append(kl_divergence(shuffled, phenotypic_variables, 'Population'), ignore_index=True).reset_index(drop=True)
-
-
-# save the kl_df dataframe
-kl_df.to_csv('{}/kullback_leibler_divergences.csv'.format(args.save_folder), index=False)

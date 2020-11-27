@@ -2,14 +2,16 @@
 
 import os
 import argparse
-import sys
 from CustomFuncsAndVars.global_variables import create_folder
 from random import seed
 from DataframeCreation.lineage_data_processing import main as lineage_data
 from DataframeCreation.pair_data_processing import main as pair_data
 from DataframeCreation.intergenerational_correlations import main as inter
+from DataframeCreation.pair_gen_specific import main as pair_gen_specific
+from DataframeCreation.figure1_analysis import main as figure1_analysis
+from DataframeCreation.figure2_analysis import main as figure2_analysis
+from DataframeCreation.figure3_analysis import main as figure3_analysis
 import time
-
 
 first_time = time.time()
 start_time = first_time
@@ -32,10 +34,9 @@ print(type(args), args)
 
 create_folder(args.save_folder)
 
-# lineage_data(args)
+lineage_data(args)
 
 print('past lineage data')
-
 
 parser.add_argument('-puc', '--puc', metavar='', type=str, help='What to name the physical units dataframe with control added',
                     required=False, default='physical_units_with_control.csv')
@@ -55,10 +56,9 @@ print(type(args), args)
 # So we can compare the trace-centered and the physical units
 seed(args.random_seed)
 
-# pair_data(args)
+pair_data(args)
 
 print('past pair data')
-
 
 parser.add_argument('-bs', '--bs', metavar='', type=int, help='How many bootstraps per covariance should be done?',
                     required=False, default=0)
@@ -71,9 +71,59 @@ print(type(args), args)
 
 inter(args)
 
+print('inter')
 
 parser.add_argument('-gsa', '--gen_specific_amount', metavar='', type=int, help='How many generations to calculate for the generation-specific correlations.',
                     required=False, default=6)
+
+args = parser.parse_args()
+
+print(type(args), args)
+
+pair_gen_specific(args)
+
+print('par gen specific')
+
+parser.add_argument('-pop', '--population_sampled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the population sampled lineages.',
+                    required=False, default='population_lineages.csv')
+
+parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
+                    required=False, default='time_averages.csv')
+parser.add_argument('-ebp', '--ebp', metavar='', type=str, help='What to name the dataframe containing the ergodicity breaking parameter for each variable.',
+                    required=False, default='ergodicity_breaking_parameter.csv')
+parser.add_argument('-kld', '--kld', metavar='', type=str,
+                    help='What to name the dataframe containing the kullback leibler diverges for each variable between the population ensemble and physical units of lineages.',
+                    required=False, default='kullback_leibler_divergences.csv')
+
+args = parser.parse_args()
+
+figure1_analysis(args)
+
+print('figure 1 analyses. Namely, KL divergences ')
+
+parser.add_argument('-shuffled', '--shuffled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the generation-shuffled lineages.',
+                    required=False, default='shuffled_generations.csv')
+parser.add_argument('-cta', '--cta', metavar='', type=str,
+                    help='The filename of the dataframe that contains the cumulative time-averages of each kind of lineage (Trace, Population, Shuffled or Trace-centered).',
+                    required=False, default='cumulative_time_averages.csv')
+parser.add_argument('-vcta', '--vcta', metavar='', type=str,
+                    help='The filename of the dataframe that contains the variation of the cumulative time-averages of each kind of lineage (Trace, Population, Shuffled or Trace-centered).',
+                    required=False, default='variation_of_cumulative_time_averages.csv')
+
+args = parser.parse_args()
+
+figure2_analysis(args)
+
+print('figure 2 analyses.')
+
+parser.add_argument('-pair_kld', '--pair_kld', metavar='', type=str, help='The filename of the dataframe that contains the kullback-leibler divergences between distributions of all pair lineages.',
+                    required=False, default='kullback_leibler_divergences_for_pair_lineages.csv')
+parser.add_argument('-lat', '--lin_and_time', metavar='', type=str, help='The filename of the dataframe that contains the model between distributions of all pair lineages over lineages and time.',
+                    required=False, default='over_lineages_and_time.csv')
+
+args = parser.parse_args()
+
+figure3_analysis(args)
 
 
 print("--- %s seconds ---" % (time.time() - start_time))

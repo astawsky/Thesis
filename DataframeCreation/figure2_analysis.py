@@ -59,62 +59,109 @@ def cumulative_mean_and_cv_dataframes(df, phenotypic_variables, trap_means_df, c
     return [trap_means_df, cv_df]
 
 
-import argparse
+def main(args):
+    # import/create the trace lineages
+    physical_units = pd.read_csv('{}/{}'.format(args.save_folder, args.pu))
+    
+    # import/create the trace-centered lineages
+    trace_centered = pd.read_csv('{}/{}'.format(args.save_folder, args.tc))
+    
+    # import/create the population lineages
+    try:
+        population_sampled = pd.read_csv('{}/{}'.format(args.save_folder, args.population_sampled))
+    except:
+        population_sampled = shuffle_info(physical_units)
+        population_sampled.to_csv('{}/{}'.format(args.save_folder, args.population_sampled), index=False)
+    
+    # import/create the shuffled generations lineages
+    try:
+        shuffled_generations = pd.read_csv('{}/{}'.format(args.save_folder, args.shuffled))
+    except:
+        shuffled_generations = shuffle_lineage_generations(physical_units)
+        shuffled_generations.to_csv('{}/{}'.format(args.save_folder, args.shuffled), index=False)
+    
+    # We keep the trap means here
+    trap_means_df = pd.DataFrame(columns=['label', 'trap_ID', 'trace', 'generation'] + phenotypic_variables)
+    
+    # Keep the cv per lineage length here here
+    cv_df = pd.DataFrame(columns=['label', 'generation', 'cv', 'var', 'param'])
+    
+    # Calculate the cv and TA per lineage length
+    print('Generation shuffled')
+    trap_means_df, cv_df = cumulative_mean_and_cv_dataframes(shuffled_generations, phenotypic_variables, trap_means_df, cv_df, 'Shuffled')
+    print('-' * 50)
+    print('Trace')
+    trap_means_df, cv_df = cumulative_mean_and_cv_dataframes(physical_units, phenotypic_variables, trap_means_df, cv_df, 'Trace')
+    print('-' * 50)
+    print('Population')
+    trap_means_df, cv_df = cumulative_mean_and_cv_dataframes(population_sampled, phenotypic_variables, trap_means_df, cv_df, 'Population')
+    print('-' * 50)
+    print('Trace-Centered')
+    trap_means_df, cv_df = cumulative_mean_and_cv_dataframes(trace_centered, phenotypic_variables, trap_means_df, cv_df, 'Trace-Centered')
+    
+    # Save the csv file
+    trap_means_df.to_csv('{}/{}'.format(args.save_folder, args.cta), index=False)
+    
+    # Save the csv file
+    cv_df.to_csv('{}/{}'.format(args.save_folder, args.vcta), index=False)
 
-parser = argparse.ArgumentParser(description='Dataframes containing: KL divergences, Population physical_units lineages, and the ergodicity breaking parameter for both kinds of lineages.')
-parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data')
 
-args = parser.parse_args()
-
-create_folder(args.save_folder)
-
-
-pd.set_option("display.max_columns", None)
-
-
-# import/create the trace lineages
-physical_units = pd.read_csv('{}/physical_units.csv'.format(args.save_folder))
-
-# import/create the trace-centered lineages
-trace_centered = pd.read_csv('{}/trace_centered.csv'.format(args.save_folder))
-
-# import/create the population lineages
-try:
-    population_sampled = pd.read_csv('{}/PopulationLineages.csv'.format(args.save_folder))
-except:
-    population_sampled = shuffle_info(physical_units)
-    population_sampled.to_csv('{}/PopulationLineages.csv'.format(args.save_folder), index=False)
-
-# import/create the shuffled generations lineages
-try:
-    shuffled_generations = pd.read_csv('{}/shuffled_generations.csv'.format(args.save_folder))
-except:
-    shuffled_generations = shuffle_lineage_generations(physical_units)
-    shuffled_generations.to_csv('{}/shuffled_generations.csv'.format(args.save_folder), index=False)
-
-
-# We keep the trap means here
-trap_means_df = pd.DataFrame(columns=['label', 'trap_ID', 'trace', 'generation'] + phenotypic_variables)
-
-# Keep the cv per lineage length here here
-cv_df = pd.DataFrame(columns=['label', 'generation', 'cv', 'var', 'param'])
-
-# Calculate the cv and TA per lineage length
-print('Generation shuffled')
-trap_means_df, cv_df = cumulative_mean_and_cv_dataframes(shuffled_generations, phenotypic_variables, trap_means_df, cv_df, 'Shuffled')
-print('-' * 50)
-print('Trace')
-trap_means_df, cv_df = cumulative_mean_and_cv_dataframes(physical_units, phenotypic_variables, trap_means_df, cv_df, 'Trace')
-print('-' * 50)
-print('Population')
-trap_means_df, cv_df = cumulative_mean_and_cv_dataframes(population_sampled, phenotypic_variables, trap_means_df, cv_df, 'Population')
-print('-' * 50)
-print('Trace-Centered')
-trap_means_df, cv_df = cumulative_mean_and_cv_dataframes(trace_centered, phenotypic_variables, trap_means_df, cv_df, 'Trace-Centered')
-
-# Save the csv file
-trap_means_df.to_csv('{}/cumulative_time_averages.csv'.format(args.save_folder), index=False)
-
-# Save the csv file
-cv_df.to_csv('{}/variation_of_cumulative_time_averages.csv'.format(args.save_folder), index=False)
+# import argparse
+#
+# parser = argparse.ArgumentParser(description='Dataframes containing: KL divergences, Population physical_units lineages, and the ergodicity breaking parameter for both kinds of lineages.')
+# parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+#                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data')
+#
+# args = parser.parse_args()
+#
+# create_folder(args.save_folder)
+#
+#
+# pd.set_option("display.max_columns", None)
+#
+#
+# # import/create the trace lineages
+# physical_units = pd.read_csv('{}/physical_units.csv'.format(args.save_folder))
+#
+# # import/create the trace-centered lineages
+# trace_centered = pd.read_csv('{}/trace_centered.csv'.format(args.save_folder))
+#
+# # import/create the population lineages
+# try:
+#     population_sampled = pd.read_csv('{}/PopulationLineages.csv'.format(args.save_folder))
+# except:
+#     population_sampled = shuffle_info(physical_units)
+#     population_sampled.to_csv('{}/PopulationLineages.csv'.format(args.save_folder), index=False)
+#
+# # import/create the shuffled generations lineages
+# try:
+#     shuffled_generations = pd.read_csv('{}/shuffled_generations.csv'.format(args.save_folder))
+# except:
+#     shuffled_generations = shuffle_lineage_generations(physical_units)
+#     shuffled_generations.to_csv('{}/shuffled_generations.csv'.format(args.save_folder), index=False)
+#
+#
+# # We keep the trap means here
+# trap_means_df = pd.DataFrame(columns=['label', 'trap_ID', 'trace', 'generation'] + phenotypic_variables)
+#
+# # Keep the cv per lineage length here here
+# cv_df = pd.DataFrame(columns=['label', 'generation', 'cv', 'var', 'param'])
+#
+# # Calculate the cv and TA per lineage length
+# print('Generation shuffled')
+# trap_means_df, cv_df = cumulative_mean_and_cv_dataframes(shuffled_generations, phenotypic_variables, trap_means_df, cv_df, 'Shuffled')
+# print('-' * 50)
+# print('Trace')
+# trap_means_df, cv_df = cumulative_mean_and_cv_dataframes(physical_units, phenotypic_variables, trap_means_df, cv_df, 'Trace')
+# print('-' * 50)
+# print('Population')
+# trap_means_df, cv_df = cumulative_mean_and_cv_dataframes(population_sampled, phenotypic_variables, trap_means_df, cv_df, 'Population')
+# print('-' * 50)
+# print('Trace-Centered')
+# trap_means_df, cv_df = cumulative_mean_and_cv_dataframes(trace_centered, phenotypic_variables, trap_means_df, cv_df, 'Trace-Centered')
+#
+# # Save the csv file
+# trap_means_df.to_csv('{}/cumulative_time_averages.csv'.format(args.save_folder), index=False)
+#
+# # Save the csv file
+# cv_df.to_csv('{}/variation_of_cumulative_time_averages.csv'.format(args.save_folder), index=False)

@@ -29,7 +29,6 @@ def generation_specific(physical_units, trace_means_df, number_of_generations, b
         
         repeats = []
         for variable_a in phenotypic_variables:
-            print(variable_a)
             for variable_b in phenotypic_variables:
                 if variable_b not in repeats:
                 # if variable_b == variable_a:
@@ -164,7 +163,7 @@ def generation_specific(physical_units, trace_means_df, number_of_generations, b
 
 def main(args):
     # get the three datasets we need to compute the covariance and correlations
-    physical_units, trace_means_df = pd.read_csv('{}/{}'.format(args.save_folder, args.puc)), '{}/{}'.format(args.save_folder, args.tac)
+    physical_units, trace_means_df = pd.read_csv('{}/{}'.format(args.save_folder, args.puc)), pd.read_csv('{}/{}'.format(args.save_folder, args.tac))
     
     pair_correlation, bootstrapped = generation_specific(physical_units, trace_means_df, args.gen_specific_amount, args.bs)
     
