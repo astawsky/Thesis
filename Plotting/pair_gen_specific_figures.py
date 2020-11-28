@@ -1,23 +1,17 @@
 #!/usr/bin/env bash
 
-import sys
-import os
 import pandas as pd
 import numpy as np
-import argparse
 import matplotlib.pyplot as plt
 import seaborn as sns
 from string import ascii_uppercase as uppercase_letters
-
-sys.path.append(r'/Users/alestawsky/PycharmProjects/Thesis')
 from CustomFuncsAndVars.global_variables import phenotypic_variables, symbols, create_folder, datasets, seaborn_preamble
 
 
-cmap = sns.color_palette('tab10')[5:8]
-cmap_dark = sns.color_palette('pastel')[5:8]
-
-
-def plot_panel(var_a, var_b, count1, ax):
+def plot_panel(var_a, var_b, count1, pair_correlation, ax):
+    cmap = sns.color_palette('tab10')[5:8]
+    cmap_dark = sns.color_palette('pastel')[5:8]
+    
     # The constant
     df = pair_correlation[(pair_correlation['kind'] == 'time_averages') & (pair_correlation['variable_a'] == var_a) & (pair_correlation['variable_b'] == var_b)].copy()
 
@@ -52,14 +46,14 @@ def plot_panel(var_a, var_b, count1, ax):
             ax.axhline(np.unique(df[df['dataset'] == hue]['correlation']), ls='--', color=cmap_dark[count], linewidth=3)
     
     
-def plot_main_figure():
+def plot_main_figure(args, pair_correlation):
     seaborn_preamble()
     fig, axes = plt.subplots(2, 2, tight_layout=True, figsize=[7, 7], sharey=True, sharex=True)
     axes = axes.flatten()
     for count1, var_a in enumerate(['fold_growth', 'generationtime', 'length_birth', 'growth_rate']):
         var_b = var_a
         ax = axes[count1]
-        plot_panel(var_a, var_b, count1, ax)
+        plot_panel(var_a, var_b, count1, pair_correlation, ax)
         ax.set_xlabel('')
         ax.set_ylabel(symbols['trace_centered'][var_a], fontsize='xx-large')
 
@@ -80,58 +74,35 @@ def plot_main_figure():
     plt.close()
     
 
-def plot_three_in_one():
-    repeats = []
-    for var_a in phenotypic_variables:
-        for var_b in phenotypic_variables:
-            if var_b not in repeats:
-                
-                seaborn_preamble()
-                fig, ax = plt.subplots(1, 1, tight_layout=True, figsize=[7, 7])
-                
-                plot_panel(var_a, var_b, ax)
-                
-                plt.legend()
-                plt.ylabel('')
-                plt.xlabel('')
-                plt.title('{} and {}'.format(symbols['physical_units'][var_a], symbols['physical_units'][var_b]))
-                if var_a == var_b:
-                    plt.savefig('{}/Diagonal gen-specific correlations/{}'.format(args.figs_location, var_a), dpi=300)
-                else:
-                    plt.savefig('{}/Non-Diagonal gen-specific correlations/{}, {}'.format(args.figs_location, var_a, var_b), dpi=300)
-                # plt.show()
-                plt.close()
-        repeats.append(var_a)
-
-
-parser = argparse.ArgumentParser(description='Dataframes containing: KL divergences, Population physical_units lineages, and the ergodicity breaking parameter for both kinds of lineages.')
-parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data')
-parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe with control added',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/physical_units_with_control.csv')
-parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe with control added',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/time_averages_with_control.csv')
-parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe with control added',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/trace_centered_with_control.csv')
-parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures')
-
-
-args = parser.parse_args()
-
-
-create_folder(args.save_folder)
-create_folder(args.figs_location)
-create_folder(args.figs_location+'/Diagonal gen-specific correlations')
-create_folder(args.figs_location+'/Non-Diagonal gen-specific correlations')
-
-
-# save it to the Data folder
-pair_correlation = pd.read_csv('{}/over_lineages.csv'.format(args.save_folder))
-
-
-plot_main_figure()
-
-exit()
-
-plot_three_in_one()
+# def plot_three_in_one(args):
+#     repeats = []
+#     for var_a in phenotypic_variables:
+#         for var_b in phenotypic_variables:
+#             if var_b not in repeats:
+#
+#                 seaborn_preamble()
+#                 fig, ax = plt.subplots(1, 1, tight_layout=True, figsize=[7, 7])
+#
+#                 plot_panel(var_a, var_b, ax)
+#
+#                 plt.legend()
+#                 plt.ylabel('')
+#                 plt.xlabel('')
+#                 plt.title('{} and {}'.format(symbols['physical_units'][var_a], symbols['physical_units'][var_b]))
+#                 if var_a == var_b:
+#                     plt.savefig('{}/Diagonal gen-specific correlations/{}'.format(args.figs_location, var_a), dpi=300)
+#                 else:
+#                     plt.savefig('{}/Non-Diagonal gen-specific correlations/{}, {}'.format(args.figs_location, var_a, var_b), dpi=300)
+#                 # plt.show()
+#                 plt.close()
+#         repeats.append(var_a)
+        
+        
+def main(args):
+    create_folder(args.figs_location + '/Diagonal gen-specific correlations')
+    create_folder(args.figs_location + '/Non-Diagonal gen-specific correlations')
+    
+    # save it to the Data folder
+    pair_correlation = pd.read_csv('{}/over_lineages.csv'.format(args.save_folder))
+    
+    plot_main_figure(args, pair_correlation)

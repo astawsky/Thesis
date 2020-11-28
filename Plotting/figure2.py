@@ -17,7 +17,7 @@ import argparse
 """ Create the dataframe that contains the regression phenotypic_variables """
 
 
-def slope_comparisons():
+def slope_comparisons(args, variation_of_cumulative_time_averages):
     
     # This is where we will keep the regression phenotypic_variables
     slope_df = pd.DataFrame(columns=['Trace', 'Shuffled', 'Population', 'Trace-Centered'])
@@ -75,7 +75,7 @@ def slope_comparisons():
 """ This creates the big figure 2 from the paper. Includes the individual figures code where  """
 
 
-def variance_timeaverage_per_generation():
+def variance_timeaverage_per_generation(args, variation_of_cumulative_time_averages):
     
     # The cycle phenotypic_variables we will look at
     highlights = ['length_birth', 'growth_rate', 'fold_growth']
@@ -133,7 +133,7 @@ def variance_timeaverage_per_generation():
 """ This creates the rest of the figures left out of fig 2 in the main text to be in the appendix """
 
 
-def variance_timeaverage_per_generation_rest_of_figures():
+def variance_timeaverage_per_generation_rest_of_figures(args, variation_of_cumulative_time_averages):
     
     # The cycle phenotypic_variables we will look at
     highlights = ['generationtime', 'length_final', 'division_ratio', 'added_length']
@@ -189,27 +189,12 @@ def variance_timeaverage_per_generation_rest_of_figures():
     plt.close()
     
 
-parser = argparse.ArgumentParser(description='Plot the dependance of the time-averages on the lineage length.')
-parser.add_argument('-d', '--data_location', metavar='', type=str, help='Where the dataframes are saved.',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data')
-parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures')
-
-
-args = parser.parse_args()
-
-
-create_folder(args.data_location)
-
-
-# import the labeled measured bacteria in physical units
-variation_of_cumulative_time_averages = pd.read_csv('{}/variation_of_cumulative_time_averages.csv'.format(args.data_location))
-
-
-variance_timeaverage_per_generation_rest_of_figures()
-
-
-variance_timeaverage_per_generation()
-
-
-slope_comparisons()
+def main(args):
+    # import the labeled measured bacteria in physical units
+    variation_of_cumulative_time_averages = pd.read_csv('{}/variation_of_cumulative_time_averages.csv'.format(args.save_folder))
+    
+    variance_timeaverage_per_generation_rest_of_figures(args, variation_of_cumulative_time_averages)
+    
+    variance_timeaverage_per_generation(args, variation_of_cumulative_time_averages)
+    
+    slope_comparisons(args, variation_of_cumulative_time_averages)

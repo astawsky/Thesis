@@ -1,18 +1,13 @@
 #!/usr/bin/env bash
 
-import sys
-import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import argparse
-
-sys.path.append(r'/Users/alestawsky/PycharmProjects/Thesis')
-from CustomFuncsAndVars.global_variables import phenotypic_variables, symbols, create_folder
+from CustomFuncsAndVars.global_variables import phenotypic_variables, symbols
 
 
-def put_all_graphs_into_a_big_grid(variables=phenotypic_variables):
+def put_all_graphs_into_a_big_grid(output_df, cmap, args, variables=phenotypic_variables):
     sns.set_context('paper')
     sns.set_style("ticks")
     
@@ -77,41 +72,39 @@ def put_all_graphs_into_a_big_grid(variables=phenotypic_variables):
                 ax.set_yticklabels([])
     
     plt.tight_layout(pad=.5)
-    plt.savefig('{}/{}.png'.format(args.figs_location, args.inter_fig), dpi=300)
+    plt.savefig('{}/{}'.format(args.figs_location, args.inter_fig), dpi=300)
     # plt.show()
     plt.close()
+    
+    
+def main(args):
+    # Import the data
+    output_df = pd.read_csv('{}/{}'.format(args.save_folder, args.inter))
+    
+    # cut it at 10 generations
+    output_df = output_df[output_df['distance'] < 9]
+    
+    cmap = {
+        'physical units': 'blue',
+        'trace centered': 'green'
+    }
+    
+    # plot it
+    put_all_graphs_into_a_big_grid(output_df, cmap, args, variables=phenotypic_variables)
 
 
-parser = argparse.ArgumentParser(description='Dataframes containing: KL divergences, Population physical_units lineages, and the ergodicity breaking parameter for both kinds of lineages.')
-parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data')
-parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe with control added',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/physical_units_with_control.csv')
-parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe with control added',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/time_averages_with_control.csv')
-parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe with control added',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/trace_centered_with_control.csv')
-parser.add_argument('-cd', '--corr_dir', metavar='', type=str, help='Correlation dataframes in Data',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/total_inter_correlations.csv')
-parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures')
-parser.add_argument('-inter_fig', '--inter_fig', metavar='', type=str, help='What the big intergenerational figure name will be called.',
-                    required=False, default='intergenerational_big_figure')
+# parser = argparse.ArgumentParser(description='Dataframes containing: KL divergences, Population physical_units lineages, and the ergodicity breaking parameter for both kinds of lineages.')
+# parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+#                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data')
+# parser.add_argument('-cd', '--corr_dir', metavar='', type=str, help='Correlation dataframes in Data',
+#                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/total_inter_correlations.csv')
+# parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
+#                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures')
+# parser.add_argument('-inter_fig', '--inter_fig', metavar='', type=str, help='What the big intergenerational figure name will be called.',
+#                     required=False, default='intergenerational_big_figure')
+#
+# args = parser.parse_args()
+#
+# create_folder(args.save_folder)
 
-args = parser.parse_args()
 
-create_folder(args.save_folder)
-
-# Import the data
-output_df = pd.read_csv(args.corr_dir)
-
-# cut it at 10 generations
-output_df = output_df[output_df['distance'] < 9]
-
-cmap = {
-    'physical units': 'blue',
-    'trace centered': 'green'
-}
-
-# plot it
-put_all_graphs_into_a_big_grid()

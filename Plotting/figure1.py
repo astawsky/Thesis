@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 
-import sys
-sys.path.append(r'/Users/alestawsky/PycharmProjects/Thesis')
-import os
-from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, symbols, units
+from CustomFuncsAndVars.global_variables import symbols, units
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-import argparse
 
 
 """ This creates the illustration of two lineage distributions vs a gray background Population.  """
@@ -116,81 +112,53 @@ def ergodicity_per_variable(eb_df, ax, symbols):
     ax.set_xlabel('')
     ax.set_ylabel('EB')
     ax.get_legend().remove()
-
-
-parser = argparse.ArgumentParser(description='Dataframes containing: KL divergences, Population physical_units lineages, and the ergodicity breaking parameter for both kinds of lineages.')
-parser.add_argument('-data', '--data', metavar='', type=str, help='Location of the dataframes.',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data')
-parser.add_argument('-kl', '--kl', metavar='', type=str, help='Location of the kl divergence dataframe.',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/kullback_leibler_divergences.csv')
-parser.add_argument('-pu', '--pu', metavar='', type=str, help='Location of the Trace physical unit dataframe.',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/physical_units.csv')
-parser.add_argument('-eb', '--eb', metavar='', type=str, help='Location of the Ergodicity Breaking dataframe.',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/ergodicity_breaking_parameter.csv')
-parser.add_argument('-save', '--save', metavar='', type=str, help='Where to save the figures.',
-                    required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures')
-
-
-args = parser.parse_args()
-
-
-create_folder(args.save)
-
-
-# import the labeled measured bacteria in physical units
-info = pd.read_csv(args.pu)
-
-
-# import the data
-kl_df = pd.read_csv(args.kl)
-eb_df = pd.read_csv(args.eb)
-
-
-# set a style on seaborn module
-sns.set_context('paper')
-sns.set_style("ticks", {'axes.grid': True})
-
-
-# create the figure and construct the layout of the figure
-fig = plt.figure(constrained_layout=True, frameon=False, figsize=[7, 7])  # , figsize=[7.5*2, 2.44*2], tight_layout=True
-gs = fig.add_gridspec(2, 6)
-ax1 = fig.add_subplot(gs[0, 0:2])
-ax2 = fig.add_subplot(gs[0, 2:4])
-ax3 = fig.add_subplot(gs[0, 4:6])
-ax4 = fig.add_subplot(gs[1, 0:3])
-ax5 = fig.add_subplot(gs[1, 3:6])
-
-
-# axis 1: function for the first axes is to delete the frame and ticks of the graph for the illustration
-ax1.set_title('A', x=-.23, fontsize='xx-large')
-ax1.set_frame_on(False)
-ax1.set_xticks([])
-ax1.set_yticks([])
-
-
-# axis 2
-kldiv_illustration(info, ['growth_rate'], symbols['physical_units'], units, kl_df, 'Trace', ax2)
-
-
-# axis 3
-kldiv_illustration(info, ['fold_growth'], symbols['physical_units'], units, kl_df, 'Trace', ax3)
-
-
-# axis 4
-kl_div_per_variable(kl_df, ax4, symbols['physical_units'])
-
-
-# axis 5
-ergodicity_per_variable(eb_df, ax5, symbols['physical_units'])
-
-
-# Let's put the titles
-ax2.set_title('B', x=-.15, fontsize='xx-large')
-ax4.set_title('C', x=-.15, fontsize='xx-large')
-ax5.set_title('D', x=-.15, fontsize='xx-large')
-
-
-# save the figure
-plt.savefig('{}/Figure 1.png'.format(args.save), dpi=300)
-# plt.show()
-plt.close()
+    
+    
+def main(args):
+    # import the labeled measured bacteria in physical units
+    info = pd.read_csv('{}/{}'.format(args.save_folder, args.pu))
+    
+    # import the data
+    kl_df = pd.read_csv('{}/{}'.format(args.save_folder, args.kld))
+    eb_df = pd.read_csv('{}/{}'.format(args.save_folder, args.ebp))
+    
+    # set a style on seaborn module
+    sns.set_context('paper')
+    sns.set_style("ticks", {'axes.grid': True})
+    
+    # create the figure and construct the layout of the figure
+    fig = plt.figure(constrained_layout=True, frameon=False, figsize=[7, 7])  # , figsize=[7.5*2, 2.44*2], tight_layout=True
+    gs = fig.add_gridspec(2, 6)
+    ax1 = fig.add_subplot(gs[0, 0:2])
+    ax2 = fig.add_subplot(gs[0, 2:4])
+    ax3 = fig.add_subplot(gs[0, 4:6])
+    ax4 = fig.add_subplot(gs[1, 0:3])
+    ax5 = fig.add_subplot(gs[1, 3:6])
+    
+    # axis 1: function for the first axes is to delete the frame and ticks of the graph for the illustration
+    ax1.set_title('A', x=-.23, fontsize='xx-large')
+    ax1.set_frame_on(False)
+    ax1.set_xticks([])
+    ax1.set_yticks([])
+    
+    # axis 2
+    kldiv_illustration(info, ['growth_rate'], symbols['physical_units'], units, kl_df, 'Trace', ax2)
+    
+    # axis 3
+    kldiv_illustration(info, ['fold_growth'], symbols['physical_units'], units, kl_df, 'Trace', ax3)
+    
+    # axis 4
+    kl_div_per_variable(kl_df, ax4, symbols['physical_units'])
+    
+    # axis 5
+    ergodicity_per_variable(eb_df, ax5, symbols['physical_units'])
+    
+    # Let's put the titles
+    ax2.set_title('B', x=-.15, fontsize='xx-large')
+    ax4.set_title('C', x=-.15, fontsize='xx-large')
+    ax5.set_title('D', x=-.15, fontsize='xx-large')
+    
+    # save the figure
+    plt.savefig('{}/Figure 1.png'.format(args.figs_location), dpi=300)
+    # plt.show()
+    plt.close()
