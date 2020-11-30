@@ -346,7 +346,7 @@ def create_information_dataframe(**kwargs):
         traj_a, traj_b = minusing(traj_a, traj_b, kwargs['kind'], phenotypic_variables)
         
         # save these two trajectories to the information dataframe
-        info = info.append(traj_a.append(traj_b, ignore_index=True), ignore_index=True).reset_index(drop=True)
+        info = info.append(traj_a[info.columns].append(traj_b[info.columns], ignore_index=True), ignore_index=True).reset_index(drop=True)
     
     return info
 
