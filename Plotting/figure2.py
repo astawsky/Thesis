@@ -17,7 +17,7 @@ import argparse
 """ Create the dataframe that contains the regression phenotypic_variables """
 
 
-def slope_comparisons(args, variation_of_cumulative_time_averages):
+def slope_comparisons(args, variation_of_expanding_mean):
     
     # This is where we will keep the regression phenotypic_variables
     slope_df = pd.DataFrame(columns=['Trace', 'Shuffled', 'Population', 'Trace-Centered'])
@@ -32,7 +32,7 @@ def slope_comparisons(args, variation_of_cumulative_time_averages):
         for label, marker in zip(slope_df.columns, ['o', 'x', '^', '+']):
             
             # the variance and generations of the TAs of this type of lineage
-            dist = variation_of_cumulative_time_averages[(variation_of_cumulative_time_averages['param'] == param) & (variation_of_cumulative_time_averages['label'] == label)].sort_values('generation')
+            dist = variation_of_expanding_mean[(variation_of_expanding_mean['param'] == param) & (variation_of_expanding_mean['label'] == label)].sort_values('generation')
             
             # So each kind of lineage starts at the 1 and keeps their slope
             dist['var'] = dist['var'] / dist[dist['generation'] == 1]['var'].values
@@ -75,7 +75,7 @@ def slope_comparisons(args, variation_of_cumulative_time_averages):
 """ This creates the big figure 2 from the paper. Includes the individual figures code where  """
 
 
-def variance_timeaverage_per_generation(args, variation_of_cumulative_time_averages):
+def variance_timeaverage_per_generation(args, variation_of_expanding_mean):
     
     # The cycle phenotypic_variables we will look at
     highlights = ['length_birth', 'growth_rate', 'generationtime']
@@ -95,7 +95,7 @@ def variance_timeaverage_per_generation(args, variation_of_cumulative_time_avera
         for label, marker in zip(['Trace', 'Population', 'Trace-Centered', 'Shuffled'], ['o', 'x', '^', '+']):
             
             # the variance and generations of the TAs of this type of lineage
-            dist = variation_of_cumulative_time_averages[(variation_of_cumulative_time_averages['param'] == param) & (variation_of_cumulative_time_averages['label'] == label)].sort_values('generation')
+            dist = variation_of_expanding_mean[(variation_of_expanding_mean['param'] == param) & (variation_of_expanding_mean['label'] == label)].sort_values('generation')
             
             # So each kind of lineage starts at the 1 and keeps their slope
             dist['var'] = dist['var'] / dist[dist['generation'] == 1]['var'].values
@@ -133,7 +133,7 @@ def variance_timeaverage_per_generation(args, variation_of_cumulative_time_avera
 """ This creates the rest of the figures left out of fig 2 in the main text to be in the appendix """
 
 
-def variance_timeaverage_per_generation_rest_of_figures(args, variation_of_cumulative_time_averages):
+def variance_timeaverage_per_generation_rest_of_figures(args, variation_of_expanding_mean):
     
     # The cycle phenotypic_variables we will look at
     highlights = ['fold_growth', 'length_final', 'division_ratio', 'added_length']
@@ -154,7 +154,7 @@ def variance_timeaverage_per_generation_rest_of_figures(args, variation_of_cumul
         for label, marker in zip(['Trace', 'Population', 'Trace-Centered', 'Shuffled'], ['o', 'x', '^', '+']):
             
             # the variance and generations of the TAs of this type of lineage
-            dist = variation_of_cumulative_time_averages[(variation_of_cumulative_time_averages['param'] == param) & (variation_of_cumulative_time_averages['label'] == label)].sort_values('generation')
+            dist = variation_of_expanding_mean[(variation_of_expanding_mean['param'] == param) & (variation_of_expanding_mean['label'] == label)].sort_values('generation')
             
             # So each kind of lineage starts at the 1 and keeps their slope
             dist['var'] = dist['var'] / dist[dist['generation'] == 1]['var'].values
@@ -191,10 +191,10 @@ def variance_timeaverage_per_generation_rest_of_figures(args, variation_of_cumul
 
 def main(args):
     # import the labeled measured bacteria in physical units
-    variation_of_cumulative_time_averages = pd.read_csv('{}/variation_of_cumulative_time_averages.csv'.format(args.save_folder))
+    variation_of_expanding_mean = pd.read_csv('{}/variation_of_expanding_mean.csv'.format(args.save_folder))
     
-    variance_timeaverage_per_generation_rest_of_figures(args, variation_of_cumulative_time_averages)
+    variance_timeaverage_per_generation_rest_of_figures(args, variation_of_expanding_mean)
     
-    variance_timeaverage_per_generation(args, variation_of_cumulative_time_averages)
+    variance_timeaverage_per_generation(args, variation_of_expanding_mean)
     
-    slope_comparisons(args, variation_of_cumulative_time_averages)
+    slope_comparisons(args, variation_of_expanding_mean)

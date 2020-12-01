@@ -107,18 +107,17 @@ parser.add_argument('-kld', '--kld', metavar='', type=str,
 parser.add_argument('-shuffled', '--shuffled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the generation-shuffled lineages.',
                     required=False, default='shuffled_generations.csv')
 parser.add_argument('-cta', '--cta', metavar='', type=str,
-                    help='The filename of the dataframe that contains the cumulative time-averages of each kind of lineage (Trace, Population, Shuffled or Trace-centered).',
-                    required=False, default='cumulative_time_averages.csv')
+                    help='The filename of the dataframe that contains the expanding time-averages of each kind of lineage (Trace, Population, Shuffled or Trace-centered).',
+                    required=False, default='expanding_mean.csv')
 parser.add_argument('-vcta', '--vcta', metavar='', type=str,
-                    help='The filename of the dataframe that contains the variation of the cumulative time-averages of each kind of lineage (Trace, Population, Shuffled or Trace-centered).',
-                    required=False, default='variation_of_cumulative_time_averages.csv')
+                    help='The filename of the dataframe that contains the variation of the expanding time-averages of each kind of lineage (Trace, Population, Shuffled or Trace-centered).',
+                    required=False, default='variation_of_expanding_mean.csv')
 parser.add_argument('-cum_sum', '--cum_sum', metavar='', type=str,
                     help='The filename of the dataframe that contains the cumulative sums (random walks) of each kind of lineage (Trace, Population, Shuffled or Trace-centered).',
-                    required=False, default='cumulative_time_averages.csv')
+                    required=False, default='cumulative_sum.csv')
 parser.add_argument('-v_cum_sum', '--v_cum_sum', metavar='', type=str,
                     help='The filename of the dataframe that contains the variation of the cumulative sums (random walks) of each kind of lineage (Trace, Population, Shuffled or Trace-centered).',
-                    required=False, default='variation_of_cumulative_time_averages.csv')
-
+                    required=False, default='variation_of_cumulative_sum.csv')
 parser.add_argument('-pair_kld', '--pair_kld', metavar='', type=str, help='The filename of the dataframe that contains the kullback-leibler divergences between distributions of all pair lineages.',
                     required=False, default='kullback_leibler_divergences_for_pair_lineages.csv')
 parser.add_argument('-lat', '--lin_and_time', metavar='', type=str, help='The filename of the dataframe that contains the model between distributions of all pair lineages over lineages and time.',

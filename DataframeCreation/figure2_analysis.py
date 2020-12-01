@@ -36,7 +36,6 @@ def expanding_mean_cumsum_and_variances(df, phenotypic_variables, expanding_mean
     
     # Calculate the cv and var over all lineages in the dataset
     for param in phenotypic_variables:
-        print(param)
         for generation in np.arange(1, 51):
             time_averages = expanding_mean[(expanding_mean['label'] == label) & (expanding_mean['generation'] == generation)][param]
             different_walks = cum_sum_df[(cum_sum_df['label'] == label) & (cum_sum_df['generation'] == generation)][param]
@@ -98,35 +97,10 @@ def main(args):
     
     # Calculate the cv and TA per lineage length
     for kind, df in zip(['Shuffled', 'Trace', 'Population', 'Trace-Centered'], [shuffled_generations, physical_units, population_sampled, trace_centered]):
+        print(kind)
         expanding_mean, variance_of_expanding_mean, cum_sum_df, variance_of_cum_sum_df = expanding_mean_cumsum_and_variances(df, phenotypic_variables, expanding_mean, variance_of_expanding_mean,
                                                                                                                              cum_sum_df,
                                                                                                                              variance_of_cum_sum_df, kind)
-        
-    print(variance_of_cum_sum_df)
-    print('-'*100)
-    print(cum_sum_df)
-    print('-'*100)
-    print('-'*100)
-    print(variance_of_cum_sum_df.isnull().values.any())
-    print('-'*100)
-    print(cum_sum_df.isnull().values.any())
-    
-    # print('Generation shuffled')
-    # expanding_mean, variance_of_expanding_mean, cum_sum_df, variance_of_cum_sum_df = expanding_mean_cumsum_and_variances(shuffled_generations, phenotypic_variables, expanding_mean, variance_of_expanding_mean, cum_sum_df,
-    #                                                                                  variance_of_cum_sum_df, 'Shuffled')
-    # print('-' * 50)
-    # print('Trace')
-    # expanding_mean, variance_of_expanding_mean, cum_sum_df, variance_of_cum_sum_df = expanding_mean_cumsum_and_variances(physical_units, phenotypic_variables, expanding_mean, variance_of_expanding_mean, cum_sum_df,
-    #                                                                                  variance_of_cum_sum_df, 'Trace')
-    # print('-' * 50)
-    # print('Population')
-    # expanding_mean, variance_of_expanding_mean, cum_sum_df, variance_of_cum_sum_df = expanding_mean_cumsum_and_variances(population_sampled, phenotypic_variables, expanding_mean, variance_of_expanding_mean, cum_sum_df,
-    #                                                                                  variance_of_cum_sum_df, 'Population')
-    # print('-' * 50)
-    # print('Trace-Centered')
-    # expanding_mean, variance_of_expanding_mean, cum_sum_df, variance_of_cum_sum_df = expanding_mean_cumsum_and_variances(trace_centered, phenotypic_variables, expanding_mean, variance_of_expanding_mean, cum_sum_df,
-    #                                                                                  variance_of_cum_sum_df, 'Trace-Centered')
-    #
 
     # Save the csv file
     expanding_mean.to_csv('{}/{}'.format(args.save_folder, args.cta), index=False)
