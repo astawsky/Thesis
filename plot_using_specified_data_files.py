@@ -59,9 +59,9 @@ create_folder(args.figs_location)
 # growth_mechanism(args)
 #
 # figure1(args)
-#
+
 figure2(args)
-#
+
 # figure3(args)
 
 print("--- %s seconds ---" % (time.time() - start_time))
