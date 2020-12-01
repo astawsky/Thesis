@@ -11,7 +11,7 @@ def main(args):
     
     def kl_div_plot(ax):
         # Here we start plotting both KL-Divergences, The good part with this is that it takes into consideration the standard deviation as well
-        # sns.barplot(data=kld_df, x='combo', y='kldiv 1', hue='dataset', hue_order=['S', 'NC', 'C'], order=[r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'], ci=33,
+        # sns.barplot(data=kld_df, x='combo', y='kldiv 1', hue='dataset', hue_order=['S', 'NL', 'C'], order=[r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'], ci=33,
         #             ax=ax, edgecolor='black')
         sns.boxplot(data=kld_df.replace(symbols['physical_units']), x='variable', y='value', hue='dataset', hue_order=datasets, order=hierarchy, showfliers=False, ax=ax, palette=cmap)
         ax.legend()
@@ -109,11 +109,11 @@ def main(args):
     # plot the figures
     kl_div_plot(axes[0])
     diagonal_corrs('physical_units', axes[1])
-    axes[1].set_ylabel(r'$\rho(\cdot^{A}, \cdot^{B})$')
+    axes[1].set_ylabel(r'$\Gamma_{AB}$')
     diagonal_corrs('trace_centered', axes[2])
-    axes[2].set_ylabel(r'$cov(\overline{\cdot} {}^{A}, \overline{\cdot} {}^{B})$ / $\sigma^2$')
+    axes[2].set_ylabel(r'$\Gamma_{AB}$')
     diagonal_corrs('time_averages', axes[3])
-    axes[3].set_ylabel(r'$cov(\delta \cdot {}^{A}, \delta \cdot {}^{B})$ / $\sigma^2$')
+    axes[3].set_ylabel(r'$\Gamma_{AB}$')
     
     axes[0].set_title('A', x=-.15, fontsize='xx-large')
     axes[1].set_title('B', x=-.15, fontsize='xx-large')

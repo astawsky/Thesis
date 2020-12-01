@@ -110,7 +110,7 @@ def ergodicity_per_variable(eb_df, ax, symbols):
     # sns.boxplot(x='variable', y='value', data=eb_df, showfliers=False, hue='kind', order=[r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'], ax=ax)
     ax.yaxis.grid(True)
     ax.set_xlabel('')
-    ax.set_ylabel('EB')
+    ax.set_ylabel(r'$\Gamma$')
     ax.get_legend().remove()
     
     

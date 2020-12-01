@@ -352,8 +352,8 @@ def create_information_dataframe(**kwargs):
 
 
 def main(args):
-    #sp_infiles=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/SP',
-    # nc_infiles=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/NC',
+    #sp_infiles=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/SL',
+    # nc_infiles=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/NL',
     # save_folder=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data'
     
     # visually_check_divisions()
@@ -366,7 +366,7 @@ def main(args):
         
         info_df = pd.DataFrame(columns=phenotypic_variables + ['dataset', 'trap_ID', 'trace', 'generation'])
         
-        # For every type of lineage we want to look at. These are all the options SP and NC, not CTRL, hence [:-1]
+        # For every type of lineage we want to look at. These are all the options SL and NL, not CTRL, hence [:-1]
         for dataset, infiles in zip(datasets[:-1], [glob.glob(args.sp_infiles + '/*.xls'), glob.glob(args.nc_infiles + '/*.xls')]):
             info_df = create_information_dataframe(infiles=infiles, discretize_by='length', kind=k, start_index=None, end_index=None, dataset=dataset, info_df=info_df)
         
@@ -387,10 +387,10 @@ if __name__ == '__main__':
     first_time = time.time()
     
     parser = argparse.ArgumentParser(description='Process Lineage Data.')
-    parser.add_argument('-SP', '--sp_infiles', metavar='', type=str,
-                        help='Location of Sister Pair Raw Data', required=False, default=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/SP')
-    parser.add_argument('-NC', '--nc_infiles', metavar='', type=str,
-                        help='Location of Neighboring Cell Pair Raw Data', required=False, default=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/NC')
+    parser.add_argument('-SL', '--sp_infiles', metavar='', type=str,
+                        help='Location of Sister Pair Raw Data', required=False, default=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/SL')
+    parser.add_argument('-NL', '--nc_infiles', metavar='', type=str,
+                        help='Location of Neighboring Cell Pair Raw Data', required=False, default=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/NL')
     parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
                         required=False, default=os.path.dirname(os.path.abspath(__file__)) + '/Data')
     parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',

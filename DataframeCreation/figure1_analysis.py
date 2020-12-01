@@ -54,7 +54,7 @@ def get_time_averages_df(info, phenotypic_variables):
     means_df = pd.DataFrame(columns=['dataset', 'trap_ID', 'trace', 'max_gen', 'generation'] + phenotypic_variables)
     
     # specify a lineage
-    for dataset in ['SP', 'NC']:
+    for dataset in ['SL', 'NL']:
         for trap_id in np.unique(info[(info['dataset'] == dataset)]['trap_ID']):
             for trace in ['A', 'B']:
                 

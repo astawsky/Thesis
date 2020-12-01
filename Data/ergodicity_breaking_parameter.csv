@@ -6,10 +6,10 @@ generationtime,Trace,0.22496590381700535
 length_birth,Trace,0.285645532421253
 length_final,Trace,0.2999959050743631
 growth_rate,Trace,0.3955575481170585
-fold_growth,Population,0.039528026485215334
-division_ratio,Population,0.04227187770987496
-added_length,Population,0.04093423581295041
-generationtime,Population,0.03874709420222567
-length_birth,Population,0.0367145917859683
-length_final,Population,0.03978901721795287
-growth_rate,Population,0.04071246758055618
+fold_growth,Population,0.03601083917572298
+division_ratio,Population,0.03729158004462732
+added_length,Population,0.03564179117379823
+generationtime,Population,0.03820450837658954
+length_birth,Population,0.04113879560323674
+length_final,Population,0.03847011574527802
+growth_rate,Population,0.035982062354974635

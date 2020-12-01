@@ -70,7 +70,7 @@ def shuffle_info(info):
     import pandas as pd
     import numpy as np
     
-    # Give it a name, contains S, NC
+    # Give it a name, contains S, NL
     new_info = pd.DataFrame(columns=info.columns)
     
     # what is the trace length of each trace? This is the only thing that stays the same
@@ -175,7 +175,7 @@ def cut_uneven_pairs(info):
 #         'time-averages': dict(
 #             zip(phenotypic_variables, [r'$\overline{\phi}$', r'$\overline{f}$', r'$\overline{\Delta}$', r'$\overline{\tau}$', r'$\overline{x_0}$', r'$\overline{x_\tau}$', r'$\overline{\alpha}$']))
 #     }
-#     datasets = ['SP', 'NC', 'CTRL']
+#     datasets = ['SL', 'NL', 'CTRL']
 
 
 phenotypic_variables = ['fold_growth', 'division_ratio', 'added_length', 'generationtime', 'length_birth', 'length_final', 'growth_rate']
@@ -190,7 +190,7 @@ symbols = {
     'unique_ta': dict(
         zip(phenotypic_variables, [r'$\overline{\phi}$', r'$\overline{f}$', r'$\overline{\Delta}$', r'$\overline{\tau}$', r'$\overline{x_0}$', r'$\overline{x_\tau}$', r'$\overline{\alpha}$'])),
 }
-datasets = ['SP', 'NC', 'CTRL']
+datasets = ['SL', 'NL', 'CTRL']
 units = dict(zip(phenotypic_variables, [r'', r'', r'$\mu m$', r'$(hr)$', r'$(\mu m)$', r'$(\mu m)$', r'$(\frac{1}{hr})$']))
 hierarchy = [r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$']
 # This is a manual thing to make the distribution look better without the outliers

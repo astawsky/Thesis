@@ -78,7 +78,7 @@ def slope_comparisons(args, variation_of_cumulative_time_averages):
 def variance_timeaverage_per_generation(args, variation_of_cumulative_time_averages):
     
     # The cycle phenotypic_variables we will look at
-    highlights = ['length_birth', 'growth_rate', 'fold_growth']
+    highlights = ['length_birth', 'growth_rate', 'generationtime']
     
     # set a style on seaborn module
     seaborn_preamble()
@@ -100,12 +100,12 @@ def variance_timeaverage_per_generation(args, variation_of_cumulative_time_avera
             # So each kind of lineage starts at the 1 and keeps their slope
             dist['var'] = dist['var'] / dist[dist['generation'] == 1]['var'].values
             
-            # We get the best fit line
-            lin_reg = LinearRegression(fit_intercept=True).fit(np.array(np.log(dist['generation'])).reshape(-1, 1), np.array(np.log(dist['var'])).reshape(-1, 1))
+            # # We get the best fit line
+            # lin_reg = LinearRegression(fit_intercept=True).fit(np.array(np.log(dist['generation'])).reshape(-1, 1), np.array(np.log(dist['var'])).reshape(-1, 1))
+            # ax.plot(dist['generation'], np.exp(lin_reg.predict(np.array(np.log(dist['generation'])).reshape(-1, 1)).flatten()), ls='--', label='')
             
             # plot the plots
             ax.scatter(dist['generation'], dist['var'], marker=marker, alpha=.5)
-            ax.plot(dist['generation'], np.exp(lin_reg.predict(np.array(np.log(dist['generation'])).reshape(-1, 1)).flatten()), ls='--', label='')
             
             # reg_order = PowerRegression(dist['generation'], dist['var'], bs=500)
             # ax.scatter(dist['generation'], dist['var'], label=reg_order.param_labels['a'], marker=marker, alpha=.5)
@@ -136,7 +136,7 @@ def variance_timeaverage_per_generation(args, variation_of_cumulative_time_avera
 def variance_timeaverage_per_generation_rest_of_figures(args, variation_of_cumulative_time_averages):
     
     # The cycle phenotypic_variables we will look at
-    highlights = ['generationtime', 'length_final', 'division_ratio', 'added_length']
+    highlights = ['fold_growth', 'length_final', 'division_ratio', 'added_length']
     
     # set a style on seaborn module
     seaborn_preamble()
@@ -159,12 +159,12 @@ def variance_timeaverage_per_generation_rest_of_figures(args, variation_of_cumul
             # So each kind of lineage starts at the 1 and keeps their slope
             dist['var'] = dist['var'] / dist[dist['generation'] == 1]['var'].values
 
-            # We get the best fit line
-            lin_reg = LinearRegression(fit_intercept=True).fit(np.array(np.log(dist['generation'])).reshape(-1, 1), np.array(np.log(dist['var'])).reshape(-1, 1))
+            # # We get the best fit line
+            # lin_reg = LinearRegression(fit_intercept=True).fit(np.array(np.log(dist['generation'])).reshape(-1, 1), np.array(np.log(dist['var'])).reshape(-1, 1))
+            # ax.plot(dist['generation'], np.exp(lin_reg.predict(np.array(np.log(dist['generation'])).reshape(-1, 1)).flatten()), ls='--', label='')
             
             # plot the plots
             ax.scatter(dist['generation'], dist['var'], marker=marker, alpha=.5)
-            ax.plot(dist['generation'], np.exp(lin_reg.predict(np.array(np.log(dist['generation'])).reshape(-1, 1)).flatten()), ls='--', label='')
             
             # reg_order = PowerRegression(dist['generation'], dist['var'], bs=500)
             # ax.scatter(dist['generation'], dist['var'], label=reg_order.param_labels['a'], marker=marker, alpha=.5)

@@ -17,10 +17,10 @@ first_time = time.time()
 start_time = first_time
 
 parser = argparse.ArgumentParser(description='Process Lineage Data.')
-parser.add_argument('-SP', '--sp_infiles', metavar='', type=str,
-                    help='Location of Sister Pair Raw Data', required=False, default=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/SP')
-parser.add_argument('-NC', '--nc_infiles', metavar='', type=str,
-                    help='Location of Neighboring Cell Pair Raw Data', required=False, default=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/NC')
+parser.add_argument('-SL', '--sp_infiles', metavar='', type=str,
+                    help='Location of Sister Pair Raw Data', required=False, default=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/SL')
+parser.add_argument('-NL', '--nc_infiles', metavar='', type=str,
+                    help='Location of Neighboring Cell Pair Raw Data', required=False, default=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/NL')
 parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
                     required=False, default=os.path.dirname(os.path.abspath(__file__)) + '/Data')
 parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',

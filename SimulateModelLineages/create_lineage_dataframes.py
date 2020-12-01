@@ -11,6 +11,8 @@ import argparse
 import os
 import time
 from itertools import combinations
+# import sys
+# sys.setrecursionlimit(2000)
 pd.options.mode.chained_assignment = None  # default='warn', FALSE POSITIVE WARNING
 
 first_time = time.time()
@@ -33,23 +35,66 @@ def conditional_normal_parameters(a, mean_1, mean_2, sigma_11, sigma_22, sigma_1
     else:
         inverse_matrix = pd.DataFrame(np.linalg.pinv(sigma_22.values), sigma_22.columns, sigma_22.index)
     
-    if (len(a) == 1) and (len(sigma_22) == 1):
-        
+    # print(a, mean_1, mean_2, sigma_11, sigma_22, sigma_12, sep='\n'*3)
+
+    # exit()
+
+    if (len(a) == 1) and (len(mean_1) == 1):
+    
         new_mean = mean_1.values[0] + sigma_12.values[0][0] * inverse_matrix * (a.values[0] - mean_2.values[0])
-        
+    
         new_cov = sigma_11.values[0][0] - sigma_12.values[0][0] * inverse_matrix * sigma_21.values[0][0]
+    
+        if len(sigma_11) == 1:
+            freshly_sampled = np.random.normal(new_mean, np.sqrt(new_cov), 1)
+        else:
+            freshly_sampled = np.random.multivariate_normal(new_mean, new_cov, 1)
+            
+    elif (len(a) == 1) and (len(mean_1) != 1):
         
-        freshly_sampled = np.random.normal(new_mean, np.sqrt(new_cov), 1)
+        new_mean = mean_1.values + (sigma_12 * inverse_matrix * (a - mean_2)).values.flatten()
+    
+        new_cov = sigma_11 - sigma_12.dot(inverse_matrix * sigma_21)
+    
+        if len(sigma_11) == 1:
+            freshly_sampled = np.random.normal(new_mean, np.sqrt(new_cov), 1)
+        else:
+            freshly_sampled = np.random.multivariate_normal(new_mean, new_cov, 1)[0]
+            
     else:
-        
+    
         new_mean = mean_1 + sigma_12 @ inverse_matrix @ (a - mean_2)  # np.linalg.inv(pd.DataFrame(np.linalg.pinv(sigma_22.values), sigma_22.columns, sigma_22.index))
-        
-        # print(new_mean)
-        
+    
         new_cov = sigma_11 - sigma_12 @ inverse_matrix @ sigma_21
-        # print(new_cov)
-        
-        freshly_sampled = np.random.multivariate_normal(new_mean, new_cov, 1)[0]
+    
+        if len(sigma_11) == 1:
+            freshly_sampled = np.random.normal(new_mean, np.sqrt(new_cov), 1)
+        else:
+            freshly_sampled = np.random.multivariate_normal(new_mean, new_cov, 1)[0]
+    
+    # if (len(a) == 1) and (len(sigma_22) == 1):
+    #
+    #     new_mean = mean_1.values[0] + sigma_12.values[0][0] * inverse_matrix * (a.values[0] - mean_2.values[0])
+    #
+    #     new_cov = sigma_11.values[0][0] - sigma_12.values[0][0] * inverse_matrix * sigma_21.values[0][0]
+    #
+    #     if len(sigma_11) == 1:
+    #         freshly_sampled = np.random.normal(new_mean, np.sqrt(new_cov), 1)
+    #     else:
+    #         print(new_mean)
+    #         print('\n')
+    #         print(new_cov)
+    #         freshly_sampled = np.random.multivariate_normal(new_mean, new_cov, 1)
+    # else:
+    #
+    #     new_mean = mean_1 + sigma_12 @ inverse_matrix @ (a - mean_2)  # np.linalg.inv(pd.DataFrame(np.linalg.pinv(sigma_22.values), sigma_22.columns, sigma_22.index))
+    #
+    #     new_cov = sigma_11 - sigma_12 @ inverse_matrix @ sigma_21
+    #
+    #     if len(sigma_11) == 1:
+    #         freshly_sampled = np.random.normal(new_mean, np.sqrt(new_cov), 1)
+    #     else:
+    #         freshly_sampled = np.random.multivariate_normal(new_mean, new_cov, 1)
     
     return freshly_sampled
 
@@ -150,13 +195,12 @@ def based_on_target(targets, dep, pu_lineage, sg_cov, inter_covariance):
             to_add['fold_growth'].append(float(gt * to_add['growth_rate'][-1]))
         else:  # meaning we have both generationtime and growth rate
             dr = np.random.normal(pu_lineage['division_ratio'].mean(), pu_lineage['division_ratio'].std(), 1)[0]
-            lb = sampled_lineage[sampled_lineage['generation'] == gen - 1]['division_ratio'] * sampled_lineage[sampled_lineage['generation'] == gen - 1]['length_final']
-            to_add['growth_rate'].append(to_add['generationtime'][-1])
+            lb = float(sampled_lineage[sampled_lineage['generation'] == gen - 1]['division_ratio'] * sampled_lineage[sampled_lineage['generation'] == gen - 1]['length_final'])
             to_add['division_ratio'].append(dr)
             # We get this from the mapping
             to_add['length_birth'].append(lb)
-            to_add['length_final'].append(lb * np.exp(to_add['generationtime'][-1] * to_add['growth_rate'][-1]))
-            to_add['added_length'].append(to_add['length_final'][-1] - to_add['length_birth'][-1])
+            to_add['length_final'].append(float(lb * np.exp(to_add['generationtime'][-1] * to_add['growth_rate'][-1])))
+            to_add['added_length'].append(float(to_add['length_final'][-1] - to_add['length_birth'][-1]))
             to_add['fold_growth'].append(to_add['generationtime'][-1] * to_add['growth_rate'][-1])
         
         # The categorical variables
@@ -214,6 +258,10 @@ def main(args):
     #         print(filename)
     #
     # exit()
+
+    # print(len(physical_units[(physical_units['dataset'] == 'SL') & (physical_units['trap_ID'] == 22) & (physical_units['trace'] == 'A')]))
+    # print(len(physical_units[(physical_units['dataset'] == 'SL') & (physical_units['trap_ID'] == 22) & (physical_units['trace'] == 'B')]))
+    # exit()
     
     for targets in [['generationtime', 'growth_rate']]: # ['generationtime'], ['growth_rate'],
         for dep in actual_dependencies:
@@ -232,6 +280,7 @@ def main(args):
             for dataset in np.unique(physical_units['dataset']):
                 print(dataset)
                 for trap_id in np.unique(physical_units[physical_units['dataset'] == dataset]['trap_ID']):
+                    # print(trap_id)
                     for trace in ['A', 'B']:
                         pu_lineage = physical_units[(physical_units['dataset'] == dataset) & (physical_units['trap_ID'] == trap_id) & (physical_units['trace'] == trace)].copy()
                         
@@ -239,13 +288,12 @@ def main(args):
                         
                         to_output_physical_units = to_output_physical_units.append(sampled_lineages, ignore_index=True)
                         
-                        # Turn them into trace centered dataframes
-                        sampled_lineages[phenotypic_variables] = sampled_lineages[phenotypic_variables] - sampled_lineages[phenotypic_variables].mean()
+                        # # Turn them into trace centered dataframes
+                        # sampled_lineages[phenotypic_variables] = sampled_lineages[phenotypic_variables] - np.mean(sampled_lineages[phenotypic_variables])
                         
-                        to_output_trace_centered = to_output_trace_centered.append(sampled_lineages, ignore_index=True)
-            
+                        # to_output_trace_centered = to_output_trace_centered.append(sampled_lineages, ignore_index=True)
             to_output_physical_units.to_csv('{}/{}/{} pu.csv'.format(args.save_folder, args.models_save, filename), index=False)
-            to_output_trace_centered.to_csv('{}/{}/{} tc.csv'.format(args.save_folder, args.models_save, filename), index=False)
+            # to_output_trace_centered.to_csv('{}/{}/{} tc.csv'.format(args.save_folder, args.models_save, filename), index=False)
         exit()
 
 

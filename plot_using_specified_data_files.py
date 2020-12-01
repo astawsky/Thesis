@@ -50,18 +50,18 @@ args = parser.parse_args()
 create_folder(args.save_folder)
 create_folder(args.figs_location)
 
-inter_fig(args)
-
-pair_gen_spec(args)
-
-single_cell_correlations(args)
-
-growth_mechanism(args)
-
-figure1(args)
-
+# inter_fig(args)
+#
+# pair_gen_spec(args)
+#
+# single_cell_correlations(args)
+#
+# growth_mechanism(args)
+#
+# figure1(args)
+#
 figure2(args)
-
-figure3(args)
+#
+# figure3(args)
 
 print("--- %s seconds ---" % (time.time() - start_time))
