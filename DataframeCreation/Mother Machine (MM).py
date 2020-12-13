@@ -214,6 +214,7 @@ def main(args):
     #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_09252019_nd041xy06ch01.csv'
     # ]
 
+
     extra_column = [
         '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos17-1.txt',
         
