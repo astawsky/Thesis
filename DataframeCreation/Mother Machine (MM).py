@@ -22,6 +22,9 @@ def minusing(info, parameters):
     return tc
 
 
+""" Recognizes where division events occur """
+
+
 def get_division_indices(raw_trace):
     # From the raw data, we see where the difference between two values of length
     # falls drastically, suggesting a division has occurred.
@@ -227,7 +230,7 @@ def main(args):
         # creates a dataframe from the .txt or .csv file
         if args.data_origin == 'MG1655_inLB_LongTraces':
             if filename.split('/')[-1] == 'pos4-4.txt':
-                print('HERE')
+                print('In this particular case the lineage divides after the first time-point and it has an extra column.')
                 # This is because in this particular case the lineage divides after the first time-point and it has an extra column
                 raw_lineage = pd.read_csv(filename, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']].reset_index(
                     drop=True)
@@ -279,18 +282,18 @@ def main(args):
         # Figure out the indices for the division events
         start_indices, end_indices = get_division_indices(raw_lineage['length'].values)
         
-        if (args.data_origin == 'MG1655_inLB_LongTraces') & (filename == args.raw_data + '/pos4-4.txt'):
-            # This is because in this particular case the lineage divides after the first time-point
-            # start_indices = start_indices[1:]
-            
-            # Check division times
-            plt.plot(np.arange(len(raw_lineage['length']), dtype=int), raw_lineage['length'])
-            for start, end in zip(start_indices, end_indices):
-                plt.axvline(start, color='green')
-                plt.axvline(end, color='red')
-            plt.tight_layout()
-            plt.show()
-            plt.close()
+        # if (args.data_origin == 'MG1655_inLB_LongTraces') & (filename == args.raw_data + '/pos4-4.txt'):
+        #     # This is because in this particular case the lineage divides after the first time-point
+        #     # start_indices = start_indices[1:]
+        #
+        #     # Check division times
+        #     plt.plot(np.arange(len(raw_lineage['length']), dtype=int), raw_lineage['length'])
+        #     for start, end in zip(start_indices, end_indices):
+        #         plt.axvline(start, color='green')
+        #         plt.axvline(end, color='red')
+        #     plt.tight_layout()
+        #     plt.show()
+        #     plt.close()
 
         assert len(start_indices) == len(end_indices)
 
@@ -320,8 +323,8 @@ def main(args):
         #     plt.show()
         #     plt.close()
         
-    print(cycle_variables)
-    print(raw_data)
+    print('processed data:\n', cycle_variables)
+    print('cleaned raw data:\n', raw_data)
 
     # reset the index for good practice
     raw_data.reset_index(drop=True).to_csv(args.save_folder+'/raw_data.csv')
@@ -333,10 +336,12 @@ def main(args):
 if __name__ == '__main__':
     import argparse
     import os
+    import time
+
+    # How long does running this take?
+    first_time = time.time()
     
     for data_origin in ['lambda_LB', 'MG1655_inLB_LongTraces', 'Maryam_LongTraces', 'lambda_LB', 'LAC_M9']:
-        
-        data_origin = 'MG1655_inLB_LongTraces'
         
         parser = argparse.ArgumentParser(description='Process Lineage Data.')
         parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
@@ -355,5 +360,7 @@ if __name__ == '__main__':
         create_folder(args.save_folder)
         
         main(args)
-    
-    # visually_check_divisions()
+
+        print('*' * 200)
+
+    print("--- took %s minutes ---" % ((time.time() - first_time) / 60))
