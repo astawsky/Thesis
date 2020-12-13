@@ -172,6 +172,7 @@ def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, 
 
 
 def main(args):
+    print('type of MM data we are processing:', args.data_origin)
     # Directory of the MM data
     # infiles_lambda_LB = glob.glob(r'/Users/alestawsky/Downloads/MotherMachine/lambda_LB/fits/*.mat')
     # infiles_Maryam_LongTrace = glob.glob(r'/Users/alestawsky/Downloads/MotherMachine/MG1655-inLB-LongTraces/fits/*.mat')
@@ -210,21 +211,27 @@ def main(args):
     #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_09252019_nd041xy06ch01.csv'
     # ]
 
-    extra_column = []
+    extra_column = [
+        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos17-1.txt',
+        
+    ]
 
     # load first sheet of each Excel-File, fill internal data structure]
     for count, filename in enumerate(infiles):
         
-        print(count, filename)
+        print(count, filename.split('/')[-1], sep=': ')
         
         # if filename in filenames_with_nans:
         #     continue
     
         # creates a dataframe from the .txt or .csv file
         if args.data_origin == 'MG1655_inLB_LongTraces':
-            if filename == '/Users/alestawsky/Downloads/MotherMachine/MG1655-inLB-LongTraces/traces/pos4-4.txt':
+            if filename.split('/')[-1] == 'pos4-4.txt':
+                print('HERE')
+                # This is because in this particular case the lineage divides after the first time-point and it has an extra column
                 raw_lineage = pd.read_csv(filename, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']].reset_index(
                     drop=True)
+                raw_lineage = raw_lineage.iloc[1:].reset_index(drop=True)
             else:
                 raw_lineage = pd.read_csv(filename, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
         elif args.data_origin == 'Maryam_LongTraces':
@@ -234,12 +241,35 @@ def main(args):
                 raw_lineage = pd.read_excel(filename, names=['time', 'length'])[['time', 'length']].dropna(axis=0)
         elif args.data_origin == 'lambda_LB':
             if filename in extra_column:
-                raw_lineage = pd.read_csv(filename, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+                raw_lineage = pd.read_csv(filename, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
             else:
-                pass
+                raw_lineage = pd.read_csv(filename, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+        elif args.data_origin == 'LAC_M9':
+            raw_lineage = pd.read_csv(filename, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+        
+        # Make the time-steps accurate to two decimal points
+        raw_lineage['time'] = raw_lineage['time'].round(2)
         
         # the trap ID
         raw_lineage['trap_ID'] = count
+        
+        # Make sure we have the measurement time step-size in hours and that it is the same across all rows
+        step_sizes = (raw_lineage['time'].iloc[1:].values - raw_lineage['time'].iloc[:-1].values).round(2)
+        if not np.all(step_sizes == step_sizes[0]):
+            print(filename, ' has steps that are not the same size, are we are not gonna use these...')
+            continue
+        
+        # Make sure there are no NaNs
+        if raw_lineage.isna().values.any():
+            print(raw_lineage.isna().values.any())
+            print(raw_lineage.isna().sum())
+            print(raw_lineage)
+            print(raw_lineage[raw_lineage.isnull()])
+            exit()
+        
+        # if filename == '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos17-1.txt':
+        #     print(raw_lineage)
+        #     exit()
         
         # print(raw_lineage)
     
@@ -248,22 +278,21 @@ def main(args):
         
         # Figure out the indices for the division events
         start_indices, end_indices = get_division_indices(raw_lineage['length'].values)
-
+        
         if (args.data_origin == 'MG1655_inLB_LongTraces') & (filename == args.raw_data + '/pos4-4.txt'):
-            # take out the zero
-            start_indices = start_indices[1:]
+            # This is because in this particular case the lineage divides after the first time-point
+            # start_indices = start_indices[1:]
             
-            # # Check division times
-            # plt.plot(np.arange(len(raw_lineage['length']), dtype=int), raw_lineage['length'])
-            # for start, end in zip(start_indices, end_indices):
-            #     plt.axvline(start, color='green')
-            #     plt.axvline(end, color='red')
-            # plt.tight_layout()
-            # plt.show()
-            # plt.close()
+            # Check division times
+            plt.plot(np.arange(len(raw_lineage['length']), dtype=int), raw_lineage['length'])
+            for start, end in zip(start_indices, end_indices):
+                plt.axvline(start, color='green')
+                plt.axvline(end, color='red')
+            plt.tight_layout()
+            plt.show()
+            plt.close()
 
         assert len(start_indices) == len(end_indices)
-
 
         # the inter-division times
         cycle_durations = raw_lineage['time'].values[end_indices] - raw_lineage['time'].values[start_indices]
@@ -271,12 +300,7 @@ def main(args):
         # Each cycle must consist of at least four data points
         at_least_number = np.where(cycle_durations > (2 * 0.05))[0]
         
-        # print(at_least_number)
-        # exit()
-        
-        print('condition', len(cycle_durations), len(cycle_durations[at_least_number]))
-        
-        # print(len(at_least_number))
+        # print('condition', len(cycle_durations), len(cycle_durations[at_least_number]))
         
         start_indices, end_indices, cycle_durations = start_indices[at_least_number], end_indices[at_least_number], cycle_durations[at_least_number]
         
@@ -287,16 +311,14 @@ def main(args):
 
         # add the cycle variables to the overall dataframe
         cycle_variables = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, cycle_variables, int(count), fit_the_lengths=True)
-            
+        
+        # # This is to check that the point are where they need to be
         # for variable in phenotypic_variables:
         #     plt.plot(cycle_variables[cycle_variables['trap_ID'] == count][variable])
         #     plt.axhline(cycle_variables[cycle_variables['trap_ID'] == count][variable].mean())
         #     plt.title(variable)
         #     plt.show()
         #     plt.close()
-        
-        # print(raw_data)
-        # print(cycle_variables)
         
     print(cycle_variables)
     print(raw_data)
@@ -312,24 +334,26 @@ if __name__ == '__main__':
     import argparse
     import os
     
-    data_origin = 'lambda_LB'  # MG1655_inLB_LongTraces, Maryam_LongTraces, lambda_LB, LAC_M9
-    
-    parser = argparse.ArgumentParser(description='Process Lineage Data.')
-    parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
-    parser.add_argument('-raw_data', '--raw_data', metavar='', type=str, help='Raw Data location.',
-                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/' + data_origin)
-    parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
-    parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
-                        required=False, default='physical_units.csv')
-    parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
-                        required=False, default='trace_centered.csv')
-    parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=True)
-    args = parser.parse_args()
-    
-    create_folder(args.raw_data)
-    create_folder(args.save_folder)
-    
-    main(args)
+    for data_origin in ['lambda_LB', 'MG1655_inLB_LongTraces', 'Maryam_LongTraces', 'lambda_LB', 'LAC_M9']:
+        
+        data_origin = 'MG1655_inLB_LongTraces'
+        
+        parser = argparse.ArgumentParser(description='Process Lineage Data.')
+        parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
+        parser.add_argument('-raw_data', '--raw_data', metavar='', type=str, help='Raw Data location.',
+                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/' + data_origin)
+        parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
+        parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
+                            required=False, default='physical_units.csv')
+        parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
+                            required=False, default='trace_centered.csv')
+        parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=True)
+        args = parser.parse_args()
+        
+        create_folder(args.raw_data)
+        create_folder(args.save_folder)
+        
+        main(args)
     
     # visually_check_divisions()
