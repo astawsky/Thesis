@@ -264,6 +264,7 @@ def main(args):
 
         assert len(start_indices) == len(end_indices)
 
+
         # the inter-division times
         cycle_durations = raw_lineage['time'].values[end_indices] - raw_lineage['time'].values[start_indices]
         
