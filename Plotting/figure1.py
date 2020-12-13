@@ -10,7 +10,7 @@ import seaborn as sns
 """ This creates the illustration of two lineage distributions vs a gray background Population.  """
 
 
-def kldiv_illustration(info, phenotypic_variables, symbols, units, kl_df, type_of_lineage, ax):
+def kldiv_illustration(info, phenotypic_variables, symbols, units, kl_df, type_of_lineage, MM, ax):
     # The latex labels instead of the variable names
     kl_df = kl_df.replace(symbols)
     
@@ -28,7 +28,10 @@ def kldiv_illustration(info, phenotypic_variables, symbols, units, kl_df, type_o
         pop = info[param]
         
         # Find out which traps have the highest kl_divergences
-        sorted_empirical = kl_df[(kl_df['variable'] == symbols[param]) & (kl_df['kind'] == type_of_lineage)].sort_values('value', ascending=False)[['value', 'trap_ID', 'trace']]
+        if MM:
+            sorted_empirical = kl_df[(kl_df['variable'] == symbols[param]) & (kl_df['kind'] == type_of_lineage)].sort_values('value', ascending=False)[['value', 'trap_ID']]
+        else:
+            sorted_empirical = kl_df[(kl_df['variable'] == symbols[param]) & (kl_df['kind'] == type_of_lineage)].sort_values('value', ascending=False)[['value', 'trap_ID', 'trace']]
         
         # Because the generationtime gives us weird binning...
         if param == 'generationtime':
@@ -40,12 +43,20 @@ def kldiv_illustration(info, phenotypic_variables, symbols, units, kl_df, type_o
             sns.distplot(pop, kde=True, color='gray', norm_hist=True,
                          hist_kws={'range': tuple(bounds[param]), 'alpha': .5, "edgecolor": "white"}, ax=ax)
         
-        # Choose automatically opposing distributions with min and max TA to make see the difference, and make sure it is bigger than 15 generations
-        optimal = pd.DataFrame({
-            'index': np.arange(0, 25),
-            'mean': [info[(info['trap_ID'] == sorted_empirical.iloc[index]['trap_ID']) & (info['trace'] == sorted_empirical.iloc[index]['trace'])][param].mean() for index in np.arange(0, 25)],
-            'size': [len(info[(info['trap_ID'] == sorted_empirical.iloc[index]['trap_ID']) & (info['trace'] == sorted_empirical.iloc[index]['trace'])][param]) for index in np.arange(0, 25)]
-        }).sort_values('mean', ascending=False)
+        if MM:
+            # Choose automatically opposing distributions with min and max TA to make see the difference, and make sure it is bigger than 15 generations
+            optimal = pd.DataFrame({
+                'index': np.arange(0, 25),
+                'mean': [info[(info['trap_ID'] == sorted_empirical.iloc[index]['trap_ID'])][param].mean() for index in np.arange(0, 25)],
+                'size': [len(info[(info['trap_ID'] == sorted_empirical.iloc[index]['trap_ID'])][param]) for index in np.arange(0, 25)]
+            }).sort_values('mean', ascending=False)
+        else:
+            # Choose automatically opposing distributions with min and max TA to make see the difference, and make sure it is bigger than 15 generations
+            optimal = pd.DataFrame({
+                'index': np.arange(0, 25),
+                'mean': [info[(info['trap_ID'] == sorted_empirical.iloc[index]['trap_ID']) & (info['trace'] == sorted_empirical.iloc[index]['trace'])][param].mean() for index in np.arange(0, 25)],
+                'size': [len(info[(info['trap_ID'] == sorted_empirical.iloc[index]['trap_ID']) & (info['trace'] == sorted_empirical.iloc[index]['trace'])][param]) for index in np.arange(0, 25)]
+            }).sort_values('mean', ascending=False)
         
         # Choose the indices in the kl_div df to use for the illustration
         low, high = optimal[optimal['size'] >= 15].iloc[0]['index'], optimal[optimal['size'] >= 15].iloc[-1]['index']
@@ -56,8 +67,12 @@ def kldiv_illustration(info, phenotypic_variables, symbols, units, kl_df, type_o
         
         # Plot the seperate two distributions
         for count, index in enumerate([low, high]):
-            # Get the empirical data
-            empirical = info[(info['trap_ID'] == sorted_empirical.iloc[int(index)]['trap_ID']) & (info['trace'] == sorted_empirical.iloc[int(index)]['trace'])][param]
+            if MM:
+                # Get the empirical data
+                empirical = info[(info['trap_ID'] == sorted_empirical.iloc[int(index)]['trap_ID'])][param]
+            else:
+                # Get the empirical data
+                empirical = info[(info['trap_ID'] == sorted_empirical.iloc[int(index)]['trap_ID']) & (info['trace'] == sorted_empirical.iloc[int(index)]['trace'])][param]
             
             # For the Reference in the Latex
             lineage_ids.append(sorted_empirical.iloc[int(index)]['trap_ID'])
@@ -79,6 +94,7 @@ def kldiv_illustration(info, phenotypic_variables, symbols, units, kl_df, type_o
 def kl_div_per_variable(kl_df, ax, symbols):
     # The latex labels instead of the variable names
     kl_df = kl_df.replace(symbols)
+    kl_df = kl_df.replace({'Population': 'Artificial'})
     
     # Here we start plotting both KL-Divergences, The good part with this is that it takes into consideration the standard deviation as well
     # sns.barplot(data=kl_df, x='variable', y='value', hue='kind', order=[r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'], ci=95, ax=ax)
@@ -95,9 +111,9 @@ def kl_div_per_variable(kl_df, ax, symbols):
 """ Shows the bootstrapped coefficient of variation of all Trace and Population lineages per phenotypic variable. """
 
 
-def ergodicity_per_variable(eb_df, ax, symbols):
+def ergodicity_per_variable(eb_df, ax, symbolss):
     # The latex labels instead of the variable names
-    eb_df = eb_df.replace(symbols)#.replace({'Trace': , 'Population': })
+    eb_df = eb_df.replace(symbolss)#.replace({'Trace': , 'Population': })
     
     # total = pd.DataFrame(columns=['variable', 'kind', 'value'])
     # for kind in ['Trace', 'Population']:
@@ -106,7 +122,7 @@ def ergodicity_per_variable(eb_df, ax, symbols):
     
     # plot the cv
     # sns.barplot(x='variable', y='value', data=total, hue='kind', order=[r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'], ax=ax, edgecolor='black', alpha=.7, hatch = '/') # , label=r'$\delta cov$ \ $\sigma^2$'
-    sns.barplot(x='variable', y='value', data=eb_df, hue='kind', order=[r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'], ax=ax, edgecolor='black') # , label=r'$\overline{cov}$ \ $\sigma^2$'
+    sns.barplot(x='variable', y='value', data=eb_df, hue='kind', order=list(symbolss.values()), ax=ax, edgecolor='black') # , label=r'$\overline{cov}$ \ $\sigma^2$'
     # sns.boxplot(x='variable', y='value', data=eb_df, showfliers=False, hue='kind', order=[r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'], ax=ax)
     ax.yaxis.grid(True)
     ax.set_xlabel('')
@@ -142,16 +158,16 @@ def main(args):
     ax1.set_yticks([])
     
     # axis 2
-    kldiv_illustration(info, ['growth_rate'], symbols['physical_units'], units, kl_df, 'Trace', ax2)
+    kldiv_illustration(info, ['growth_rate'], symbols['physical_units'], units, kl_df, 'Trace', True, ax2)
     
     # axis 3
-    kldiv_illustration(info, ['fold_growth'], symbols['physical_units'], units, kl_df, 'Trace', ax3)
+    kldiv_illustration(info, ['fold_growth'], symbols['physical_units'], units, kl_df, 'Trace', True, ax3)
     
     # axis 4
     kl_div_per_variable(kl_df, ax4, symbols['physical_units'])
     
     # axis 5
-    ergodicity_per_variable(eb_df, ax5, symbols['physical_units'])
+    ergodicity_per_variable(eb_df, ax5, symbols['time_averages'])
     
     # Let's put the titles
     ax2.set_title('B', x=-.15, fontsize='xx-large')
@@ -159,6 +175,35 @@ def main(args):
     ax5.set_title('D', x=-.15, fontsize='xx-large')
     
     # save the figure
-    plt.savefig('{}/Figure 1.png'.format(args.figs_location), dpi=300)
+    plt.savefig('{}/Figure 1 MM.png'.format(args.figs_location), dpi=300)
     # plt.show()
     plt.close()
+    
+    
+if __name__ == '__main__':
+    import argparse
+    import os
+    
+    data_origin = 'SM'
+    
+    parser = argparse.ArgumentParser(description='Process Lineage Data.')
+    parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
+    parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
+                        required=False, default='physical_units.csv')
+    parser.add_argument('-pop', '--population_sampled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the population sampled lineages.',
+                        required=False, default='population_lineages.csv')
+    parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
+                        required=False, default='time_averages.csv')
+    parser.add_argument('-ebp', '--ebp', metavar='', type=str, help='What to name the dataframe containing the ergodicity breaking parameter for each variable.',
+                        required=False, default='ergodicity_breaking_parameter.csv')
+    parser.add_argument('-kld', '--kld', metavar='', type=str,
+                        help='What to name the dataframe containing the kullback leibler diverges for each variable between the population ensemble and physical units of lineages.',
+                        required=False, default='kullback_leibler_divergences.csv')
+    parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?',
+                        required=False, default=True)
+    parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
+                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
+    args = parser.parse_args()
+    
+    main(args)

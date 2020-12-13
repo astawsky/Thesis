@@ -2,7 +2,7 @@
 
 import os
 import argparse
-from CustomFuncsAndVars.global_variables import create_folder
+from CustomFuncsAndVars.global_variables import *
 from random import seed
 from DataframeCreation.lineage_data_processing import main as lineage_data
 from DataframeCreation.pair_data_processing import main as pair_data
@@ -106,6 +106,8 @@ parser.add_argument('-kld', '--kld', metavar='', type=str,
 
 parser.add_argument('-shuffled', '--shuffled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the generation-shuffled lineages.',
                     required=False, default='shuffled_generations.csv')
+parser.add_argument('-tc_shuffled', '--tc_shuffled', metavar='', type=str, help='The filename of the dataframe that contains the trace-centered, generation-shuffled lineages.',
+                    required=False, default='tc_shuffled.csv')
 parser.add_argument('-cta', '--cta', metavar='', type=str,
                     help='The filename of the dataframe that contains the expanding time-averages of each kind of lineage (Trace, Population, Shuffled or Trace-centered).',
                     required=False, default='expanding_mean.csv')

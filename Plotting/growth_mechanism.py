@@ -61,7 +61,7 @@ def main(args):
         plt.close()
     
     # The variables we want to plot
-    variables = ['fold_growth', 'length_birth', 'generationtime', 'growth_rate']
+    variables = ['fold_growth', 'division_ratio', 'generationtime', 'length_birth', 'growth_rate']
     
     # read the csv file where we keep the data
     physical_units = pd.read_csv('{}/{}'.format(args.save_folder, args.pu))
@@ -70,9 +70,10 @@ def main(args):
     trace_centered, trace_means_df = pd.read_csv('{}/{}'.format(args.save_folder, args.tc)), pd.read_csv('{}/{}'.format(args.save_folder, args.ta))
     
     pyramid_of_pairwise_covariances()
+    exit()
     
     pyramid_of_pairwise_covariances(figurename='main variables without numbers', annot=False)
     
     variables = phenotypic_variables
     
-    pyramid_of_pairwise_covariances(figsize=[7 * 1.5, 2.5 * 1.5], figurename='pyramids all variables')
+    pyramid_of_pairwise_covariances(figsize=[7 * 1.5, 2.5 * 1.5], figurename='pyramids main variables')

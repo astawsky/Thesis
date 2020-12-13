@@ -10,6 +10,7 @@ from Plotting.growth_mechanism import main as growth_mechanism
 from Plotting.figure1 import main as figure1
 from Plotting.figure2 import main as figure2
 from Plotting.figure3 import main as figure3
+from Plotting.pair_unique_ta import main as pair_correlations
 import time
 
 first_time = time.time()
@@ -34,6 +35,18 @@ parser.add_argument('-scc', '--scc', metavar='', type=str, help='Where the singl
                     required=False, default='single_cell_correlations')
 parser.add_argument('-scch', '--scch', metavar='', type=str, help='Where the single cell correlation heatmap figures are saved.',
                     required=False, default='single_cell_correlations_heatmaps')
+
+parser.add_argument('-puc', '--puc', metavar='', type=str, help='What to name the physical units dataframe with control added',
+                    required=False, default='physical_units_with_control.csv')
+parser.add_argument('-pc', '--pc', metavar='', type=str, help='Where the pair cell correlation figures are saved.',
+                    required=False, default='pair_cell_correlations')
+parser.add_argument('-pch', '--pch', metavar='', type=str, help='Where the pair cell correlation heatmap figures are saved.',
+                    required=False, default='pair_cell_correlations_heatmaps')
+parser.add_argument('-tac', '--tac', metavar='', type=str, help='What to name the time-averages dataframe with control added',
+                    required=False, default='time_averages_with_control.csv')
+parser.add_argument('-tcc', '--tcc', metavar='', type=str, help='What to name the trace-centered dataframe with control added',
+                    required=False, default='trace_centered_with_control.csv')
+
 parser.add_argument('-ebp', '--ebp', metavar='', type=str, help='What to name the dataframe containing the ergodicity breaking parameter for each variable.',
                     required=False, default='ergodicity_breaking_parameter.csv')
 parser.add_argument('-kld', '--kld', metavar='', type=str,
@@ -54,14 +67,16 @@ create_folder(args.figs_location)
 #
 # pair_gen_spec(args)
 #
-# single_cell_correlations(args)
+single_cell_correlations(args)
 #
 # growth_mechanism(args)
 #
 # figure1(args)
-
-figure2(args)
-
+#
+# figure2(args)
+#
 # figure3(args)
+#
+# pair_correlations(args)
 
 print("--- %s seconds ---" % (time.time() - start_time))

@@ -85,8 +85,8 @@ def minusing(Traj_A, Traj_B, kind, parameters):
             Traj_A[parameters] = Traj_A[parameters] - trap[parameters]
             Traj_B[parameters] = Traj_B[parameters] - trap[parameters]
         elif kind == 'trace_centered':
-            Traj_A[parameters] = Traj_A[parameters] - np.sum(Traj_A[parameters]) / len(Traj_A[parameters])
-            Traj_B[parameters] = Traj_B[parameters] - np.sum(Traj_B[parameters]) / len(Traj_B[parameters])
+            Traj_A[parameters] = Traj_A[parameters] - Traj_A[parameters].mean()
+            Traj_B[parameters] = Traj_B[parameters] - Traj_B[parameters].mean()
     
     return Traj_A, Traj_B
 
@@ -392,7 +392,7 @@ if __name__ == '__main__':
     parser.add_argument('-NL', '--nc_infiles', metavar='', type=str,
                         help='Location of Neighboring Cell Pair Raw Data', required=False, default=r'/Users/alestawsky/PycharmProjects/Thesis/RawData/NL')
     parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                        required=False, default=os.path.dirname(os.path.abspath(__file__)) + '/Data')
+                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data')
     parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
                         required=False, default='physical_units.csv')
     parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
