@@ -6,7 +6,7 @@ from scipy.stats import pearsonr, zscore
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import seaborn as sns
-from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, symbols
+from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, symbols, mm_data_names
 from string import ascii_uppercase as uppercase_letters
 
 
@@ -131,39 +131,74 @@ def main(args):
     trace_centered = pd.read_csv('{}/{}'.format(args.save_folder, args.tcc)).sort_values(['dataset', 'trap_ID', 'trace'], ascending=[1, 1, 1])
     time_averages = pd.read_csv('{}/{}'.format(args.save_folder, args.tac)).sort_values(['dataset', 'trap_ID', 'trace'], ascending=[1, 1, 1])
     unique_ta = time_averages.drop_duplicates().sort_values(['dataset', 'trap_ID', 'trace'], ascending=[1, 1, 1])
+
+    for df, kind in zip([physical_units, trace_centered, time_averages, unique_ta], ['physical_units', 'trace_centered', 'time_averages', 'unique_ta']):
+        print(kind)
+        put_all_graphs_into_a_big_grid(df, kind, variables=phenotypic_variables, remove_outliers=True, suffix='full')
+
+    # for df, kind in zip([physical_units, trace_centered, time_averages, unique_ta], ['physical_units', 'trace_centered', 'time_averages', 'unique_ta']):
+    #     print(kind)
+    #     put_all_graphs_into_a_big_grid(df, kind, variables=['fold_growth', 'division_ratio', 'generationtime', 'length_birth', 'growth_rate'], remove_outliers=True, suffix='main five')
+
+    for df, kind in zip([physical_units, trace_centered, time_averages, unique_ta], ['physical_units', 'trace_centered', 'time_averages', 'unique_ta']):
+        print(kind)
+        heatmap_analogs(df, kind, variables=phenotypic_variables, annot=False, suffix='full')
+
+    # for df, kind in zip([physical_units, trace_centered, time_averages, unique_ta], ['physical_units', 'trace_centered', 'time_averages', 'unique_ta']):
+    #     print(kind)
+    #     heatmap_analogs(df, kind, variables=['fold_growth', 'division_ratio', 'generationtime', 'length_birth', 'growth_rate'], annot=True, suffix='main five')
     #
-    # for df, kind in zip([physical_units, trace_centered, time_averages, unique_ta], ['physical_units', 'trace_centered', 'time_averages', 'unique_ta']):
-    #     print(kind)
-    #     put_all_graphs_into_a_big_grid(df, kind, variables=phenotypic_variables, remove_outliers=True, suffix='full')
+    # exit()
 
-    for df, kind in zip([physical_units, trace_centered, time_averages, unique_ta], ['physical_units', 'trace_centered', 'time_averages', 'unique_ta']):
-        print(kind)
-        put_all_graphs_into_a_big_grid(df, kind, variables=['fold_growth', 'division_ratio', 'generationtime', 'length_birth', 'growth_rate'], remove_outliers=True, suffix='main five')
-
-    # for df, kind in zip([physical_units, trace_centered, time_averages, unique_ta], ['physical_units', 'trace_centered', 'time_averages', 'unique_ta']):
-    #     print(kind)
-    #     heatmap_analogs(df, kind, variables=phenotypic_variables, annot=False, suffix='full')
-
-    for df, kind in zip([physical_units, trace_centered, time_averages, unique_ta], ['physical_units', 'trace_centered', 'time_averages', 'unique_ta']):
-        print(kind)
-        heatmap_analogs(df, kind, variables=['fold_growth', 'division_ratio', 'generationtime', 'length_birth', 'growth_rate'], annot=True, suffix='main five')
-
-    exit()
-
-    print('pu')
-    heatmap_analogs(physical_units, 'physical_units', variables=phenotypic_variables, annot=False)
-    print('tc')
-    heatmap_analogs(trace_centered, 'trace_centered', variables=phenotypic_variables, annot=False)
-    print('ta')
-    heatmap_analogs(time_averages, 'time_averages', variables=phenotypic_variables, annot=False)
-    print('ta unique')
-    heatmap_analogs(unique_ta, 'unique_ta', variables=phenotypic_variables, annot=False)
+    # print('pu')
+    # heatmap_analogs(physical_units, 'physical_units', variables=phenotypic_variables, annot=False)
+    # print('tc')
+    # heatmap_analogs(trace_centered, 'trace_centered', variables=phenotypic_variables, annot=False)
+    # print('ta')
+    # heatmap_analogs(time_averages, 'time_averages', variables=phenotypic_variables, annot=False)
+    # print('ta unique')
+    # heatmap_analogs(unique_ta, 'unique_ta', variables=phenotypic_variables, annot=False)
+    #
+    # print('pu')
+    # put_all_graphs_into_a_big_grid(physical_units, 'physical_units', remove_outliers=True)
+    # print('tc')
+    # put_all_graphs_into_a_big_grid(trace_centered, 'trace_centered', remove_outliers=True)
+    # print('ta')
+    # put_all_graphs_into_a_big_grid(time_averages, 'time_averages', remove_outliers=True)
+    # print('unique ta')
+    # put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', remove_outliers=True)
     
-    print('pu')
-    put_all_graphs_into_a_big_grid(physical_units, 'physical_units', remove_outliers=True)
-    print('tc')
-    put_all_graphs_into_a_big_grid(trace_centered, 'trace_centered', remove_outliers=True)
-    print('ta')
-    put_all_graphs_into_a_big_grid(time_averages, 'time_averages', remove_outliers=True)
-    print('unique ta')
-    put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', remove_outliers=True)
+    
+if __name__ == '__main__':
+    import argparse
+    import os
+    import time
+    
+    # How long does running this take?
+    first_time = time.time()
+    
+    data_origin = 'SM'
+    
+    parser = argparse.ArgumentParser(description='Create the artificial lineages, ergodicity breaking parameters, and the KL Divergences.')
+    parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
+    parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
+                        required=False, default='physical_units.csv')
+    parser.add_argument('-pop', '--population_sampled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the population sampled lineages.',
+                        required=False, default='population_lineages.csv')
+    parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
+                        required=False, default='time_averages.csv')
+    parser.add_argument('-ebp', '--ebp', metavar='', type=str, help='What to name the dataframe containing the ergodicity breaking parameter for each variable.',
+                        required=False, default='ergodicity_breaking_parameter.csv')
+    parser.add_argument('-kld', '--kld', metavar='', type=str,
+                        help='What to name the dataframe containing the kullback leibler diverges for each variable between the population ensemble and physical units of lineages.',
+                        required=False, default='kullback_leibler_divergences.csv')
+    parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=False)
+    args = parser.parse_args()
+    
+    main(args)
+    
+    # How long did it take to do the mother machine?
+    sm_time = time.time() - (mm_time + first_time)
+    
+    print("--- took {} mins in total: {} mins for the MM data and {} mins for the SM data ---".format((time.time() - first_time) / 60, mm_time / 60, sm_time / 60))

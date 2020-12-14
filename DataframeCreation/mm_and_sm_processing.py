@@ -4,8 +4,7 @@ import pandas as pd
 import numpy as np
 import glob
 from sklearn.linear_model import LinearRegression
-from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder
-
+from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, mm_data_names
 
 """ This function takes care of which statistic we want to subtract the trajectories to get what we asked for """
 
@@ -15,7 +14,7 @@ def minusing(info, parameters):
     for lineage_id in info['lineage_ID'].unique():
         trace = info[(info['lineage_ID'] == lineage_id)].copy()
         tc.loc[trace.index, parameters] = trace[parameters] - trace[parameters].mean()
-                
+    
     return tc
 
 
@@ -46,7 +45,6 @@ def get_division_indices(raw_trace):
     # Make sure they are the same size
     assert len(start_indices) == len(end_indices)
     
-    
     # if raw_trace[0] in start_indices:
     #     del start_indices[np.where(start_indices != raw_trace[0])[0]]
     
@@ -75,7 +73,7 @@ def get_division_indices(raw_trace):
     # Make them numpy arrays now so we can subtract them
     start_indices = np.array(start_indices)
     end_indices = np.array(end_indices)
-
+    
     # Make sure they are the same size
     assert len(start_indices) == len(end_indices)
     
@@ -86,7 +84,6 @@ def get_division_indices(raw_trace):
 
 
 def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, trap_id, fit_the_lengths):
-    
     # Make sure everything is aligned
     assert len(start_indices) == len(cycle_durations) == len(data_points_per_cycle) == len(end_indices)
     
@@ -103,7 +100,7 @@ def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, 
         
         # Make sure they are the same size for the regression!
         assert len(domain) == len(range)
-
+        
         # our regression
         reg = LinearRegression().fit(domain, range)
         
@@ -128,7 +125,7 @@ def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, 
             # phenotypic variables
             cycle['length_birth'] = np.exp(range[0][0])
             cycle['length_final'] = np.exp(range[-1][0])
-
+        
         # We define the division ratio as how much length a cell received from its mother,
         # since the first generation has no recorded mother the value will be a NaN.
         if len(cycle_variables_lineage) == 0:
@@ -140,7 +137,7 @@ def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, 
             # except:
             #     print('+'*200, start, cycle['length_birth'], cycle_variables_lineage, sep='\n')
             #     exit()
-
+        
         # After defining the lengths, get the added length
         cycle['added_length'] = cycle['length_final'] - cycle['length_birth']
         
@@ -156,7 +153,7 @@ def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, 
         # plt.plot(domain, np.exp(range))
         # plt.show()
         # plt.close()
-        
+    
     return cycle_variables_lineage
 
 
@@ -174,7 +171,7 @@ def main_mm(args):
         infiles = infiles + glob.glob(args.raw_data + '/*.xls')
     else:
         infiles = glob.glob(args.raw_data + '/*.txt')
-
+    
     # the dataframe for our variables
     cycle_variables = pd.DataFrame(columns=phenotypic_variables + ['lineage_ID', 'generation'])
     
@@ -195,7 +192,7 @@ def main_mm(args):
     #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_09252019_nd041xy02ch08L.csv',
     #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_09252019_nd041xy06ch01.csv'
     # ]
-
+    
     extra_column = [
         '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos0-1.txt',
         '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos0-1-daughter.txt',
@@ -226,13 +223,13 @@ def main_mm(args):
         '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos19-3.txt',
         '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos20.txt'
     ]
-
+    
     # load first sheet of each Excel-File, fill internal data structure]
     for count, filename in enumerate(infiles):
         
         # Tells us the trap ID and the source (filename)
         print(count, filename.split('/')[-1], sep=': ')
-    
+        
         # creates a dataframe from the .txt or .csv file
         if args.data_origin == 'MG1655_inLB_LongTraces':
             # The only file that has an extra column
@@ -283,7 +280,7 @@ def main_mm(args):
             print(raw_lineage)
             print(raw_lineage[raw_lineage.isnull()])
             exit()
-    
+        
         # add it to the total data
         raw_data = raw_data.append(raw_lineage, ignore_index=True)
         
@@ -298,7 +295,7 @@ def main_mm(args):
         # plt.tight_layout()
         # plt.show()
         # plt.close()
-
+        
         # the inter-division times
         cycle_durations = raw_lineage['time'].values[end_indices] - raw_lineage['time'].values[start_indices]
         
@@ -307,10 +304,10 @@ def main_mm(args):
         
         # Apply the four data points condition
         start_indices, end_indices, cycle_durations = start_indices[at_least_number], end_indices[at_least_number], cycle_durations[at_least_number]
-
+        
         # Number of raw data points per generation/cycle
         data_points_per_cycle = np.array(np.rint(cycle_durations / .05) + np.ones_like(cycle_durations), dtype=int)
-
+        
         # add the cycle variables to the overall dataframe
         cycle_variables_lineage = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, int(count), fit_the_lengths=True)
         
@@ -324,15 +321,16 @@ def main_mm(args):
         #     plt.title(variable)
         #     plt.show()
         #     plt.close()
-        
+    
     print('processed data:\n', cycle_variables)
     print('cleaned raw data:\n', raw_data)
-
+    
     # reset the index for good practice
-    raw_data.reset_index(drop=True).to_csv(args.save_folder+'/raw_data.csv', index=False)
-    cycle_variables.reset_index(drop=True).to_csv(args.save_folder+'/physical_units.csv', index=False)
-    minusing(raw_data.reset_index(drop=True), ['length']).to_csv(args.save_folder+'/raw_data_tc.csv', index=False)
-    minusing(cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).to_csv(args.save_folder+'/trace_centered.csv', index=False)
+    raw_data.reset_index(drop=True).sort_values(['lineage_ID']).to_csv(args.save_folder + '/raw_data.csv', index=False)
+    cycle_variables.reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args.save_folder + '/physical_units.csv', index=False)
+    minusing(raw_data.reset_index(drop=True), ['length']).sort_values(['lineage_ID']).to_csv(args.save_folder + '/raw_data_tc.csv', index=False)
+    minusing(cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args.save_folder + '/trace_centered.csv',
+                                                                                                                                                   index=False)
 
 
 """ Reading the raw data into a big pandas Dataframes """
@@ -364,7 +362,7 @@ def get_sm_rawdata(infiles, dataset, data, offset=0):
         b_trace['trace'] = 'B'
         a_trace['lineage_ID'] = (count + offset + 1) * 2 - 1
         b_trace['lineage_ID'] = (count + offset + 1) * 2
-
+        
         # the data contains all dataframes from the excel files in the directory _infiles
         data = data.append(a_trace, ignore_index=True)
         data = data.append(b_trace, ignore_index=True)
@@ -387,7 +385,7 @@ def main_sm(args):
     # for dataset, infiles in zip(['SL', 'NL'], [glob.glob(args.sl_infiles + '/*.xls'), glob.glob(args.nl_infiles + '/*.xls')]):
     #     print(dataset)
     #     raw_data = get_sm_rawdata(infiles, dataset, raw_data)
-
+    
     # Get the raw data for the two datasets of raw data
     print('SL')
     raw_data = get_sm_rawdata(glob.glob(args.sl_infiles + '/*.xls'), 'SL', raw_data)
@@ -395,12 +393,12 @@ def main_sm(args):
     raw_data = get_sm_rawdata(glob.glob(args.nl_infiles + '/*.xls'), 'NL', raw_data, offset=raw_data.trap_ID.max())
     
     # Save the raw data to .csv format
-    raw_data.reset_index(drop=True).to_csv(args.save_folder+'/raw_data.csv', index=False)
-    minusing(raw_data.reset_index(drop=True), ['length']).to_csv(args.save_folder+'/raw_data_tc.csv', index=False)
-
+    raw_data.sort_values(['dataset', 'trap_ID', 'trace']).reset_index(drop=True).to_csv(args.save_folder + '/raw_data.csv', index=False)
+    minusing(raw_data.reset_index(drop=True), ['length']).sort_values(['dataset', 'trap_ID', 'trace']).reset_index(drop=True).to_csv(args.save_folder + '/raw_data_tc.csv', index=False)
+    
     # This is the order of the cycle variables in the processed dataframe
     order = phenotypic_variables + ['dataset', 'trap_ID', 'trace', 'lineage_ID', 'generation']
-
+    
     # The dataframe for our variables
     cycle_variables = pd.DataFrame(columns=order)
     
@@ -409,10 +407,10 @@ def main_sm(args):
         
         # Get the lineage
         raw_lineage = raw_data[raw_data['lineage_ID'] == lineage_id]
-
+        
         # Figure out the indices for the division events
         start_indices, end_indices = get_division_indices(raw_lineage['length'].values)
-
+        
         # # Check division times
         # plt.plot(np.arange(len(raw_lineage['length']), dtype=int), raw_lineage['length'])
         # for start, end in zip(start_indices, end_indices):
@@ -421,19 +419,19 @@ def main_sm(args):
         # plt.tight_layout()
         # plt.show()
         # plt.close()
-
+        
         # the inter-division times
         cycle_durations = raw_lineage['time'].values[end_indices] - raw_lineage['time'].values[start_indices]
-
+        
         # Each cycle must consist of at least four data points
         at_least_number = np.where(cycle_durations > (2 * 0.05))[0]
-
+        
         # Apply the four data points condition
         start_indices, end_indices, cycle_durations = start_indices[at_least_number], end_indices[at_least_number], cycle_durations[at_least_number]
-
+        
         # Number of raw data points per generation/cycle
         data_points_per_cycle = np.array(np.rint(cycle_durations / .05) + np.ones_like(cycle_durations), dtype=int)
-
+        
         # add the cycle variables to the overall dataframe
         cycle_variables_lineage = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, int(lineage_id), fit_the_lengths=True)
         
@@ -444,18 +442,19 @@ def main_sm(args):
         
         # Append the cycle variables to the processed dataframe
         cycle_variables = cycle_variables.append(cycle_variables_lineage[order], ignore_index=True)
-
+    
     print('processed data:\n', cycle_variables)
     print('cleaned raw data:\n', raw_data)
-
+    
     # reset the index for good practice
-    cycle_variables.reset_index(drop=True).to_csv(args.save_folder + '/physical_units.csv', index=False)
-    minusing(cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).to_csv(args.save_folder + '/trace_centered.csv', index=False)
-    
-    
+    cycle_variables.reset_index(drop=True).sort_values(['dataset', 'trap_ID', 'trace', 'generation']).to_csv(args.save_folder + '/physical_units.csv', index=False)
+    minusing(cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['dataset', 'trap_ID', 'trace', 'generation']).to_csv(
+        args.save_folder + '/trace_centered.csv', index=False)
+
+
 """ Create the csv files for physical, trace-centered, and trap-centered units for MM and SM data """
-    
-        
+
+
 def main():
     import argparse
     import os
@@ -465,8 +464,8 @@ def main():
     first_time = time.time()
     
     # Do all the Mother Machine data
-    for data_origin in ['lambda_LB', 'MG1655_inLB_LongTraces', 'Maryam_LongTraces', 'LAC_M9']:
-
+    for data_origin in mm_data_names:
+        
         parser = argparse.ArgumentParser(description='Process Mother Machine Lineage Data.')
         parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
         parser.add_argument('-raw_data', '--raw_data', metavar='', type=str, help='Raw Data location.',
@@ -475,14 +474,14 @@ def main():
                             required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
         parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=True)
         args = parser.parse_args()
-
+        
         create_folder(args.raw_data)
         create_folder(args.save_folder)
-
-        main_mm(args)
-
-        print('*' * 200)
         
+        main_mm(args)
+        
+        print('*' * 200)
+    
     # How long did it take to do the mother machine?
     mm_time = time.time() - first_time
     
@@ -506,7 +505,7 @@ def main():
     create_folder(args.save_folder)
     
     main_sm(args)
-
+    
     print('*' * 200)
     
     # How long did it take to do the mother machine?

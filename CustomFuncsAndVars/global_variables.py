@@ -130,7 +130,7 @@ def trace_center_a_dataframe(df):
 """ Create all information dataframe where the lineage lengths are kept constant but the cells in the trace itself are randomly sampled from the population without replacement """
 
 
-def shuffle_info(info):
+def shuffle_info_OLD(info):
     import pandas as pd
     import numpy as np
     
@@ -161,6 +161,69 @@ def shuffle_info(info):
                 
                 # add them to the new, shuffled dataframe
                 new_info = new_info.append(samples, ignore_index=True)
+    
+    return new_info
+
+
+""" Create all information dataframe where the lineage lengths are kept constant but the cells in the trace itself are randomly sampled from the population without replacement """
+
+
+def shuffle_info(info, mm):
+    import pandas as pd
+    import numpy as np
+    
+    # Give it a name, contains S, NL
+    new_info = pd.DataFrame(columns=info.columns)
+    
+    # what is the trace length of each trace? This is the only thing that stays the same
+    if mm:
+        sizes = {'{}'.format(lineage_ID): len(info[(info['lineage_ID'] == lineage_ID)]) for lineage_ID in info['lineage_ID'].unique()}
+
+        for lineage_id in np.unique(info['lineage_ID']):
+            # trace length
+            size = sizes['{}'.format(lineage_id)]
+    
+            # sample from the old dataframe
+            samples = info.sample(replace=False, n=size)
+    
+            # drop what we sampled
+            info = info.drop(index=samples.index)
+    
+            # add some correct labels even though they don't matter so that the dataframe structure is still intact
+            samples['lineage_ID'] = lineage_id
+            samples['generation'] = np.arange(size)
+    
+            # add them to the new, shuffled dataframe
+            new_info = new_info.append(samples, ignore_index=True)
+    else:
+        sizes = {'{} {} {}'.format(dataset, trap_ID, trace): len(info[(info['trap_ID'] == trap_ID) & (info['trace'] == trace) & (info['dataset'] == dataset)]) for dataset in np.unique(info['dataset']) for
+             trap_ID in np.unique(info[info['dataset'] == dataset]['trap_ID']) for trace in ['A', 'B']}
+
+        lineage_id = 0
+        for dataset in np.unique(info['dataset']):
+            for trap_ID in np.unique(info[info['dataset'] == dataset]['trap_ID']):
+                for trace in ['A', 'B']:
+                    # trace length
+                    size = sizes['{} {} {}'.format(dataset, trap_ID, trace)]
+            
+                    # sample from the old dataframe
+                    samples = info.sample(replace=False, n=size)
+            
+                    # drop what we sampled
+                    info = info.drop(index=samples.index)
+            
+                    # add some correct labels even though they don't matter so that the dataframe structure is still intact
+                    samples['dataset'] = dataset
+                    samples['trap_ID'] = trap_ID
+                    samples['trace'] = trace
+                    samples['lineage_ID'] = lineage_id
+                    samples['generation'] = np.arange(size)
+            
+                    # add them to the new, shuffled dataframe
+                    new_info = new_info.append(samples, ignore_index=True)
+                    
+                    # Go on to the next ID
+                    lineage_id += 1
     
     return new_info
 
@@ -252,3 +315,4 @@ bounds = {
     'generationtime': [0.01, 1], 'fold_growth': [.27, 1], 'growth_rate': [.8, 1.8], 'length_birth': [.7, 4.5], 'length_final': [2.3, 8.3], 'division_ratio': [.35, .65], 'added_length': [.4, 5]
 }
 symbols_bounds = {symbols['physical_units'][key]: val for key, val in bounds.items()}
+mm_data_names = ['lambda_LB', 'MG1655_inLB_LongTraces', 'Maryam_LongTraces', 'LAC_M9']
