@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from CustomFuncsAndVars.global_variables import phenotypic_variables, symbols, create_folder, seaborn_preamble
+from CustomFuncsAndVars.global_variables import phenotypic_variables, symbols, create_folder, seaborn_preamble, mm_data_names
 
 
 def main(args):
@@ -70,10 +70,39 @@ def main(args):
     trace_centered, trace_means_df = pd.read_csv('{}/{}'.format(args.save_folder, args.tc)), pd.read_csv('{}/{}'.format(args.save_folder, args.ta))
     
     pyramid_of_pairwise_covariances()
-    exit()
     
     pyramid_of_pairwise_covariances(figurename='main variables without numbers', annot=False)
     
     variables = phenotypic_variables
     
     pyramid_of_pairwise_covariances(figsize=[7 * 1.5, 2.5 * 1.5], figurename='pyramids main variables')
+    
+
+if __name__ == '__main__':
+    import argparse
+    import os
+    import time
+    
+    # How long does running this take?
+    first_time = time.time()
+    
+    for data_origin in mm_data_names + ['SM']:
+        print(data_origin)
+        
+        parser = argparse.ArgumentParser(description='Create the artificial lineages, ergodicity breaking parameters, and the KL Divergences.')
+        parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
+        parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
+        parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
+                            required=False, default='physical_units.csv')
+        parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
+                            required=False, default='trace_centered.csv')
+        parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
+                            required=False, default='time_averages.csv')
+        parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
+                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
+        args = parser.parse_args()
+        
+        main(args)
+
+        print('*'*200)

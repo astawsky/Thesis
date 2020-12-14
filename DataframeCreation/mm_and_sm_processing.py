@@ -58,6 +58,8 @@ def get_division_indices(raw_trace):
     # If the last index is in the array of indices where a cycle starts, then it obviously a mistake and must be removed
     if raw_trace[-1] in start_indices:
         start_indices.remove(raw_trace[-1])
+    if 1 in start_indices and 0 in start_indices:
+        start_indices.remove(0)
     
     # Similarly, if the fist index '0' is in the array of indices where a cycle ends, then it obviously is a mistake and must be removed
     if 0 in end_indices:
@@ -73,6 +75,13 @@ def get_division_indices(raw_trace):
     # Make them numpy arrays now so we can subtract them
     start_indices = np.array(start_indices)
     end_indices = np.array(end_indices)
+    
+    if len(start_indices) != len(end_indices):
+        print(start_indices)
+        print(end_indices)
+        print(len(start_indices))
+        print(len(end_indices))
+        exit()
     
     # Make sure they are the same size
     assert len(start_indices) == len(end_indices)
@@ -224,7 +233,7 @@ def main_mm(args):
         '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos20.txt'
     ]
     
-    # load first sheet of each Excel-File, fill internal data structure]
+    # load first sheet of each Excel-File, fill internal data structure
     for count, filename in enumerate(infiles):
         
         # Tells us the trap ID and the source (filename)
@@ -270,8 +279,8 @@ def main_mm(args):
         # If not, do not use the trace (Too much of a headache for the phenotypic variable linear regression).
         step_sizes = (raw_lineage['time'].iloc[1:].values - raw_lineage['time'].iloc[:-1].values).round(2)
         if not np.all(step_sizes == step_sizes[0]):
-            print(filename, ' has steps that are not the same size, are we are not gonna use these...')
-            continue
+            print(filename, ' has steps that are not the same size')  # , are we are not gonna use these...')
+            # continue
         
         # Make sure there are no NaNs. If so, stop the program, something is wrong.
         if raw_lineage.isna().values.any():
