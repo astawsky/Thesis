@@ -1,0 +1,15 @@
+variable,kind,value
+fold_growth,Trace,0.07185578412700987
+division_ratio,Trace,0.2466826675158744
+added_length,Trace,0.4920956444199523
+generationtime,Trace,0.569210323365333
+length_birth,Trace,0.9301198601893216
+length_final,Trace,0.89316953096145
+growth_rate,Trace,0.7279760222649153
+fold_growth,Artificial,0.012464566384207463
+division_ratio,Artificial,0.016382964720925774
+added_length,Artificial,0.007192879770454104
+generationtime,Artificial,0.010534450430882782
+length_birth,Artificial,0.00902116039416594
+length_final,Artificial,0.008314133191198197
+growth_rate,Artificial,0.0169250692012309
