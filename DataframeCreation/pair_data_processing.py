@@ -117,7 +117,42 @@ def main(args):
     trace_centered.to_csv('{}/{}'.format(args.save_folder, args.tcc), index=False)
     
     
-
+if __name__ == '__main__':
+    import argparse
+    import os
+    import time
+    
+    # How long does running this take?
+    first_time = time.time()
+    
+    data_origin = 'SM'
+    
+    # Create the arguments for this function
+    parser = argparse.ArgumentParser(description='Process Sister Machine Pair Data.')
+    parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
+    parser.add_argument('-puc', '--puc', metavar='', type=str, help='What to name the physical units with control dataframe.',
+                        required=False, default='physical_units_with_control.csv')
+    parser.add_argument('-tac', '--tac', metavar='', type=str, help='What to name the time-averages with control dataframe.',
+                        required=False, default='time_averages_with_control.csv')
+    parser.add_argument('-tcc', '--tcc', metavar='', type=str, help='What to name the trace-centered with control dataframe.',
+                        required=False, default='trace_centered_with_control.csv')
+    parser.add_argument('-ctrl_number', '--number_of_control_lineage_pairs', metavar='', type=int, help='How many Control lineage pairs should we make.',
+                        required=False, default=85)
+    
+    # Finalize the arguments
+    args = parser.parse_args()
+    
+    # Make sure the folders where we place the data are created already
+    create_folder(args.save_folder)
+    
+    # run the data
+    main(args)
+    
+    print('*' * 200)
+    
+    print("--- took {} mins in total ---".format((time.time() - first_time) / 60))
+    
 
 # parser = argparse.ArgumentParser(description='Dataframes containing: KL divergences, Population physical_units lineages, and the ergodicity breaking parameter for both kinds of lineages.')
 # # parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',

@@ -3,6 +3,8 @@
 import pandas as pd
 import numpy as np
 import glob
+import matplotlib.pyplot as plt
+from scipy.stats import zscore
 from sklearn.linear_model import LinearRegression
 from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, mm_data_names
 
@@ -163,7 +165,7 @@ def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, 
         # plt.show()
         # plt.close()
     
-    return cycle_variables_lineage
+    return cycle_variables_lineage.reset_index(drop=True)
 
 
 """ Create the csv files for physical, trace-centered, and trap-centered units for MM data of a certain type """
@@ -219,7 +221,6 @@ def main_mm(args):
         '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos7-3.txt',
         '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos8.txt',
         '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos10-1.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos15.txt',
         '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos16-1.txt',
         '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos16-2.txt',
         '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos16-3.txt',
@@ -232,6 +233,12 @@ def main_mm(args):
         '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos19-3.txt',
         '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos20.txt'
     ]
+    
+    # When we take out the outliers we keep trace of how many cycles we lost wrt. the lineage and the pooled ensemble
+    whats_left = {'lineage': [], 'number_taken_out': []}
+    
+    # In case we can't use some files we want the lineage IDs to be in integer order
+    offset = 0
     
     # load first sheet of each Excel-File, fill internal data structure
     for count, filename in enumerate(infiles):
@@ -260,6 +267,10 @@ def main_mm(args):
             # There are quite a lot of files with an extra column at the beginning
             if filename in extra_column:
                 raw_lineage = pd.read_csv(filename, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+            elif filename.split('/')[-1] == 'pos15.txt':
+                print('This one is special.')
+                raw_lineage = pd.read_csv(filename, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein', '__', '___', '___1'])[
+                    ['time', 'length']]
             else:
                 raw_lineage = pd.read_csv(filename, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
         elif args.data_origin == 'LAC_M9':
@@ -273,7 +284,26 @@ def main_mm(args):
         raw_lineage = raw_lineage.reset_index(drop=True)
         
         # Add the trap ID
-        raw_lineage['lineage_ID'] = count
+        raw_lineage['lineage_ID'] = count - offset
+        
+        if not all(x < y for x, y in zip(raw_lineage['time'].values[:-1], raw_lineage['time'].values[1:])):
+            print(filename, ': Time is going backwards. We cannot use this data.')
+            
+            # reset the lineage_ID
+            offset += 1
+            
+            # for x, y in zip(raw_lineage['time'].values[:-1], raw_lineage['time'].values[1:]):
+            #     if x >= y:
+            #         print(x, y)
+            #
+            # print('~' * 200)
+            #
+            # # To see this in the lineage itself
+            # plt.plot(raw_lineage['time'], raw_lineage['length'])
+            # plt.show()
+            # plt.close()
+            
+            continue
         
         # Make sure we have the measurement time step-size in hours and that it is the same across all rows
         # If not, do not use the trace (Too much of a headache for the phenotypic variable linear regression).
@@ -318,21 +348,35 @@ def main_mm(args):
         data_points_per_cycle = np.array(np.rint(cycle_durations / .05) + np.ones_like(cycle_durations), dtype=int)
         
         # add the cycle variables to the overall dataframe
-        cycle_variables_lineage = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, int(count), fit_the_lengths=True)
+        cycle_variables_lineage = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, int(count - offset), fit_the_lengths=True)
+        
+        # Take out the outliers (over 4 stds from the mean) and say how much of the data is left
+        # print(zscore(cycle_variables_lineage[phenotypic_variables], nan_policy='omit'))
+        # print(np.abs(zscore(cycle_variables_lineage[phenotypic_variables], nan_policy='omit')))
+        # print((np.abs(zscore(cycle_variables_lineage[phenotypic_variables], nan_policy='omit')) < 4))
+        # print((np.abs(zscore(cycle_variables_lineage[phenotypic_variables], nan_policy='omit')) < 4).all(axis=1))
+        # print(len((np.abs(zscore(cycle_variables_lineage[phenotypic_variables], nan_policy='omit')) < 4).all(axis=1)))
+        # print(len(cycle_variables_lineage[(np.abs(zscore(cycle_variables_lineage[phenotypic_variables], nan_policy='omit')) < 4).all(axis=1)]))
+        # # print((df.a - df.a.mean())/cycle_variables_lineage.std(ddof=0))
+        # exit()
+        outlier_indices = (np.abs(zscore(cycle_variables_lineage[phenotypic_variables], nan_policy='omit')) < 3).all(axis=1)
+        before = len(cycle_variables_lineage)
+        cycle_variables_lineage = cycle_variables_lineage.iloc[outlier_indices]
+        after = len(cycle_variables_lineage)
+        whats_left['lineage'].append(after / before)
+        whats_left['number_taken_out'].append(before - after)
+        if before - after > 0:
+            print('{:.2}% left of lineage'.format(after / before))
+            print('took out {} cycles'.format(before - after))
+        # print(before, after)
+        
         
         # append the cycle variables to the
         cycle_variables = cycle_variables.append(cycle_variables_lineage, ignore_index=True)
-        
-        # # This is to check that the point are where they need to be
-        # for variable in phenotypic_variables:
-        #     plt.plot(cycle_variables[cycle_variables['trap_ID'] == count][variable])
-        #     plt.axhline(cycle_variables[cycle_variables['trap_ID'] == count][variable].mean())
-        #     plt.title(variable)
-        #     plt.show()
-        #     plt.close()
     
     print('processed data:\n', cycle_variables)
     print('cleaned raw data:\n', raw_data)
+    print('percentage of data left:', len(cycle_variables) / (len(cycle_variables) + np.sum(whats_left['number_taken_out'])))
     
     # reset the index for good practice
     raw_data.reset_index(drop=True).sort_values(['lineage_ID']).to_csv(args.save_folder + '/raw_data.csv', index=False)
@@ -340,6 +384,79 @@ def main_mm(args):
     minusing(raw_data.reset_index(drop=True), ['length']).sort_values(['lineage_ID']).to_csv(args.save_folder + '/raw_data_tc.csv', index=False)
     minusing(cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args.save_folder + '/trace_centered.csv',
                                                                                                                                                    index=False)
+
+
+""" Recreate the raw data from smoothed exponential regression and see how well they compare """
+
+
+def compare_cycle_variables_to_raw_data(args):
+    import seaborn as sns
+    
+    print(args.data_origin)
+    
+    # import the labeled measured bacteria in physical units and the raw data in physical units
+    physical_units = pd.read_csv('{}/physical_units.csv'.format(args.save_folder))
+    raw_data = pd.read_csv('{}/raw_data.csv'.format(args.save_folder))
+    
+    # Check that we have the same amount of lineages in each dataframe
+    assert all([lp == lr for lp, lr in zip(physical_units.lineage_ID.unique(), raw_data.lineage_ID.unique())])
+    
+    for lin_id in physical_units.lineage_ID.unique():
+        # define the lineages we are working with
+        lineage = physical_units[physical_units['lineage_ID'] == lin_id]
+        start_indices, end_indices = get_division_indices(raw_data[raw_data['lineage_ID'] == lin_id]['length'].values)
+        
+        # Compare only the part of the raw trace that we computed the cycle variables for
+        raw_trace = raw_data[raw_data['lineage_ID'] == lin_id].sort_values('time')
+        
+        # stylistic reasons
+        sns.set_context('paper')
+        sns.set_style("ticks", {'axes.grid': True})
+        
+        recreated = []
+        print(raw_trace)
+        for start, end, alpha, x_0 in zip(start_indices, end_indices, lineage['growth_rate'], lineage['length_birth']):
+            # cycle = []
+            # print(tau, alpha, x_0)
+            
+            # get the generationtime
+            tau = raw_trace['time'].values[end] - raw_trace['time'].values[start]
+            
+            for time in np.linspace(0, tau, num=end - start + 1):
+                # print('time:', time)
+                # print('size:', x_0 * np.exp(alpha * time))
+                recreated.append(x_0 * np.exp(alpha * time))
+                # cycle.append(x_0 * np.exp(alpha * time))
+            
+            # x = np.linspace(raw_trace['time'].values[start], raw_trace['time'].values[end], num=end-start+1)
+            # print(len(x))
+            # print(len(raw_trace[['time', 'length']][start:end+1].values))
+            # plt.plot(x, raw_trace['length'][start:end+1].values, label='raw data')
+            # plt.plot(x, cycle, label='recreated from regression')
+            # plt.legend()
+            # plt.tight_layout()
+            # plt.title(args.data_origin + ': ' + str(lin_id))
+            # plt.show()
+            # plt.close()
+        
+        # recreated = [x_0 * np.exp(alpha * time) for time in np.arange(0, tau + .05, .05) for tau, alpha, x_0 in zip(lineage['generationtime'], lineage['growth_rate'], lineage['length_birth'])]
+        
+        x = raw_trace['time'][start_indices[0]:end_indices[-1] + 1]
+        # x = np.linspace(raw_trace['time'].values[start], raw_trace['time'].values[end], num=end - start + 1)
+        
+        # print(len(x), len(raw_trace['length'][start_indices[0]:end_indices[-1] + 1]))
+        # print(len(recreated))
+        # print('----')
+        print(x, raw_trace['length'][start_indices[0]:end_indices[-1] + 1], sep='\n')
+        # exit()
+        
+        plt.plot(x, raw_trace['length'][start_indices[0]:end_indices[-1] + 1], label='raw data')
+        # plt.plot(x, recreated, label='recreated from regression')
+        plt.legend()
+        plt.tight_layout()
+        plt.title(args.data_origin + ': ' + str(lin_id))
+        plt.show()
+        plt.close()
 
 
 """ Reading the raw data into a big pandas Dataframes """
@@ -363,14 +480,44 @@ def get_sm_rawdata(infiles, dataset, data, offset=0):
         else:
             a_trace = tmpdata[['timeA', 'L1']].rename(columns={'timeA': 'time', 'L1': 'length'})
             b_trace = tmpdata[['timeB', 'L2']].rename(columns={'timeB': 'time', 'L2': 'length'})
+        
+        # Are they SL or NL?
         a_trace['dataset'] = dataset
         b_trace['dataset'] = dataset
+        
+        # What trap are they in from the pooled ensemble?
         a_trace['trap_ID'] = (count + offset + 1)
         b_trace['trap_ID'] = (count + offset + 1)
+        
+        # Arbitrarily name the traces
         a_trace['trace'] = 'A'
         b_trace['trace'] = 'B'
+        
+        # Give each lineage a unique ID
         a_trace['lineage_ID'] = (count + offset + 1) * 2 - 1
         b_trace['lineage_ID'] = (count + offset + 1) * 2
+        
+        # Set the floats to be accurate to the 2nd decimal point because of the timesteps in hours
+        a_trace['time'] = a_trace['time'].round(2)
+        b_trace['time'] = b_trace['time'].round(2)
+        
+        # Check if time is going forward for the "A" trace
+        time_monotony_a = all(x < y for x, y in zip(a_trace['time'].values[:-1], a_trace['time'].values[1:]))
+        # Check if time is going forward for the "B" trace
+        time_monotony_b = all(x < y for x, y in zip(b_trace['time'].values[:-1], b_trace['time'].values[1:]))
+        if (not time_monotony_a) or (not time_monotony_b):
+            print(filename, ': Time is going backwards. We cannot use this data.')
+            print("False is bad! --", "A:", time_monotony_a, "B:", time_monotony_b)
+            
+            # reset the lineage_ID
+            offset += 1
+            
+            # # To see this in the lineage itself
+            # plt.plot(raw_lineage['time'], raw_lineage['length'])
+            # plt.show()
+            # plt.close()
+            
+            continue
         
         # the data contains all dataframes from the excel files in the directory _infiles
         data = data.append(a_trace, ignore_index=True)
@@ -473,49 +620,69 @@ def main():
     first_time = time.time()
     
     # Do all the Mother Machine data
-    for data_origin in mm_data_names:
+    for data_origin in mm_data_names + ['SM']:
         
-        parser = argparse.ArgumentParser(description='Process Mother Machine Lineage Data.')
+        data_origin = 'lambda_LB'
+        
+        # Create the arguments for this function
+        parser = argparse.ArgumentParser(description='Process Mother Machine and Sister Machine Lineage Data.')
         parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
         parser.add_argument('-raw_data', '--raw_data', metavar='', type=str, help='Raw Data location.',
                             required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/' + data_origin)
         parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
                             required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
-        parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=True)
+        
+        # We need this for the SM data processing
+        if data_origin == 'SM':
+            parser.add_argument('-SL', '--sl_infiles', metavar='', type=str,
+                                help='Location of Sister Lineage Raw Data', required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/SM/SL')
+            parser.add_argument('-NL', '--nl_infiles', metavar='', type=str,
+                                help='Location of Neighboring Lineage Raw Data', required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/SM/NL')
+        
+        # Finalize the arguments
         args = parser.parse_args()
         
+        # Make sure the folders where we place the data are created already
         create_folder(args.raw_data)
         create_folder(args.save_folder)
         
-        main_mm(args)
+        # compare_cycle_variables_to_raw_data(args)
+        
+        if data_origin == 'SM':  # Get SM data
+            # How long did it take to do the mother machine?
+            mm_time = time.time() - first_time
+            
+            # Get SM data
+            main_sm(args)
+        else:  # Get MM data
+            main_mm(args)
         
         print('*' * 200)
     
-    # How long did it take to do the mother machine?
-    mm_time = time.time() - first_time
-    
-    # Now we move onto the Sister Machine data
-    data_origin = 'SM'
-    
-    parser = argparse.ArgumentParser(description='Process Sister Machine Lineage Data.')
-    parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
-    parser.add_argument('-raw_data', '--raw_data', metavar='', type=str, help='Raw Data location.',
-                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/' + data_origin)
-    parser.add_argument('-SL', '--sl_infiles', metavar='', type=str,
-                        help='Location of Sister Lineage Raw Data', required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/SM/SL')
-    parser.add_argument('-NL', '--nl_infiles', metavar='', type=str,
-                        help='Location of Neighboring Lineage Raw Data', required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/SM/NL')
-    parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
-    parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=False)
-    args = parser.parse_args()
-    
-    create_folder(args.raw_data)
-    create_folder(args.save_folder)
-    
-    main_sm(args)
-    
-    print('*' * 200)
+    # # How long did it take to do the mother machine?
+    # mm_time = time.time() - first_time
+    #
+    # # Now we move onto the Sister Machine data
+    # data_origin = 'SM'
+    #
+    # parser = argparse.ArgumentParser(description='Process Sister Machine Lineage Data.')
+    # parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
+    # parser.add_argument('-raw_data', '--raw_data', metavar='', type=str, help='Raw Data location.',
+    #                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/' + data_origin)
+    # parser.add_argument('-SL', '--sl_infiles', metavar='', type=str,
+    #                     help='Location of Sister Lineage Raw Data', required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/SM/SL')
+    # parser.add_argument('-NL', '--nl_infiles', metavar='', type=str,
+    #                     help='Location of Neighboring Lineage Raw Data', required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/SM/NL')
+    # parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+    #                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
+    # args = parser.parse_args()
+    #
+    # create_folder(args.raw_data)
+    # create_folder(args.save_folder)
+    #
+    # main_sm(args)
+    #
+    # print('*' * 200)
     
     # How long did it take to do the mother machine?
     sm_time = time.time() - (mm_time + first_time)

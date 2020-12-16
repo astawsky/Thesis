@@ -125,7 +125,7 @@ def main(args):
         exit()
     except:
         print('creating population sampled')
-        population_sampled = shuffle_info(physical_units)
+        population_sampled = shuffle_info(physical_units, MM=args.MM)
         population_sampled.to_csv('{}/{}'.format(args.save_folder, args.population_sampled), index=False)
     
     # import/create the shuffled generations lineages

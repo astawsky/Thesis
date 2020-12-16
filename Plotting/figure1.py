@@ -189,6 +189,31 @@ def main(args):
     # plt.show()
     plt.close()
     
+
+def individuals(args):
+    # set a style on seaborn module
+    sns.set_context('paper')
+    sns.set_style("ticks", {'axes.grid': True})
+    _, ax = plt.subplots(tight_layout=True, figsize=[3, 3])
+    ergodicity_per_variable(pd.read_csv('{}/{}'.format(args.save_folder, args.ebp)), ax, symbols['time_averages'])
+    plt.title(args.data_origin)
+    plt.ylim([0, 1])
+    # save the figure
+    plt.savefig('{}/EBP.png'.format(args.figs_location), dpi=300)
+    # plt.show()
+    plt.close()
+    
+    # set a style on seaborn module
+    sns.set_context('paper')
+    sns.set_style("ticks", {'axes.grid': True})
+    _, ax = plt.subplots(tight_layout=True, figsize=[3, 3])
+    kl_div_per_variable(pd.read_csv('{}/{}'.format(args.save_folder, args.kld)), ax, symbols['physical_units'])
+    plt.title(args.data_origin)
+    # save the figure
+    plt.savefig('{}/KLD.png'.format(args.figs_location), dpi=300)
+    # plt.show()
+    plt.close()
+    
     
 if __name__ == '__main__':
     import argparse
@@ -253,6 +278,7 @@ if __name__ == '__main__':
     data_origin = 'SM'
     
     parser = argparse.ArgumentParser(description='Create the artificial lineages, ergodicity breaking parameters, and the KL Divergences.')
+    parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
     parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
                         required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
     parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',

@@ -54,6 +54,8 @@ def main(args):
                     vmin=vmin, cbar=True, ax=axes[2], mask=mask, cbar_kws={"orientation": "vertical"}, square=True, cbar_ax=cbar_ax, fmt='.2f')
         axes[2].set_title('C', x=-.2, fontsize='xx-large')
         
+        plt.suptitle(args.data_origin)
+        
         fig.tight_layout(rect=[0, 0, .9, 1])
         
         plt.savefig('{}/{}.png'.format(args.figs_location, figurename), dpi=300)
@@ -105,4 +107,4 @@ if __name__ == '__main__':
         
         main(args)
 
-        print('*'*200)#
+        print('*'*200)

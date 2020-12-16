@@ -151,6 +151,11 @@ def get_args(data_origin):
                         required=False, default='total_inter_correlations.csv')
     parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
                         required=False, default=os.path.dirname(os.path.abspath(__file__)) + '/Figures/'+data_origin)
+
+    parser.add_argument('-scc', '--scc', metavar='', type=str, help='Where the single cell correlation figures are saved.',
+                        required=False, default='single_cell_correlations')
+    parser.add_argument('-scch', '--scch', metavar='', type=str, help='Where the single cell correlation heatmap figures are saved.',
+                        required=False, default='single_cell_correlations_heatmaps')
     
     args = parser.parse_args()
     

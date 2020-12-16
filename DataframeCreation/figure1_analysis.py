@@ -8,7 +8,7 @@ import numpy as np
 """ Creates a dataframe that contains all the kl divergences """
 
 
-def kl_divergence(info, phenotypic_variables, kind, MM):
+def kl_divergence(info, phenotypic_variables, kind):
     # kl div of two univariate normal distributions
     def kl(m0, m1, c0, c1):
         return np.log(c1 / c0) + (c0 ** 2 + (m0 - m1) ** 2) / (2 * (c1 ** 2)) - .5
@@ -259,8 +259,8 @@ def main(args):
     
     print('kl_divergences')
     # Put in the kl divergences for each variable for each type of lineage
-    kl_df = kl_divergence(info, phenotypic_variables, 'Trace', MM=args.MM)
-    kl_df = kl_df.append(kl_divergence(shuffled, phenotypic_variables, 'Artificial', MM=args.MM), ignore_index=True).reset_index(drop=True)
+    kl_df = kl_divergence(info, phenotypic_variables, 'Trace')
+    kl_df = kl_df.append(kl_divergence(shuffled, phenotypic_variables, 'Artificial'), ignore_index=True).reset_index(drop=True)
     
     # save the kl_df dataframe
     kl_df.to_csv('{}/{}'.format(args.save_folder, args.kld), index=False)

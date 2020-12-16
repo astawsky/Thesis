@@ -111,8 +111,8 @@ def main1(args):
             if remove_outliers:
                 before_a = len(pair_a)
                 before_b = len(pair_b)
-                pair_a = pair_a[(np.abs(zscore(pair_a)) < 4).all(axis=1)].reset_index(drop=True)
-                pair_b = pair_b[(np.abs(zscore(pair_b)) < 4).all(axis=1)].reset_index(drop=True)
+                pair_a = pair_a[(np.abs(zscore(pair_a, nan_policy='omit')) < 4).all(axis=1)].reset_index(drop=True)
+                pair_b = pair_b[(np.abs(zscore(pair_b, nan_policy='omit')) < 4).all(axis=1)].reset_index(drop=True)
                 after_a = len(pair_a)
                 after_b = len(pair_b)
                 print('percentage that stays after removing all values farther than the fourth standard deviation:', after_a / before_a, after_b / before_b)
