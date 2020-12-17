@@ -420,6 +420,7 @@ if __name__ == '__main__':
     data_origin = 'SM'
 
     print(data_origin)
+    
 
     parser = argparse.ArgumentParser(description='Create the artificial lineages, ergodicity breaking parameters, and the KL Divergences.')
     parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
