@@ -4,177 +4,445 @@ import sys
 
 sys.path.append(r'/Users/alestawsky/PycharmProjects/Thesis')
 import os
-from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, shuffle_info, shuffle_lineage_generations, limit_lineage_length, trace_center_a_dataframe
+from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, \
+    shuffle_info, shuffle_lineage_generations, limit_lineage_length, trace_center_a_dataframe, mm_data_names
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import linregress
+
+
+# """ adds to one inputted dataframe the cumulative means, and to the the other inputed dataframe the variance and cv of the TAs of every cycle parameter per lineage length """
+#
+#
+# def expanding_mean_cumsum_and_variances(df, phenotypic_variables, expanding_mean, variance_of_expanding_mean, cum_sum_df, variance_of_cum_sum_df, label):
+#     import matplotlib.pyplot as plt
+#
+#     # create the info dataframe with values being the cumulative mean of the lineage
+#     for dataset in np.unique(df['dataset']):
+#
+#         for trap_id in np.unique(df[df['dataset'] == dataset]['trap_ID']):
+#             # Go through both traces in an SM trap
+#             for trace_id in ['A', 'B']:
+#                 # specify the trace
+#                 trace = df[(df['trap_ID'] == int(trap_id)) & (df['trace'] == trace_id) & (df['dataset'] == dataset)].copy()
+#
+#                 # add its time-average up until and including this generation
+#                 to_add = pd.DataFrame.from_dict({
+#                     'label': [label for _ in range(len(trace))],
+#                     'trap_ID': [int(trap_id) for _ in range(len(trace))],
+#                     'trace': [trace_id for _ in range(len(trace))],
+#                     'generation': [generation + 1 for generation in trace['generation']]
+#                 }).reset_index(drop=True)
+#
+#                 # plt.axhline(0, color='black')
+#                 # plt.plot(trace.sort_values('generation')['generationtime'].expanding().mean().values, label='expanding mean')
+#                 # plt.plot(trace.sort_values('generation')['generationtime'].cumsum().values, label='cumsum')
+#                 # plt.legend()
+#                 # plt.show()
+#                 # plt.close()
+#                 # exit()
+#
+#                 to_add_expanding_mean = pd.concat([trace.sort_values('generation')[phenotypic_variables].expanding().mean().reset_index(drop=True), to_add], axis=1)
+#                 to_add_cum_sum = pd.concat([trace.sort_values('generation')[phenotypic_variables].cumsum().reset_index(drop=True), to_add], axis=1)
+#                 expanding_mean = expanding_mean.append(to_add_expanding_mean, ignore_index=True).reset_index(drop=True)
+#                 cum_sum_df = cum_sum_df.append(to_add_cum_sum, ignore_index=True).reset_index(drop=True)
+#
+#                 if to_add_expanding_mean.isnull().values.any():
+#                     print('expanding mean')
+#                     print(dataset, trap_id, trace)
+#                     print(to_add_expanding_mean)
+#                     input()
+#                 if cum_sum_df.isnull().values.any():
+#                     print('expanding mean')
+#                     print(dataset, trap_id, trace)
+#                     print(cum_sum_df)
+#                     input()
+#
+#     assert not expanding_mean.isnull().values.any()
+#     assert not cum_sum_df.isnull().values.any()
+#
+#     # Calculate the cv and var over all lineages in the dataset
+#     for param in phenotypic_variables:
+#         for generation in np.arange(1, df['generation'].max()+1):
+#             time_averages = expanding_mean[(expanding_mean['label'] == label) & (expanding_mean['generation'] == generation)][param]
+#             different_walks = cum_sum_df[(cum_sum_df['label'] == label) & (cum_sum_df['generation'] == generation)][param]
+#
+#             if time_averages.isnull().values.any():
+#                 print('expanding mean')
+#                 print(time_averages)
+#                 input()
+#             if different_walks.isnull().values.any():
+#                 print('expanding mean')
+#                 print(different_walks)
+#                 input()
+#
+#             # print(time_averages)
+#             # print(different_walks)
+#             # print(time_averages.isnull().values.any())
+#             # print(different_walks.isnull().values.any())
+#             # exit()
+#
+#             # adding it to the dataframe of all coefficients of variations
+#             variance_of_expanding_mean = variance_of_expanding_mean.append(
+#                 {
+#                     'label': label,
+#                     'generation': generation,
+#                     'cv': time_averages.std() / time_averages.mean(),
+#                     'var': time_averages.var(),
+#                     'param': param
+#                 }, ignore_index=True
+#             )
+#             variance_of_cum_sum_df = variance_of_cum_sum_df.append(
+#                 {
+#                     'label': label,
+#                     'generation': generation,
+#                     'var': different_walks.var(),
+#                     'param': param
+#                 }, ignore_index=True
+#             )
+#
+#     return [expanding_mean, variance_of_expanding_mean, cum_sum_df, variance_of_cum_sum_df]
+#
+#
+# def main(args):
+#     # # import/create the trace lineages
+#     # physical_units = pd.read_csv('{}/{}'.format(args.save_folder, args.pu))
+#     #
+#     # physical_units = limit_lineage_length(physical_units, min_gens=50)
+#     # trace_centered = trace_center_a_dataframe(physical_units)
+#
+#     # print(physical_units.isnull().any())
+#     # print(trace_centered.isnull().any())
+#     # print(len(physical_units), len(trace_centered))
+#     # exit()
+#
+#     # import/create the trace lineages
+#     physical_units = pd.read_csv('{}/{}'.format(args.save_folder, args.pu))
+#
+#     # import/create the trace-centered lineages
+#     trace_centered = pd.read_csv('{}/{}'.format(args.save_folder, args.tc))
+#
+#     # import/create the population lineages
+#     try:
+#         population_sampled = pd.read_csv('{}/{}'.format(args.save_folder, args.population_sampled))
+#     except:
+#         print('creating population sampled')
+#         population_sampled = shuffle_info(physical_units, mm=args.MM)
+#         population_sampled.to_csv('{}/{}'.format(args.save_folder, args.population_sampled), index=False)
+#
+#     # import/create the shuffled generations lineages
+#     try:
+#         shuffled_generations = pd.read_csv('{}/{}'.format(args.save_folder, args.shuffled))
+#     except:
+#         print('creating shuffled generations')
+#         shuffled_generations = shuffle_lineage_generations(physical_units)
+#         shuffled_generations.to_csv('{}/{}'.format(args.save_folder, args.shuffled), index=False)
+#
+#     # The generation-shuffled trace-centered dataframe
+#     try:
+#         shuffled_tc = pd.read_csv('{}/{}'.format(args.save_folder, args.tc_shuffled))
+#     except:
+#         print('creating shuffled tc')
+#         shuffled_tc = shuffle_lineage_generations(trace_centered)
+#         shuffled_tc.to_csv('{}/{}'.format(args.save_folder, args.tc_shuffled), index=False)
+#
+#     # We keep the trap means here
+#     expanding_mean = pd.DataFrame(columns=['label', 'trap_ID', 'trace', 'generation'] + phenotypic_variables)
+#
+#     # Keep the cv per lineage length here here
+#     variance_of_expanding_mean = pd.DataFrame(columns=['label', 'generation', 'cv', 'var', 'param'])
+#
+#     # We keep the trap means here
+#     cum_sum_df = pd.DataFrame(columns=['label', 'trap_ID', 'trace', 'generation'] + phenotypic_variables)
+#
+#     # Keep the cv per lineage length here here
+#     variance_of_cum_sum_df = pd.DataFrame(columns=['label', 'generation', 'var', 'param'])
+#
+#     # Calculate the cv and TA per lineage length
+#     for kind, df in zip(['Shuffled', 'Trace', 'Population', 'Trace-Centered', 'Shuffled TC'], [shuffled_generations, physical_units, population_sampled, trace_centered, shuffled_tc]):
+#         # kind = 'Trace-Centered'
+#         # df = trace_centered
+#         print(kind)
+#         expanding_mean, variance_of_expanding_mean, cum_sum_df, variance_of_cum_sum_df = expanding_mean_cumsum_and_variances(df, phenotypic_variables, expanding_mean, variance_of_expanding_mean,
+#                                                                                                                              cum_sum_df,
+#                                                                                                                              variance_of_cum_sum_df, kind)
+#
+#     # Save the csv file
+#     expanding_mean.to_csv('{}/{}'.format(args.save_folder, args.cta), index=False)
+#
+#     # Save the csv file
+#     variance_of_expanding_mean.to_csv('{}/{}'.format(args.save_folder, args.vcta), index=False)
+#
+#     # Save the csv file
+#     cum_sum_df.to_csv('{}/{}'.format(args.save_folder, args.cum_sum), index=False)
+#
+#     # Save the csv file
+#     variance_of_cum_sum_df.to_csv('{}/{}'.format(args.save_folder, args.v_cum_sum), index=False)
+
 
 """ adds to one inputted dataframe the cumulative means, and to the the other inputed dataframe the variance and cv of the TAs of every cycle parameter per lineage length """
 
 
-def expanding_mean_cumsum_and_variances(df, phenotypic_variables, expanding_mean, variance_of_expanding_mean, cum_sum_df, variance_of_cum_sum_df, label):
-    import matplotlib.pyplot as plt
+def expanding_mean_cumsum_and_variances(df, phenotypic_variables, expanding_mean, label, out_df):
     
     # create the info dataframe with values being the cumulative mean of the lineage
-    for dataset in np.unique(df['dataset']):
+    for lin_id in df.lineage_ID.unique():
+        # print('lineage ID:', lin_id)
         
-        for trap_id in np.unique(df[df['dataset'] == dataset]['trap_ID']):
-            # Go through both traces in an SM trap
-            for trace_id in ['A', 'B']:
-                # specify the trace
-                trace = df[(df['trap_ID'] == int(trap_id)) & (df['trace'] == trace_id) & (df['dataset'] == dataset)].copy()
-                
-                # add its time-average up until and including this generation
-                to_add = pd.DataFrame.from_dict({
-                    'label': [label for _ in range(len(trace))],
-                    'trap_ID': [int(trap_id) for _ in range(len(trace))],
-                    'trace': [trace_id for _ in range(len(trace))],
-                    'generation': [generation + 1 for generation in trace['generation']]
-                }).reset_index(drop=True)
+        # specify the trace
+        lineage = df[(df['lineage_ID'] == lin_id)].copy()
+        
+        # add its time-average up until and including this generation
+        to_add = pd.DataFrame.from_dict({
+            'label': [label for _ in range(len(lineage))],
+            'lineage_ID': [int(lin_id) for _ in range(len(lineage))],
+            'generation': [generation for generation in lineage['generation']]
+        }).reset_index(drop=True)
 
-                # plt.axhline(0, color='black')
-                # plt.plot(trace.sort_values('generation')['generationtime'].expanding().mean().values, label='expanding mean')
-                # plt.plot(trace.sort_values('generation')['generationtime'].cumsum().values, label='cumsum')
-                # plt.legend()
-                # plt.show()
-                # plt.close()
-                # exit()
-                
-                to_add_expanding_mean = pd.concat([trace.sort_values('generation')[phenotypic_variables].expanding().mean().reset_index(drop=True), to_add], axis=1)
-                to_add_cum_sum = pd.concat([trace.sort_values('generation')[phenotypic_variables].cumsum().reset_index(drop=True), to_add], axis=1)
-                expanding_mean = expanding_mean.append(to_add_expanding_mean, ignore_index=True).reset_index(drop=True)
-                cum_sum_df = cum_sum_df.append(to_add_cum_sum, ignore_index=True).reset_index(drop=True)
-                
-                if to_add_expanding_mean.isnull().values.any():
-                    print('expanding mean')
-                    print(dataset, trap_id, trace)
-                    print(to_add_expanding_mean)
-                    input()
-                if cum_sum_df.isnull().values.any():
-                    print('expanding mean')
-                    print(dataset, trap_id, trace)
-                    print(cum_sum_df)
-                    input()
-                
+        # plt.axhline(0, color='black')
+        # plt.plot(trace.sort_values('generation')['generationtime'].expanding().mean().values, label='expanding mean')
+        # plt.plot(trace.sort_values('generation')['generationtime'].cumsum().values, label='cumsum')
+        # plt.legend()
+        # plt.show()
+        # plt.close()
+        # exit()
+        
+        # print(lineage.sort_values('generation')[phenotypic_variables].expanding())
+        # print(lineage.sort_values('generation')[phenotypic_variables].expanding().mean())
+        # exit()
+        
+        # Get the expanding mean and the cumulative sum, make sure they are robust to the first NaN in division ratio
+        to_add_expanding_mean = pd.concat([lineage.sort_values('generation')[phenotypic_variables].expanding().mean().reset_index(drop=True), to_add], axis=1)
+        expanding_mean = expanding_mean.append(to_add_expanding_mean, ignore_index=True).reset_index(drop=True)
+        
+        if to_add_expanding_mean.isnull().values.any():
+            raise IOError('Got NaNs in the expanding mean, meaning something is wrong')
+    
     assert not expanding_mean.isnull().values.any()
-    assert not cum_sum_df.isnull().values.any()
     
     # Calculate the cv and var over all lineages in the dataset
-    for param in phenotypic_variables:
-        for generation in np.arange(1, df['generation'].max()+1):
-            time_averages = expanding_mean[(expanding_mean['label'] == label) & (expanding_mean['generation'] == generation)][param]
-            different_walks = cum_sum_df[(cum_sum_df['label'] == label) & (cum_sum_df['generation'] == generation)][param]
-            
-            if time_averages.isnull().values.any():
-                print('expanding mean')
-                print(time_averages)
-                input()
-            if different_walks.isnull().values.any():
-                print('expanding mean')
-                print(different_walks)
-                input()
-            
-            # print(time_averages)
-            # print(different_walks)
-            # print(time_averages.isnull().values.any())
-            # print(different_walks.isnull().values.any())
-            # exit()
-            
-            # adding it to the dataframe of all coefficients of variations
-            variance_of_expanding_mean = variance_of_expanding_mean.append(
-                {
-                    'label': label,
-                    'generation': generation,
-                    'cv': time_averages.std() / time_averages.mean(),
-                    'var': time_averages.var(),
-                    'param': param
-                }, ignore_index=True
-            )
-            variance_of_cum_sum_df = variance_of_cum_sum_df.append(
-                {
-                    'label': label,
-                    'generation': generation,
-                    'var': different_walks.var(),
-                    'param': param
-                }, ignore_index=True
-            )
+    for generation in np.arange(expanding_mean.generation.min(), expanding_mean.generation.max() + 1):
+        # Get the time-averages of the lineages that have the generation we are looking for
+        time_averages = expanding_mean[(expanding_mean['label'] == label) & (expanding_mean['generation'] == generation)].copy()  # Excludes all lineages that do not reach this generation
     
-    return [expanding_mean, variance_of_expanding_mean, cum_sum_df, variance_of_cum_sum_df]
+        # Get the array of which lineages are long enough, ie. have the amount of cycles we need
+        long_enough_lineages = time_averages['lineage_ID'].unique()
+    
+        # Define the pooled ensemble of all the lineages that have at least this generation
+        pooled_ensemble = df[(df['generation'] <= generation) & (df['lineage_ID'].isin(long_enough_lineages))]
+        
+        if len(long_enough_lineages) > 1:
+            print(generation)
+            repeat = []
+            for param1 in phenotypic_variables:# np.arange(1, df['generation'].max()+1, dtype=np.float64):
+                
+                # # The mean is a linear operator
+                # if pooled_ensemble[param1].copy().mean().round(3) != time_averages[param1].copy().mean().round(3):
+                #     print('generation:', generation)
+                #     print(param1)
+                #     print('Erorrrr')
+                #     print(pooled_ensemble[param1].copy().mean().round(3), time_averages[param1].copy().mean().round(3))
+                
+                # Get the variances of each type of series
+                ta_var = (generation * ((time_averages[param1].copy() - time_averages.mean()[param1].copy()) ** 2)).sum() / (len(pooled_ensemble) - 1)
+                pool_var = ((pooled_ensemble[param1].copy() - pooled_ensemble.mean()[param1].copy()) ** 2).sum() / (len(pooled_ensemble) - 1)
+                
+                # Get the gamma we want to see
+                gamma_ta_var = ta_var / pool_var
+                
+                # Add it to the dataframe to output
+                out_df = out_df.append({
+                    'param1': param1, 'param2': param1, 'n': len(long_enough_lineages), 'generation': generation, 'gamma_ta': gamma_ta_var, 'label': label
+                }, ignore_index=True)
+                
+                # print(ta_var, pool_var)
+                # print('gamma_ta:', gamma_ta_var, sep='\n')
+                for param2 in phenotypic_variables:
+                    if param2 not in repeat:
+                        
+                        # # The mean is a linear operator
+                        # assert pooled_ensemble[param2].copy().mean().round(3) == time_averages[param2].copy().mean().round(3)
+        
+                        # Get the variances of each type of series
+                        ta_cov = (generation * ((time_averages[param1].copy() - time_averages.mean()[param1].copy()) * (time_averages[param2].copy() - time_averages.mean()[param2].copy()))).sum() / (len(pooled_ensemble) - 1)
+                        pool_var = ((pooled_ensemble[param1].copy() - pooled_ensemble.mean()[param1].copy()) * (pooled_ensemble[param2].copy() - pooled_ensemble.mean()[param2].copy())).sum() / (len(pooled_ensemble) - 1)
+        
+                        gamma_ta_cov = ta_cov / pool_var
+                
+                        # Add it to the dataframe to output
+                        out_df = out_df.append({
+                            'param1': param1, 'param2': param2, 'n': len(long_enough_lineages), 'generation': generation, 'gamma_ta': gamma_ta_cov, 'label': label
+                        }, ignore_index=True)
+                    
+                repeat.append(param1)
+            
+    print(out_df)
+
+    if out_df.isnull().values.any():
+        print('ERROR!')
+        print(out_df)
+        exit()
+    
+    return out_df
 
 
 def main(args):
-    # # import/create the trace lineages
-    # physical_units = pd.read_csv('{}/{}'.format(args.save_folder, args.pu))
-    #
-    # physical_units = limit_lineage_length(physical_units, min_gens=50)
-    # trace_centered = trace_center_a_dataframe(physical_units)
     
-    # print(physical_units.isnull().any())
-    # print(trace_centered.isnull().any())
-    # print(len(physical_units), len(trace_centered))
-    # exit()
-    
-    # import/create the trace lineages
-    physical_units = pd.read_csv('{}/{}'.format(args.save_folder, args.pu))
+    if args.data_origin == 'SM':
+        # import/create the trace lineages
+        physical_units = pd.read_csv('{}/{}'.format(args.save_folder, args.pu)).dropna()
+    else:
+        # import/create the trace lineages
+        physical_units = pd.read_csv('{}/{}'.format(args.save_folder, args.pu))
 
-    # import/create the trace-centered lineages
-    trace_centered = pd.read_csv('{}/{}'.format(args.save_folder, args.tc))
+    # # import/create the trace-centered lineages
+    # trace_centered = pd.read_csv('{}/{}'.format(args.save_folder, args.tc))
     
     # import/create the population lineages
     try:
         population_sampled = pd.read_csv('{}/{}'.format(args.save_folder, args.population_sampled))
-        exit()
     except:
         print('creating population sampled')
-        population_sampled = shuffle_info(physical_units, MM=args.MM)
+        population_sampled = shuffle_info(physical_units, mm=args.MM)
         population_sampled.to_csv('{}/{}'.format(args.save_folder, args.population_sampled), index=False)
     
-    # import/create the shuffled generations lineages
-    try:
-        shuffled_generations = pd.read_csv('{}/{}'.format(args.save_folder, args.shuffled))
-        exit()
-    except:
-        print('creating shuffled generations')
-        shuffled_generations = shuffle_lineage_generations(physical_units)
-        shuffled_generations.to_csv('{}/{}'.format(args.save_folder, args.shuffled), index=False)
-    
-    # The generation-shuffled trace-centered dataframe
-    try:
-        shuffled_tc = pd.read_csv('{}/{}'.format(args.save_folder, args.tc_shuffled))
-        exit()
-    except:
-        print('creating shuffled tc')
-        shuffled_tc = shuffle_lineage_generations(trace_centered)
-        shuffled_tc.to_csv('{}/{}'.format(args.save_folder, args.tc_shuffled), index=False)
-    
     # We keep the trap means here
-    expanding_mean = pd.DataFrame(columns=['label', 'trap_ID', 'trace', 'generation'] + phenotypic_variables)
+    expanding_mean = pd.DataFrame(columns=['label', 'lineage_ID', 'generation'] + phenotypic_variables)
     
-    # Keep the cv per lineage length here here
-    variance_of_expanding_mean = pd.DataFrame(columns=['label', 'generation', 'cv', 'var', 'param'])
-    
-    # We keep the trap means here
-    cum_sum_df = pd.DataFrame(columns=['label', 'trap_ID', 'trace', 'generation'] + phenotypic_variables)
-    
-    # Keep the cv per lineage length here here
-    variance_of_cum_sum_df = pd.DataFrame(columns=['label', 'generation', 'var', 'param'])
+    # # Keep the cv per lineage length here here
+    # variance_of_expanding_mean = pd.DataFrame(columns=['label', 'generation', 'cv', 'var', 'param'])
+    #
+    # # We keep the trap means here
+    # cum_sum_df = pd.DataFrame(columns=['label', 'lineage_ID', 'generation'] + phenotypic_variables)
+    #
+    # # Keep the cv per lineage length here here
+    # variance_of_cum_sum_df = pd.DataFrame(columns=['label', 'generation', 'var', 'param'])
+
+    # Where we keep the gammas
+    out_df = pd.DataFrame(columns=['param1', 'param2', 'n', 'generation', 'gamma_ta', 'label'])
     
     # Calculate the cv and TA per lineage length
-    for kind, df in zip(['Shuffled', 'Trace', 'Population', 'Trace-Centered', 'Shuffled TC'], [shuffled_generations, physical_units, population_sampled, trace_centered, shuffled_tc]):
-        # kind = 'Trace-Centered'
-        # df = trace_centered
+    for kind, df in zip(['Trace', 'Population'], [physical_units, population_sampled]):
+        
         print(kind)
-        expanding_mean, variance_of_expanding_mean, cum_sum_df, variance_of_cum_sum_df = expanding_mean_cumsum_and_variances(df, phenotypic_variables, expanding_mean, variance_of_expanding_mean,
-                                                                                                                             cum_sum_df,
-                                                                                                                             variance_of_cum_sum_df, kind)
+        out_df = expanding_mean_cumsum_and_variances(df, phenotypic_variables, expanding_mean, kind, out_df)
+        
+    out_df.to_csv('{}/{}'.format(args.save_folder, 'gamma_ta_corrs_per_gen.csv'), index=False)
+    # print(out_df)
+    # exit()
+    #
+    # # Save the csv file
+    # expanding_mean.to_csv('{}/{}'.format(args.save_folder, args.cta), index=False)
+    #
+    # # Save the csv file
+    # variance_of_expanding_mean.to_csv('{}/{}'.format(args.save_folder, args.vcta), index=False)
+    #
+    # # Save the csv file
+    # cum_sum_df.to_csv('{}/{}'.format(args.save_folder, args.cum_sum), index=False)
+    #
+    # # Save the csv file
+    # variance_of_cum_sum_df.to_csv('{}/{}'.format(args.save_folder, args.v_cum_sum), index=False)
+    
+    
+def plot(args):
+    gamma_ta_corrs_per_gen = pd.read_csv('{}/{}'.format(args.save_folder, 'gamma_ta_corrs_per_gen.csv'))
+    # print(gamma_ta_corrs_per_gen.columns)
+    
+    import seaborn as sns
+    # exit()
+    
+    for param1 in gamma_ta_corrs_per_gen.param1.unique():
+        # to_plot['index'] = list(to_plot.index)
+        # to_plot = to_plot[(to_plot['index'].isin(to_plot.index.values[:2]))]
+        # print(to_plot)
+        # print(to_plot['generation'].values, to_plot['gamma_ta'].values, sep='\n')
+        # sns.pointplot(to_plot['generation'].values, to_plot['gamma_ta'].values)
+        plt.axhline(0)
+        for label in ['Trace', 'Population']:
+            to_plot = gamma_ta_corrs_per_gen[(gamma_ta_corrs_per_gen['param1'] == param1) & (gamma_ta_corrs_per_gen['param2'] == param1) & (gamma_ta_corrs_per_gen['generation'] != 0) & (
+                        gamma_ta_corrs_per_gen['generation'] <= 200) & (gamma_ta_corrs_per_gen['label'] == label)].sort_values('generation').copy()
+            slope, intercept = linregress(np.log(to_plot.generation.values), np.log(to_plot.gamma_ta.values))[:2]
+            sns.scatterplot(data=to_plot, x='generation', y='gamma_ta', label=label + r': $\Gamma = '+str(intercept)[:4]+' \cdot n^{'+str(slope)[:4]+'}$')
+            # plt.plot(to_plot.generation.unique(), [intercept*(l**slope) for l in to_plot.generation.unique()])
+        # plt.ylim([0, 1])
+        plt.legend()
+        # plt.xlim(right=np.log(200))
+        plt.yscale('log')
+        plt.xscale('log')
+        plt.title(param1)
+        plt.savefig('{}/{} EB_n'.format(args.figs_location, param1), dpi=300)
+        # plt.show()
+        plt.close()
+    
+    
+if __name__ == '__main__':
+    import argparse
+    import os
+    import time
+    
+    # How long does running this take?
+    first_time = time.time()
+    
+    # # Do all the Mother Machine data
+    # for data_origin in mm_data_names:
+    #     print(data_origin)
+    #     if data_origin == 'MG1655_inLB_LongTraces':
+    #         continue
+    #
+    #     parser = argparse.ArgumentParser(description='Process Mother Machine Lineage Data.')
+    #     parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
+    #     parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+    #                         required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
+    #     parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
+    #                         required=False, default='physical_units.csv')
+    #     parser.add_argument('-pop', '--population_sampled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the population sampled lineages.',
+    #                         required=False, default='population_lineages.csv')
+    #     parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
+    #                         required=False, default='time_averages.csv')
+    #     parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
+    #                         required=False, default='trace_centered.csv')
+    #     parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=True)
+    #     parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
+    #                         required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
+    #     args = parser.parse_args()
+    #
+    #     main(args)
+    #
+    #     plot(args)
+    #     # exit()
+    #
+    #     print('*' * 200)
 
-    # Save the csv file
-    expanding_mean.to_csv('{}/{}'.format(args.save_folder, args.cta), index=False)
+    # How long did it take to do the mother machine?
+    mm_time = time.time() - first_time
 
-    # Save the csv file
-    variance_of_expanding_mean.to_csv('{}/{}'.format(args.save_folder, args.vcta), index=False)
+    data_origin = 'SM'
 
-    # Save the csv file
-    cum_sum_df.to_csv('{}/{}'.format(args.save_folder, args.cum_sum), index=False)
+    print(data_origin)
 
-    # Save the csv file
-    variance_of_cum_sum_df.to_csv('{}/{}'.format(args.save_folder, args.v_cum_sum), index=False)
+    parser = argparse.ArgumentParser(description='Create the artificial lineages, ergodicity breaking parameters, and the KL Divergences.')
+    parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
+    parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
+    parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
+                        required=False, default='physical_units.csv')
+    parser.add_argument('-pop', '--population_sampled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the population sampled lineages.',
+                        required=False, default='population_lineages.csv')
+    parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
+                        required=False, default='time_averages.csv')
+    parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
+                        required=False, default='trace_centered.csv')
+    parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=False)
+    parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
+                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
+    args = parser.parse_args()
+
+    main(args)
+    
+    plot(args)
+
+    # How long did it take to do the mother machine?
+    sm_time = time.time() - (mm_time + first_time)
+
+    print("--- took {} mins in total: {} mins for the MM data and {} mins for the SM data ---".format((time.time() - first_time) / 60, mm_time / 60, sm_time / 60))

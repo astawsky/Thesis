@@ -28,7 +28,8 @@ def main(args):
         possible_combos = sample(list(combinations(np.unique(traces_to_choose_from), 2)), number_of_control_lineage_pairs)
         
         # start them as new IDs
-        new_id = max(np.unique(info['trap_ID'])) + 1
+        new_trap_id = max(np.unique(info['trap_ID'])) + 1
+        new_lin_id = max(np.unique(info['lineage_ID'])) + 1
         
         # loop through all traces paired together for Control
         for combo in possible_combos:
@@ -39,7 +40,8 @@ def main(args):
             # define the trace
             a_trace = info[(info['trap_ID'] == int(id_a)) & (info['trace'] == 'A') & (info['dataset'] == dataset_a)].copy()
             # change the trap id to a new id number even though it is a copy of the other ID number
-            a_trace['trap_ID'] = new_id
+            a_trace['trap_ID'] = new_trap_id
+            a_trace['lineage_ID'] = new_lin_id
             # Change the dataset to Control
             a_trace['dataset'] = 'CTRL'
             # Add it to the information dataframe
@@ -47,12 +49,14 @@ def main(args):
             
             # Do the same
             b_trace = info[(info['trap_ID'] == int(id_b)) & (info['trace'] == 'B') & (info['dataset'] == dataset_b)].copy()
-            b_trace['trap_ID'] = new_id
+            b_trace['trap_ID'] = new_trap_id
+            b_trace['lineage_ID'] = new_lin_id
             b_trace['dataset'] = 'CTRL'
             info = pd.concat([info, b_trace], axis=0)
             
             # create a new ID number to add in the next loop
-            new_id += 1
+            new_trap_id += 1
+            new_lin_id += 1
         
         # Just for my preference even though we don't rely on indices
         info = info.reset_index(drop=True)
@@ -70,7 +74,7 @@ def main(args):
         trace_centered = info.copy()
         
         # We keep the trap means here
-        trace_means_df = pd.DataFrame(columns=['dataset', 'trap_ID', 'trace', 'max_gen', 'generation'] + phenotypic_variables)
+        trace_means_df = pd.DataFrame(columns=['dataset', 'trap_ID', 'trace', 'lineage_ID', 'max_gen', 'generation'] + phenotypic_variables)
         
         # specify a lineage
         for dataset in np.unique(info['dataset']):
@@ -88,6 +92,7 @@ def main(args):
                         'dataset': [dataset for _ in np.arange(len(lineage))],
                         'trap_ID': [trap_id for _ in np.arange(len(lineage))],
                         'trace': [trace for _ in np.arange(len(lineage))],
+                        'lineage_ID': [lineage['lineage_ID'].unique()[0] for _ in np.arange(len(lineage))],
                         'max_gen': [len(lineage) for _ in np.arange(len(lineage))],
                         'generation': np.arange(len(lineage))
                     }
@@ -95,7 +100,7 @@ def main(args):
                     to_add = pd.DataFrame(to_add)
                     trace_means_df = trace_means_df.append(to_add, ignore_index=True)
         
-        trace_means_df = trace_means_df[phenotypic_variables + ['dataset', 'trap_ID', 'trace', 'max_gen', 'generation']]
+        trace_means_df = trace_means_df[phenotypic_variables + ['dataset', 'trap_ID', 'trace', 'lineage_ID', 'max_gen', 'generation']]
         
         assert len(trace_centered) == len(info) == len(trace_means_df)
         

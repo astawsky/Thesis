@@ -622,8 +622,6 @@ def main():
     # Do all the Mother Machine data
     for data_origin in mm_data_names + ['SM']:
         
-        data_origin = 'lambda_LB'
-        
         # Create the arguments for this function
         parser = argparse.ArgumentParser(description='Process Mother Machine and Sister Machine Lineage Data.')
         parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
