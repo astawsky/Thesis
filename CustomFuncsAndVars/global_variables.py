@@ -304,6 +304,8 @@ symbols = {
     'model': dict(zip(phenotypic_variables, [r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'])),
     'old_var': dict(zip(phenotypic_variables, [r'$\phi_{old}$', r'$f_{old}$', r'$\Delta_{old}$', r'$\tau_{old}$', r'$x_{0, old}$', r'$x_{\tau, old}$', r'$\alpha_{old}$'])),
     'young_var': dict(zip(phenotypic_variables, [r'$\phi_{young}$', r'$f_{young}$', r'$\Delta_{young}$', r'$\tau_{young}$', r'$x_{0, young}$', r'$x_{\tau, young}$', r'$\alpha_{young}$'])),
+    'with_n_ta': dict(zip(phenotypic_variables, [r'$\overline{\phi_{n}}$', r'$\overline{f_{n}}$', r'$\overline{\Delta_{n}}$', r'$\overline{\tau_{n}}$', r'$\overline{x_{0, n}}$',
+                                                 r'$\overline{x_{\tau, n}}$', r'$\overline{\alpha_{n}}$'])),
     'unique_ta': dict(
         zip(phenotypic_variables, [r'$\overline{\phi}$', r'$\overline{f}$', r'$\overline{\Delta}$', r'$\overline{\tau}$', r'$\overline{x_0}$', r'$\overline{x_\tau}$', r'$\overline{\alpha}$'])),
 }
@@ -315,4 +317,4 @@ bounds = {
     'generationtime': [0.01, 1], 'fold_growth': [.27, 1], 'growth_rate': [.8, 1.8], 'length_birth': [.7, 4.5], 'length_final': [2.3, 8.3], 'division_ratio': [.35, .65], 'added_length': [.4, 5]
 }
 symbols_bounds = {symbols['physical_units'][key]: val for key, val in bounds.items()}
-mm_data_names = ['lambda_LB', 'MG1655_inLB_LongTraces', 'Maryam_LongTraces', 'LAC_M9']
+mm_data_names = ['lambda_LB', 'MG1655_inLB_LongTraces', 'Maryam_LongTraces']  # , 'LAC_M9'

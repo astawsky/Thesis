@@ -26,9 +26,17 @@ def main(args):
     plt.ylabel('PDF')
     plt.title(args.data_origin)
     plt.legend(title='')
-    # plt.show()
     plt.tight_layout()
-    plt.savefig('{}/Lineage Length Histogram.png'.format(args.figs_location), dpi=300)
+    plt.savefig('{}/Lineage Length Histogram pdf.png'.format(args.figs_location), dpi=300)
+    plt.close()
+
+    sns.displot(data=lengths, label=r'${}$ lineages'.format(len(lengths)) + '\n' + r'$\sim {} \pm {}$ long'.format(np.int(np.mean(lengths)), np.int(np.std(lengths))), kind="ecdf")
+    plt.xlabel('lineage lengths')
+    plt.ylabel('PDF')
+    plt.title(args.data_origin)
+    plt.legend(title='')
+    plt.tight_layout()
+    plt.savefig('{}/Lineage Length Histogram cdf.png'.format(args.figs_location), dpi=300)
     plt.close()
 
 

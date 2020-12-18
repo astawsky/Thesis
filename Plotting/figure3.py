@@ -122,3 +122,85 @@ def main(args):
     # plt.show()
     plt.savefig('{}/Figure 3.png'.format(args.figs_location), dpi=300)
     plt.close()
+    
+    
+if __name__ == '__main__':
+    import argparse
+    import os
+    import time
+    
+    # The final_generations for the different datasets
+    fg = {
+        'SM': 45,
+        'lambda_LB': 100,
+        'Maryam_LongTraces': 70,
+        'MG1655_inLB_LongTraces': 200,
+        'LAC_M9': np.nan
+    }
+    
+    # How long does running this take?
+    first_time = time.time()
+    
+    # Do all the Mother Machine data
+    for data_origin in mm_data_names:
+        print(data_origin)
+        
+        # This is because this dataset does not have enough generations for the analysis to be relevant
+        if data_origin == 'LAC_M9':
+            continue
+
+        parser = argparse.ArgumentParser(description='Process Mother Machine Lineage Data.')
+        parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
+        parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
+        parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
+                            required=False, default='physical_units.csv')
+        parser.add_argument('-pop', '--population_sampled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the population sampled lineages.',
+                            required=False, default='population_lineages.csv')
+        parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
+                            required=False, default='time_averages.csv')
+        parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
+                            required=False, default='trace_centered.csv')
+        parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=True)
+        parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
+                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
+        args = parser.parse_args()
+
+        main(args, first_generation=5, final_generation=fg[data_origin])
+
+        plot(args)
+
+        print('*' * 200)
+
+    # How long did it take to do the mother machine?
+    mm_time = time.time() - first_time
+
+    data_origin = 'SM'
+
+    print(data_origin)
+    
+    parser = argparse.ArgumentParser(description='Create the artificial lineages, ergodicity breaking parameters, and the KL Divergences.')
+    parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
+    parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
+    parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
+                        required=False, default='physical_units.csv')
+    parser.add_argument('-pop', '--population_sampled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the population sampled lineages.',
+                        required=False, default='population_lineages.csv')
+    parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
+                        required=False, default='time_averages.csv')
+    parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
+                        required=False, default='trace_centered.csv')
+    parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=False)
+    parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
+                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
+    args = parser.parse_args()
+
+    main(args, first_generation=5, final_generation=fg[data_origin])
+    
+    plot(args)
+
+    # How long did it take to do the mother machine?
+    sm_time = time.time() - (mm_time + first_time)
+
+    print("--- took {} mins in total: {} mins for the MM data and {} mins for the SM data ---".format((time.time() - first_time) / 60, mm_time / 60, sm_time / 60))
