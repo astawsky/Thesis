@@ -96,7 +96,7 @@ def main(args):
                         'max_gen': [len(lineage) for _ in np.arange(len(lineage))],
                         'generation': np.arange(len(lineage))
                     }
-                    to_add.update({param: [np.mean(lineage[param]) for _ in np.arange(len(lineage))] for param in phenotypic_variables})
+                    to_add.update({param: [lineage[param].mean() for _ in np.arange(len(lineage))] for param in phenotypic_variables})
                     to_add = pd.DataFrame(to_add)
                     trace_means_df = trace_means_df.append(to_add, ignore_index=True)
         

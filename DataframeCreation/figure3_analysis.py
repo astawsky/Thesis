@@ -5,7 +5,7 @@ import numpy as np
 from CustomFuncsAndVars.global_variables import phenotypic_variables, symbols, datasets
 
 
-def main(args):
+def main(args, final_generation):
     """ creates a dataframe that contains all the kl divergences """
     
     def kl_divergence():
@@ -74,20 +74,28 @@ def main(args):
                         ta_a = trace_means_df[(trace_means_df['dataset'] == dataset)].sort_values(['generation', 'trace', 'trap_ID'], ascending=[True, True, True])[variable_a].reset_index(drop=True)
                         ta_b = trace_means_df[(trace_means_df['dataset'] == dataset)].sort_values(['generation', 'trace', 'trap_ID'], ascending=[True, False, True])[variable_b].reset_index(drop=True)
                         
-                        a_mean = np.mean(ta_a)
-                        b_mean = np.mean(ta_b)
+                        a_mean = ta_a.mean()
+                        b_mean = ta_b.mean()
                         
-                        a_std = np.std(pu_a)
-                        b_std = np.std(pu_b)
+                        a_std = pu_a.std()
+                        b_std = pu_b.std()
                         
-                        # important from the theory
-                        assert np.mean(ta_a).round(8) == np.mean(ta_b).round(8) == np.mean(pu_a).round(8) == np.mean(pu_b).round(8)
+                        # # important from the theory, they all have to be very close
+                        # if not ta_a.mean().round(8) == ta_b.mean().round(8) == pu_a.mean().round(8) == pu_b.mean().round(8):
+                        #     print(ta_a.mean().round(8) == ta_b.mean().round(8) == pu_a.mean().round(8) == pu_b.mean().round(8))
+                        #     exit()
+                        # assert np.mean(ta_a).round(8) == np.mean(ta_b).round(8) == np.mean(pu_a).round(8) == np.mean(pu_b).round(8)
                         
                         # do it without bootstrap so we have an empirical measurement of the time-averages
-                        pu_cov = np.mean([(a - a_mean) * (b - b_mean) for a, b in zip(pu_a, pu_b)])  # np.cov(pu_a, pu_b)[0, 1]  #
-                        ta_cov = np.mean([(a - a_mean) * (b - b_mean) for a, b in zip(ta_a, ta_b)])  # np.cov(ta_a, ta_b)[0, 1]  #
-                        tc_cov = np.mean([a * b for a, b in zip(tc_a, tc_b)])  # np.cov(tc_a, tc_b)[0, 1]  #
+                        pu_cov = ((pu_a - a_mean) * (pu_b - b_mean)).mean()
+                        ta_cov = ((ta_a - a_mean) * (ta_b - b_mean)).mean()
+                        tc_cov = (tc_a * tc_b).mean()
                         actual_cov = ta_cov + tc_cov
+                        
+                        # pu_cov = np.mean([(a - a_mean) * (b - b_mean) for a, b in zip(pu_a, pu_b) if a != np.nan and b != np.nan])  # np.cov(pu_a, pu_b)[0, 1]  #
+                        # ta_cov = np.mean([(a - a_mean) * (b - b_mean) for a, b in zip(ta_a, ta_b) if a != np.nan and b != np.nan])  # np.cov(ta_a, ta_b)[0, 1]  #
+                        # tc_cov = np.mean([a * b for a, b in zip(tc_a, tc_b) if a != np.nan and b != np.nan])  # np.cov(tc_a, tc_b)[0, 1]  #
+                        # actual_cov = ta_cov + tc_cov
                         
                         pu_corr = pu_cov / (a_std * b_std)
                         tc_corr = tc_cov / (a_std * b_std)
@@ -204,11 +212,13 @@ def main(args):
     
     # Put in the kl divergences for each parameter for each type of lineage
     kld_df = kl_divergence()
-    
+
     # save the kl_df dataframe
     kld_df.to_csv('{}/{}'.format(args.save_folder, args.pair_kld), index=False)
+
+    print('KL divergences finished')
     
-    #
+    # the pair correlations
     pair_correlation, bootstrapped = pair_bacteria(bootstraps=args.bs)
     
     # save it to the Data folder
@@ -236,40 +246,6 @@ if __name__ == '__main__':
     # How long does running this take?
     first_time = time.time()
     
-    # Do all the Mother Machine data
-    for data_origin in mm_data_names:
-        print(data_origin)
-        
-        # This is because this dataset does not have enough generations for the analysis to be relevant
-        if data_origin == 'LAC_M9':
-            continue
-        
-        parser = argparse.ArgumentParser(description='Process Mother Machine Lineage Data.')
-        parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
-        parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
-        parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
-                            required=False, default='physical_units.csv')
-        parser.add_argument('-pop', '--population_sampled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the population sampled lineages.',
-                            required=False, default='population_lineages.csv')
-        parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
-                            required=False, default='time_averages.csv')
-        parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
-                            required=False, default='trace_centered.csv')
-        parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=True)
-        parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
-                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
-        args = parser.parse_args()
-        
-        main(args, first_generation=5, final_generation=fg[data_origin])
-        
-        plot(args)
-        
-        print('*' * 200)
-    
-    # How long did it take to do the mother machine?
-    mm_time = time.time() - first_time
-    
     data_origin = 'SM'
     
     print(data_origin)
@@ -278,24 +254,24 @@ if __name__ == '__main__':
     parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
     parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
                         required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
-    parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
-                        required=False, default='physical_units.csv')
-    parser.add_argument('-pop', '--population_sampled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the population sampled lineages.',
-                        required=False, default='population_lineages.csv')
-    parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
-                        required=False, default='time_averages.csv')
-    parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
-                        required=False, default='trace_centered.csv')
-    parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=False)
-    parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
-                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
+    parser.add_argument('-puc', '--puc', metavar='', type=str, help='What to name the physical units with control dataframe.',
+                        required=False, default='physical_units_with_control.csv')
+    parser.add_argument('-tac', '--tac', metavar='', type=str, help='What to name the time-averages with control dataframe.',
+                        required=False, default='time_averages_with_control.csv')
+    parser.add_argument('-tcc', '--tcc', metavar='', type=str, help='What to name the trace-centered with control dataframe.',
+                        required=False, default='trace_centered_with_control.csv')
+    parser.add_argument('-pair_kld', '--pair_kld', metavar='', type=str,
+                        help='The filename of the dataframe that contains the kullback-leibler divergences between distributions of all pair lineages.',
+                        required=False, default='kullback_leibler_divergences_for_pair_lineages.csv')
+    parser.add_argument('-lat', '--lin_and_time', metavar='', type=str, help='The filename of the dataframe that contains the model between distributions of all pair lineages over lineages and time.',
+                        required=False, default='over_lineages_and_time.csv')
+    parser.add_argument('-bs', '--bs', metavar='', type=int, help='How many bootstraps per covariance should be done?',
+                        required=False, default=0)
     args = parser.parse_args()
     
-    main(args, first_generation=5, final_generation=fg[data_origin])
-    
-    plot(args)
+    main(args, final_generation=fg[data_origin])
     
     # How long did it take to do the mother machine?
-    sm_time = time.time() - (mm_time + first_time)
+    sm_time = time.time()
     
-    print("--- took {} mins in total: {} mins for the MM data and {} mins for the SM data ---".format((time.time() - first_time) / 60, mm_time / 60, sm_time / 60))
+    print("--- took {} mins in total (SM Data) ---".format((time.time() - sm_time) / 60))

@@ -1,39 +1,141 @@
 #!/usr/bin/env bash
 
-from CustomFuncsAndVars.global_variables import phenotypic_variables, shuffle_info, mm_data_names
+from CustomFuncsAndVars.global_variables import phenotypic_variables, mm_data_names, symbols, seaborn_preamble, shuffle_info
 import pandas as pd
 import numpy as np
-from hurst import compute_Hc, random_walk
 import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import linregress
+
+
+def hurst(lineage):
+    
+    """ This is following the notation and equations on Wikipedia """
+    
+    # How many cycles/generations in the lineages
+    total_length = len(lineage)
+
+    # Minimum window size possible
+    min_ws = 10
+    max_ws = total_length / 2
+    
+    # What are the window sizes? In order for it not to take a long time we skip two
+    window_sizes = np.arange(min_ws, max_ws, 1, dtype=int)
+    # window_sizes = [int(np.floor(total_length / (2 ** l))) for l in np.arange(np.floor(np.log(total_length) / np.log(2)))]
+    
+    # print(window_sizes)
+    # exit()
+    
+    # The regression of the log of this and the log of the window sizes is the Hurst exponent
+    y_to_regress = []
+    
+    for ws in window_sizes:
+        
+        # The windowed/partial time-series
+        partial_time_series = [lineage.iloc[starting_point:starting_point+ws].values for starting_point in np.arange(0, total_length, 2, dtype=int)[:-1]]
+        # partial_time_series = [lineage.iloc[starting_point:starting_point+ws].values for starting_point in np.arange(0, total_length, ws, dtype=int)[:-1]]
+
+        # This is where we keep the rescaled ranges for all partial time-series
+        rescaled_ranges_array = []
+        
+        # Go through all the partial time-series
+        for ts in partial_time_series:
+            # centered time-series
+            y = ts - (ts.sum() / ws)
+            
+            # Their walk around the mean
+            walk = y.cumsum()
+            
+            # The absolute range
+            ts_range = walk.max() - walk.min()
+            
+            # For scaling
+            ts_std = walk.std()
+            
+            if ts_std == 0:
+                print('standard div of this partial time-series was zero, so we exclude it from the average')
+                continue
+            
+            # Scaled absolute range
+            ts_rescaled_range = ts_range / ts_std
+            
+            # add it to the array
+            rescaled_ranges_array.append(ts_rescaled_range)
+            
+            # print(y, walk, ts_range, ts_std, ts_rescaled_range, sep='\n')
+            # exit()
+            
+        # # Just a check... Unless the ts_std = 0
+        # assert len(rescaled_ranges_array) == len(partial_time_series)
+        
+        # Get the average rescaled range
+        average_rescaled_range = np.array(rescaled_ranges_array).sum() / len(rescaled_ranges_array)
+        
+        # Append it to the array
+        y_to_regress.append(average_rescaled_range)
+        
+    # Convert it to a numpy array
+    y_to_regress = np.array(y_to_regress)
+    
+    # Get the linear regression parameters
+    slope, intercept, _, _, std_err = linregress(np.log(window_sizes), np.log(y_to_regress))
+    
+    return [window_sizes, y_to_regress, slope, intercept, std_err]
 
 
 def main(args):
     # import the labeled measured bacteria in physical units
-    physical_units = pd.read_csv('{}/{}'.format(args.save_folder, args.pu))
+    physical_units = pd.read_csv('{}/physical_units_with_outliers.csv'.format(args.save_folder))
+    artificial_lineages = shuffle_info(physical_units, mm=True)
+
+    seaborn_preamble()
     
     for variable in phenotypic_variables:
     
         print(variable)
+        
+        # Where we will keep the hurst exponents
+        hurst_hist = {'Trace': [], 'Artificial': []}
+        int_hist = {'Trace': [], 'Artificial': []}
+        
+        fig, ax = plt.subplots(tight_layout=True)
+        
         for lin_id in physical_units.lineage_ID.unique():
             
-            lineage = physical_units[physical_units['lineage_ID'] == lin_id]
+            trace = physical_units[physical_units['lineage_ID'] == lin_id][variable].dropna()
+            artificial = artificial_lineages[artificial_lineages['lineage_ID'] == lin_id][variable].dropna()#.reset_indices(drop=True)
+            # artificial = pd.Series(np.random.normal(0, 1, len(trace)))
             
-            if len(lineage) > 100:
-                # Evaluate Hurst equation
-                H, c, data = compute_Hc(lineage[variable], kind='price', simplified=True)
-                
-                # # Plot
-                # f, ax = plt.subplots()
-                # ax.plot(data[0], c * data[0] ** H, color="deepskyblue")
-                # ax.scatter(data[0], data[1], color="purple")
-                # ax.set_xscale('log')
-                # ax.set_yscale('log')
-                # ax.set_xlabel('Time interval')
-                # ax.set_ylabel('R/S ratio')
-                # ax.grid(True)
-                # plt.show()
-                
-                print("H={:.4f}, c={:.4f}".format(H, c))
+            window_sizes, y_to_regress, slope, intercept, std_err = hurst(trace)
+            
+            hurst_hist['Trace'].append(slope)
+            int_hist['Trace'].append(intercept)
+
+            plt.plot(window_sizes, y_to_regress, color='blue')
+            # plt.plot(window_sizes, [np.exp(intercept) * (ws ** slope) for ws in window_sizes], ls='--', label=r'Trace: $H = {:.2} \pm {:.2}$'.format(slope, std_err))
+            
+            window_sizes, y_to_regress, slope, intercept, std_err = hurst(artificial)
+            
+            hurst_hist['Artificial'].append(slope)
+            int_hist['Artificial'].append(intercept)
+        
+            plt.plot(window_sizes, y_to_regress, color='orange')
+            # plt.plot(window_sizes, [np.exp(intercept) * (ws ** slope) for ws in window_sizes], ls='--', label=r'Art.: $H = {:.2} \pm {:.2}$'.format(slope, std_err))
+
+        trace_avg_h = np.array(hurst_hist['Trace']).mean()
+        artificial_avg_h = np.array(hurst_hist['Artificial']).mean()
+        trace_avg_int = np.array(int_hist['Trace']).mean()
+        artificial_avg_int = np.array(int_hist['Artificial']).mean()
+        plt.plot(np.arange(3, 201), [np.exp(trace_avg_int) * (ws ** trace_avg_h) for ws in np.arange(3, 201)], ls='--', color='grey', lw=2)
+        plt.plot(np.arange(3, 201), [np.exp(artificial_avg_int) * (ws ** artificial_avg_h) for ws in np.arange(3, 201)], ls='--', color='black', lw=2)
+        plt.title(symbols['physical_units'][variable])
+        plt.yscale('log')
+        plt.xscale('log')
+        ax.annotate('Trace: {:.2}\nArtificial: {:.2}'.format(trace_avg_h, artificial_avg_h), xy=(.5, .72), xycoords=ax.transAxes, fontsize=13, ha='center', va='bottom', color='red',
+                    bbox=dict(boxstyle='round,pad=0.2', fc='yellow', alpha=0.7))
+        # plt.legend()
+        plt.show()
+        plt.close()
             
         print('*'*200)
 

@@ -94,7 +94,7 @@ def get_division_indices(raw_trace):
 """We use this for linear regression in the cycle parameter process """
 
 
-def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, trap_id, fit_the_lengths):
+def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, lin_id, fit_the_lengths):
     # Make sure everything is aligned
     assert len(start_indices) == len(cycle_durations) == len(data_points_per_cycle) == len(end_indices)
     
@@ -124,7 +124,7 @@ def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, 
         cycle['fold_growth'] = cycle['growth_rate'] * cycle['generationtime']
         
         # Categorical labels to identify lineage and a cycle in it
-        cycle['lineage_ID'] = trap_id
+        cycle['lineage_ID'] = int(lin_id)
         cycle['generation'] = gen
         
         # Do the length at birth and length at division come straight from the data or from the regression?
@@ -164,8 +164,22 @@ def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, 
         # plt.plot(domain, np.exp(range))
         # plt.show()
         # plt.close()
+
+    # Without throwing away outliers
+    without_nans = cycle_variables_lineage.copy().reset_index(drop=True)
+
+    # Throwing away outliers
+    cycle_variables_lineage[phenotypic_variables] = cycle_variables_lineage[phenotypic_variables].where(
+        cycle_variables_lineage[phenotypic_variables] < ((3 * cycle_variables_lineage[phenotypic_variables].std()) + cycle_variables_lineage[phenotypic_variables].mean()),
+        other=np.nan
+    )
     
-    return cycle_variables_lineage.reset_index(drop=True)
+    # make them integers
+    cycle_variables_lineage['lineage_ID'] = int(lin_id)
+    cycle_variables_lineage['generation'] = np.arange(len(cycle_variables_lineage), dtype=int)
+    cycle_variables_lineage = cycle_variables_lineage.sort_values('generation')
+    
+    return [cycle_variables_lineage.reset_index(drop=True), without_nans]
 
 
 """ Create the csv files for physical, trace-centered, and trap-centered units for MM data of a certain type """
@@ -185,6 +199,7 @@ def main_mm(args):
     
     # the dataframe for our variables
     cycle_variables = pd.DataFrame(columns=phenotypic_variables + ['lineage_ID', 'generation'])
+    with_outliers_cycle_variables = pd.DataFrame(columns=phenotypic_variables + ['lineage_ID', 'generation'])
     
     # The dataframe for our raw data lineages
     raw_data = pd.DataFrame(columns=['time', 'length', 'lineage_ID'])
@@ -235,7 +250,7 @@ def main_mm(args):
     ]
     
     # When we take out the outliers we keep trace of how many cycles we lost wrt. the lineage and the pooled ensemble
-    whats_left = {'lineage': [], 'number_taken_out': []}
+    whats_left = {'variable': [], 'lineage': [], 'number_taken_out': []}
     
     # In case we can't use some files we want the lineage IDs to be in integer order
     offset = 0
@@ -348,41 +363,30 @@ def main_mm(args):
         data_points_per_cycle = np.array(np.rint(cycle_durations / .05) + np.ones_like(cycle_durations), dtype=int)
         
         # add the cycle variables to the overall dataframe
-        cycle_variables_lineage = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, int(count - offset), fit_the_lengths=True)
-        
-        # Take out the outliers (over 4 stds from the mean) and say how much of the data is left
-        # print(zscore(cycle_variables_lineage[phenotypic_variables], nan_policy='omit'))
-        # print(np.abs(zscore(cycle_variables_lineage[phenotypic_variables], nan_policy='omit')))
-        # print((np.abs(zscore(cycle_variables_lineage[phenotypic_variables], nan_policy='omit')) < 4))
-        # print((np.abs(zscore(cycle_variables_lineage[phenotypic_variables], nan_policy='omit')) < 4).all(axis=1))
-        # print(len((np.abs(zscore(cycle_variables_lineage[phenotypic_variables], nan_policy='omit')) < 4).all(axis=1)))
-        # print(len(cycle_variables_lineage[(np.abs(zscore(cycle_variables_lineage[phenotypic_variables], nan_policy='omit')) < 4).all(axis=1)]))
-        # # print((df.a - df.a.mean())/cycle_variables_lineage.std(ddof=0))
-        # exit()
-        outlier_indices = (np.abs(zscore(cycle_variables_lineage[phenotypic_variables], nan_policy='omit')) < 3).all(axis=1)
-        before = len(cycle_variables_lineage)
-        cycle_variables_lineage = cycle_variables_lineage.iloc[outlier_indices]
-        after = len(cycle_variables_lineage)
-        whats_left['lineage'].append(after / before)
-        whats_left['number_taken_out'].append(before - after)
-        if before - after > 0:
-            print('{:.2}% left of lineage'.format(after / before))
-            print('took out {} cycles'.format(before - after))
-        # print(before, after)
-        
+        cycle_variables_lineage, with_outliers = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, int(count - offset), fit_the_lengths=True)
         
         # append the cycle variables to the
         cycle_variables = cycle_variables.append(cycle_variables_lineage, ignore_index=True)
+        with_outliers_cycle_variables = with_outliers_cycle_variables.append(with_outliers, ignore_index=True)
     
     print('processed data:\n', cycle_variables)
     print('cleaned raw data:\n', raw_data)
-    print('percentage of data left:', len(cycle_variables) / (len(cycle_variables) + np.sum(whats_left['number_taken_out'])))
+    
+    for variable in phenotypic_variables:
+        if variable == 'division_ratio':
+            print(variable, cycle_variables[variable].count() / (len(cycle_variables[variable]) - len(cycle_variables['lineage_ID'].unique())))
+        else:
+            print(variable, cycle_variables[variable].count() / len(cycle_variables[variable]))
     
     # reset the index for good practice
     raw_data.reset_index(drop=True).sort_values(['lineage_ID']).to_csv(args.save_folder + '/raw_data.csv', index=False)
-    cycle_variables.reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args.save_folder + '/physical_units.csv', index=False)
     minusing(raw_data.reset_index(drop=True), ['length']).sort_values(['lineage_ID']).to_csv(args.save_folder + '/raw_data_tc.csv', index=False)
+    cycle_variables.reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args.save_folder + '/physical_units.csv', index=False)
     minusing(cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args.save_folder + '/trace_centered.csv',
+                                                                                                                                                   index=False)
+    
+    with_outliers_cycle_variables.reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args.save_folder + '/physical_units_with_outliers.csv', index=False)
+    minusing(with_outliers_cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args.save_folder + '/trace_centered_with_outliers.csv',
                                                                                                                                                    index=False)
 
 
@@ -557,6 +561,7 @@ def main_sm(args):
     
     # The dataframe for our variables
     cycle_variables = pd.DataFrame(columns=order)
+    with_outliers_cycle_variables = pd.DataFrame(columns=order)
     
     for lineage_id in raw_data.lineage_ID.unique():
         print('Lineage ID:', lineage_id)
@@ -589,23 +594,39 @@ def main_sm(args):
         data_points_per_cycle = np.array(np.rint(cycle_durations / .05) + np.ones_like(cycle_durations), dtype=int)
         
         # add the cycle variables to the overall dataframe
-        cycle_variables_lineage = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, int(lineage_id), fit_the_lengths=True)
+        cycle_variables_lineage, with_outliers = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, int(lineage_id), fit_the_lengths=True)
         
         # Add the SM categorical variables
         cycle_variables_lineage['trap_ID'] = raw_lineage['trap_ID'].unique()[0]
         cycle_variables_lineage['trace'] = raw_lineage['trace'].unique()[0]
         cycle_variables_lineage['dataset'] = raw_lineage['dataset'].unique()[0]
         
+        with_outliers['trap_ID'] = raw_lineage['trap_ID'].unique()[0]
+        with_outliers['trace'] = raw_lineage['trace'].unique()[0]
+        with_outliers['dataset'] = raw_lineage['dataset'].unique()[0]
+        
         # Append the cycle variables to the processed dataframe
         cycle_variables = cycle_variables.append(cycle_variables_lineage[order], ignore_index=True)
+        with_outliers_cycle_variables = with_outliers_cycle_variables.append(with_outliers, ignore_index=True)
     
     print('processed data:\n', cycle_variables)
+    
     print('cleaned raw data:\n', raw_data)
+    
+    for variable in phenotypic_variables:
+        if variable == 'division_ratio':
+            print(variable, cycle_variables[variable].count() / (len(cycle_variables[variable]) - len(cycle_variables['lineage_ID'].unique())))
+        else:
+            print(variable, cycle_variables[variable].count() / len(cycle_variables[variable]))
     
     # reset the index for good practice
     cycle_variables.reset_index(drop=True).sort_values(['dataset', 'trap_ID', 'trace', 'generation']).to_csv(args.save_folder + '/physical_units.csv', index=False)
     minusing(cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['dataset', 'trap_ID', 'trace', 'generation']).to_csv(
         args.save_folder + '/trace_centered.csv', index=False)
+    
+    with_outliers_cycle_variables.reset_index(drop=True).sort_values(['dataset', 'trap_ID', 'trace', 'generation']).to_csv(args.save_folder + '/physical_units_with_outliers.csv', index=False)
+    minusing(with_outliers_cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['dataset', 'trap_ID', 'trace', 'generation']).to_csv(
+        args.save_folder + '/trace_centered_with_outliers.csv', index=False)
 
 
 """ Create the csv files for physical, trace-centered, and trap-centered units for MM and SM data """
