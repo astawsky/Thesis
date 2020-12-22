@@ -107,7 +107,7 @@ def main(args):
         return [trace_centered, trace_means_df]
     
     # read the csv file where we keep the data
-    from_lineage_processing = pd.read_csv('{}/physical_units.csv'.format(args.save_folder))
+    from_lineage_processing = pd.read_csv('{}/physical_units_with_outliers.csv'.format(args.save_folder))
     
     # add the control dataset to the measured and labeled data and cut equalize the lineage length betwen two pair lineages by using the least longest length between the lineages.
     physical_units = add_control(from_lineage_processing, args.number_of_control_lineage_pairs)

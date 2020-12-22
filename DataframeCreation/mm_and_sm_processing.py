@@ -202,7 +202,7 @@ def main_mm(args):
     with_outliers_cycle_variables = pd.DataFrame(columns=phenotypic_variables + ['lineage_ID', 'generation'])
     
     # The dataframe for our raw data lineages
-    raw_data = pd.DataFrame(columns=['time', 'length', 'lineage_ID'])
+    raw_data = pd.DataFrame(columns=['time', 'length', 'lineage_ID', 'filename'])
     
     # filenames_with_nans = [
     #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_09252019_nd041xy02ch03R.csv',
@@ -296,6 +296,7 @@ def main_mm(args):
         
         # Make the time-steps accurate to two decimal points
         raw_lineage['time'] = raw_lineage['time'].round(2)
+        raw_lineage['filename'] = filename.split('/')[-1]
         raw_lineage = raw_lineage.reset_index(drop=True)
         
         # Add the trap ID
@@ -643,6 +644,8 @@ def main():
     # Do all the Mother Machine data
     for data_origin in mm_data_names + ['SM']:
         
+        data_origin = 'lambda_LB'
+        
         # Create the arguments for this function
         parser = argparse.ArgumentParser(description='Process Mother Machine and Sister Machine Lineage Data.')
         parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
@@ -677,6 +680,8 @@ def main():
             main_mm(args)
         
         print('*' * 200)
+        
+        exit()
     
     # # How long did it take to do the mother machine?
     # mm_time = time.time() - first_time

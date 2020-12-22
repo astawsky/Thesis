@@ -295,6 +295,8 @@ def cut_uneven_pairs(info):
 
 
 import pandas as pd
+import seaborn as sns
+
 phenotypic_variables = ['fold_growth', 'division_ratio', 'added_length', 'generationtime', 'length_birth', 'length_final', 'growth_rate']
 symbols = {
     'physical_units': dict(zip(phenotypic_variables, [r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'])),
@@ -318,3 +320,4 @@ bounds = {
 }
 symbols_bounds = {symbols['physical_units'][key]: val for key, val in bounds.items()}
 mm_data_names = ['lambda_LB', 'MG1655_inLB_LongTraces', 'Maryam_LongTraces']  # , 'LAC_M9'
+cmap = sns.color_palette('tab10')

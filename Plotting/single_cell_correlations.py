@@ -215,9 +215,17 @@ def main(args):
     physical_units = pd.read_csv('{}/{}'.format(args.save_folder, args.pu)).sort_values(['lineage_ID'])
     trace_centered = pd.read_csv('{}/{}'.format(args.save_folder, args.tc)).sort_values(['lineage_ID'])
     time_averages = pd.read_csv('{}/{}'.format(args.save_folder, args.ta)).sort_values(['lineage_ID'])
+
+    ##### CAREFUL WITH THIS! ######
+    
+    time_averages = time_averages[time_averages['growth_rate'] > 1.8]
+
+    ###############################
+    
     unique_ta = time_averages[['lineage_ID', 'max_gen', 'fold_growth',
                                'division_ratio', 'added_length', 'generationtime', 'length_birth',
                                'length_final', 'growth_rate']].drop_duplicates().sort_values(['lineage_ID'])
+    
     # physical_units = pd.read_csv('{}/{}'.format(args.save_folder, args.pu)).sort_values(['dataset', 'trap_ID', 'trace'], ascending=[1, 1, 1])
     # trace_centered = pd.read_csv('{}/{}'.format(args.save_folder, args.tc)).sort_values(['dataset', 'trap_ID', 'trace'], ascending=[1, 1, 1])
     # time_averages = pd.read_csv('{}/{}'.format(args.save_folder, args.ta)).sort_values(['dataset', 'trap_ID', 'trace'], ascending=[1, 1, 1])
@@ -225,9 +233,9 @@ def main(args):
     #                            'division_ratio', 'added_length', 'generationtime', 'length_birth',
     #                            'length_final', 'growth_rate']].drop_duplicates().sort_values(['dataset', 'trap_ID', 'trace'], ascending=[1, 1, 1])
 
-    previous_division_scatterplots(trace_centered, 'trace_centered', 'division_ratio', 'growth_rate', suffix=' prev and after')
-    previous_division_scatterplots(trace_centered, 'trace_centered', 'division_ratio', 'generationtime', suffix=' prev and after')
-    previous_division_scatterplots(trace_centered, 'trace_centered', 'division_ratio', 'fold_growth', suffix=' prev and after')
+    previous_division_scatterplots(trace_centered, 'trace_centered', 'division_ratio', 'growth_rate', suffix=' prev and after HIGH GROWTH RATE')
+    previous_division_scatterplots(trace_centered, 'trace_centered', 'division_ratio', 'generationtime', suffix=' prev and after HIGH GROWTH RATE')
+    previous_division_scatterplots(trace_centered, 'trace_centered', 'division_ratio', 'fold_growth', suffix=' prev and after HIGH GROWTH RATE')
     # exit()
     
     # print()
@@ -235,31 +243,31 @@ def main(args):
     # heatmap_analogs(trace_centered, 'trace_centered', variables=['fold_growth', 'division_ratio', 'generationtime', 'length_birth', 'growth_rate'], suffix=' main ones')
     # heatmap_analogs(unique_ta, 'unique_ta', variables=['fold_growth', 'division_ratio', 'generationtime', 'length_birth', 'growth_rate'], suffix=' main ones')
     # put_all_graphs_into_a_big_grid(physical_units, 'physical_units', variables=['fold_growth', 'length_birth'], remove_outliers=True, suffix=' phi and x')
-    put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', variables=['fold_growth', 'length_birth'], remove_outliers=False, suffix=' phi and x')
+    put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', variables=['fold_growth', 'length_birth'], remove_outliers=False, suffix=' phi and x HIGH GROWTH RATE')
     # put_all_graphs_into_a_big_grid(trace_centered, 'trace_centered', variables=['fold_growth', 'length_birth'], suffix=' phi and x')
-    put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', variables=['generationtime', 'growth_rate'], remove_outliers=False, suffix=' tau and alpha')
-    put_all_graphs_into_a_big_grid(trace_centered, 'trace_centered', variables=['generationtime', 'growth_rate'], remove_outliers=False, suffix=' tau and alpha')
+    put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', variables=['generationtime', 'growth_rate'], remove_outliers=False, suffix=' tau and alpha HIGH GROWTH RATE')
+    put_all_graphs_into_a_big_grid(trace_centered, 'trace_centered', variables=['generationtime', 'growth_rate'], remove_outliers=False, suffix=' tau and alpha HIGH GROWTH RATE')
     # put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', variables=['fold_growth', 'length_birth'], remove_outliers=True, suffix=' phi and ln x')
     
     # exit()
     
     print('pu')
-    heatmap_analogs(physical_units, 'physical_units', variables=phenotypic_variables)
+    heatmap_analogs(physical_units, 'physical_units', variables=phenotypic_variables, suffix=' HIGH GROWTH RATE')
     print('tc')
-    heatmap_analogs(trace_centered, 'trace_centered', variables=phenotypic_variables)
+    heatmap_analogs(trace_centered, 'trace_centered', variables=phenotypic_variables, suffix=' HIGH GROWTH RATE')
     print('ta')
-    heatmap_analogs(time_averages, 'time_averages', variables=phenotypic_variables)
+    heatmap_analogs(time_averages, 'time_averages', variables=phenotypic_variables, suffix=' HIGH GROWTH RATE')
     print('ta unique')
-    heatmap_analogs(unique_ta, 'unique_ta', variables=phenotypic_variables)
+    heatmap_analogs(unique_ta, 'unique_ta', variables=phenotypic_variables, suffix=' HIGH GROWTH RATE')
     
     print('pu')
-    put_all_graphs_into_a_big_grid(physical_units, 'physical_units', remove_outliers=False)
+    put_all_graphs_into_a_big_grid(physical_units, 'physical_units', remove_outliers=False, suffix=' HIGH GROWTH RATE')
     print('tc')
-    put_all_graphs_into_a_big_grid(trace_centered, 'trace_centered', remove_outliers=False)
+    put_all_graphs_into_a_big_grid(trace_centered, 'trace_centered', remove_outliers=False, suffix=' HIGH GROWTH RATE')
     print('ta')
-    put_all_graphs_into_a_big_grid(time_averages, 'time_averages', remove_outliers=False)
+    put_all_graphs_into_a_big_grid(time_averages, 'time_averages', remove_outliers=False, suffix=' HIGH GROWTH RATE')
     print('unique ta')
-    put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', remove_outliers=False)
+    put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', remove_outliers=False, suffix=' HIGH GROWTH RATE')
 
 
 # parser = argparse.ArgumentParser(description='Dataframes containing: KL divergences, Population physical_units lineages, and the ergodicity breaking parameter for both kinds of lineages.')
@@ -297,6 +305,8 @@ if __name__ == '__main__':
     # Do all the Mother Machine data
     for data_origin in mm_data_names:
         
+        data_origin = 'lambda_LB'
+        
         parser = argparse.ArgumentParser(description='Process Mother Machine Lineage Data.')
         parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
         parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
@@ -320,6 +330,8 @@ if __name__ == '__main__':
         main(args)
         
         print('*' * 200)
+        
+        exit()
     
     # How long did it take to do the mother machine?
     mm_time = time.time() - first_time
