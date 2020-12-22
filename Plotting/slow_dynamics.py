@@ -661,6 +661,8 @@ if __name__ == '__main__':
         
     exit()
     
+    
+    
     # How long did it take to do the mother machine?
     mm_time = time.time() - first_time
     
