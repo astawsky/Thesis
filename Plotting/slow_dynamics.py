@@ -321,7 +321,7 @@ def dfa_short(lineage, min_ws, max_ws=None, window_size_steps=5, steps_between_w
     #     print(mse_array)
     #     print(np.log(mse_array))
     #     exit()
-        
+    
     # Get the linear regression parameters
     slope, intercept, _, _, std_err = linregress(np.log(window_sizes), np.log(mse_array))
     
@@ -480,11 +480,11 @@ def recreate_loglog_plots(loglog_plot_recreation, figure_folder, individuals=Fal
                     if relevant.loc[ind]['dataset'] == 'Trace':
                         # The constant artificial color
                         color = cmap[0]
-
+                        
                         # Add the analysis curve to the array of its dataset for the population regression
                         wss_array['Trace'] = np.append(wss_array['Trace'], wss)
                         ytr_array['Trace'] = np.append(ytr_array['Trace'], ytr)
-
+                        
                         # Include it in the legend but not more than once
                         if set_trace_legend:
                             plt.plot(wss, ytr, color=color, marker='x')
@@ -495,7 +495,7 @@ def recreate_loglog_plots(loglog_plot_recreation, figure_folder, individuals=Fal
                     elif relevant.loc[ind]['dataset'] == 'Artificial':
                         # The constant artificial color
                         color = cmap[1]
-                    
+                        
                         # Add the analysis curve to the array of its dataset for the population regression
                         wss_array['Artificial'] = np.append(wss_array['Artificial'], wss)
                         ytr_array['Artificial'] = np.append(ytr_array['Artificial'], ytr)
@@ -510,7 +510,7 @@ def recreate_loglog_plots(loglog_plot_recreation, figure_folder, individuals=Fal
                     # We do not want to see the white noise
                     else:
                         continue
-
+                
                 # Get the linear regression of all the trajectories pooled for each dataset
                 slope_trace, intercept_trace, _, _, std_err_trace = linregress(np.log(np.array(wss_array['Trace']).flatten()), np.log(np.array(ytr_array['Trace']).flatten()))
                 slope_art, intercept_art, _, _, std_err_art = linregress(np.log(np.array(wss_array['Artificial']).flatten()), np.log(np.array(ytr_array['Artificial']).flatten()))
@@ -535,6 +535,23 @@ def recreate_loglog_plots(loglog_plot_recreation, figure_folder, individuals=Fal
 
 
 def main(args):
+    # # the parameters of the scaling analysis
+    # if args.data_origin == 'SM':
+    #     min_ws = 5
+    #     max_ws = None
+    #     window_size_steps = 1
+    #     steps_between_windows = 1
+    # else:
+    #     min_ws = 5
+    #     max_ws = None
+    #     window_size_steps = 2
+    #     steps_between_windows = 3
+
+    min_ws = 5
+    max_ws = None
+    window_size_steps = 2
+    steps_between_windows = 3
+    
     # import the labeled measured bacteria in physical units
     physical_units = pd.read_csv('{}/physical_units_with_outliers.csv'.format(args.save_folder))
     artificial_lineages = shuffle_info(physical_units, mm=True)
@@ -561,22 +578,21 @@ def main(args):
             artificial = artificial_lineages[artificial_lineages['lineage_ID'] == lin_id][variable].dropna()  # .reset_indices(drop=True)
             white_noise = pd.Series(np.random.normal(0, 1, len(trace)))
             # noisy_wave = pd.Series([np.sin()])
+
+            # If we have enough points to get a slope using this lineage
+            if len(np.arange(min_ws, len(trace) / 2, window_size_steps, dtype=int)) < 3:
+                print('not enough lineages')
+                continue
             
             # What type of lineages do we want to look at?
             types_of_lineages, names_types_of_lineages = [trace, artificial, white_noise], ["Trace", "Artificial", "White Noise"]
             
             for lineage, dataset in zip(types_of_lineages, names_types_of_lineages):
                 for scaling_analysis, kind in zip([dfa_short, mean_short], ['dfa (short)', 'mean (short)']):
-    
-                    # scaling_analysis = dfa_short
-                    # lin_id = 27.0
-                    # variable = 'division_ratio'
-                    # lineage = trace
-                    #
-                    # print()
                     
                     # Calculate the scaling of this "lineage" using this "kind" of analysis
-                    window_sizes, y_to_regress, slope, intercept, std_err = scaling_analysis(lineage, min_ws=5, max_ws=None, window_size_steps=2, steps_between_windows=3)
+                    window_sizes, y_to_regress, slope, intercept, std_err = scaling_analysis(lineage, min_ws=min_ws, max_ws=max_ws, window_size_steps=window_size_steps,
+                                                                                             steps_between_windows=steps_between_windows)
                     
                     # Save it
                     histogram_of_regression = histogram_of_regression.append(
@@ -630,38 +646,34 @@ if __name__ == '__main__':
     # How long does running this take?
     first_time = time.time()
     
-    # Do all the Mother Machine data
-    for data_origin in mm_data_names:
-        print(data_origin)
-        
-        # data_origin == 'lambda_LB'
-        
-        if data_origin == 'lambda_LB':
-            continue
-        
-        parser = argparse.ArgumentParser(description='Process Mother Machine Lineage Data.')
-        parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
-        parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
-        parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
-                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
-        args = parser.parse_args()
-        
-        # main(args)
-        
-        df = pd.read_csv('{}/scaling_exponents.csv'.format(args.save_folder))
-
-        plot_histograms_of_scaling_exponents(args.figs_location, df)
-
-        df = pd.read_csv('{}/loglog_scaling_recreation.csv'.format(args.save_folder))
-
-        recreate_loglog_plots(df, args.figs_location, individuals=False)
-        
-        print('*' * 200)
-        
-    exit()
-    
-    
+    # # Do all the Mother Machine data
+    # for data_origin in mm_data_names:
+    #     print(data_origin)
+    #
+    #     data_origin == 'lambda_LB'
+    #
+    #     # if data_origin == 'lambda_LB':
+    #     #     continue
+    #
+    #     parser = argparse.ArgumentParser(description='Process Mother Machine Lineage Data.')
+    #     parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
+    #     parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+    #                         required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
+    #     parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
+    #                         required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
+    #     args = parser.parse_args()
+    #
+    #     main(args)
+    #
+    #     df = pd.read_csv('{}/scaling_exponents.csv'.format(args.save_folder))
+    #
+    #     plot_histograms_of_scaling_exponents(args.figs_location, df)
+    #
+    #     df = pd.read_csv('{}/loglog_scaling_recreation.csv'.format(args.save_folder))
+    #
+    #     recreate_loglog_plots(df, args.figs_location, individuals=False)
+    #
+    #     print('*' * 200)
     
     # How long did it take to do the mother machine?
     mm_time = time.time() - first_time
@@ -676,14 +688,16 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
                         required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
     args = parser.parse_args()
-
+    
     main(args)
-
+    
     df = pd.read_csv('{}/scaling_exponents.csv'.format(args.save_folder))
-
-    print(df)
-
+    
     plot_histograms_of_scaling_exponents(args.figs_location, df)
+    
+    df = pd.read_csv('{}/loglog_scaling_recreation.csv'.format(args.save_folder))
+    
+    recreate_loglog_plots(df, args.figs_location, individuals=False)
     
     # How long did it take to do the mother machine?
     sm_time = time.time() - (mm_time + first_time)
