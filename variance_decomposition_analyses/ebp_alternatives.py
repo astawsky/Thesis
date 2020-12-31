@@ -615,7 +615,7 @@ def main(args, first_generation, final_generation):
         # Get the ebp for all lineages using the first n amount of generations, ie. an expanding window.
         # If there are other lineages that fall short we don't take them into account for that specific generation.
         # This means that the sample size for the number of lineages over which we compute the variance of the dataset can change between generations.
-        per_gen_ebp, per_gen_ebp_bs = get_ebp_per_gen(df, phenotypic_variables, expanding_mean, kind, per_gen_ebp, per_gen_ebp_bs, first_generation, final_generation, bootstraps=False)
+        # per_gen_ebp, per_gen_ebp_bs = get_ebp_per_gen(df, phenotypic_variables, expanding_mean, kind, per_gen_ebp, per_gen_ebp_bs, first_generation, final_generation, bootstraps=False)
         
         # per_gen_ebp, per_gen_ebp_bs, total_length_ebp, total_length_ebp_bs = get_both_per_gen_and_total_ebp(df, phenotypic_variables, expanding_mean, kind, per_gen_ebp, per_gen_ebp_bs, total_length_ebp, total_length_ebp_bs,
         #                                                                                         first_generation, final_generation, bootstraps=20)
@@ -643,8 +643,7 @@ if __name__ == '__main__':
     print(dataset_names)
     
     # Do all the Mother Machine data
-    for data_origin in dataset_names:
-        print(data_origin)
+    for data_origin in ['MC4100_25C', 'MC4100_27C', 'MC4100_37C']: # dataset_names:
         
         parser = argparse.ArgumentParser(description='Process Mother Machine Lineage Data.')
         parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
@@ -671,8 +670,8 @@ if __name__ == '__main__':
         create_folder(args.figs_location)
         create_folder(folder_name)
         
-        # # Run the analysis
-        # main(args, first_generation=0, final_generation=30)
+        # Run the analysis
+        main(args, first_generation=0, final_generation=30)
         
         # Import the analysis
         total = pd.read_csv('gamma_ta_corrs_{}.csv'.format(args.data_origin))
@@ -691,4 +690,4 @@ if __name__ == '__main__':
         # plt.close()
         
         print('*' * 200)
-        
+        exit()
