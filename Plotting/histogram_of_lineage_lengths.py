@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-from CustomFuncsAndVars.global_variables import symbols, units, mm_data_names, create_folder
+from CustomFuncsAndVars.global_variables import symbols, units, dataset_names, create_folder
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -48,11 +48,11 @@ if __name__ == '__main__':
     # How long does running this take?
     first_time = time.time()
     
-    for data_origin in mm_data_names + ['SM']:
+    for data_origin in dataset_names:
         parser = argparse.ArgumentParser(description='Create the artificial lineages, ergodicity breaking parameters, and the KL Divergences.')
         parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
         parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
+                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/ProcessedData/' + data_origin)
         parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
                             required=False, default='physical_units.csv')
         parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',

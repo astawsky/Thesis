@@ -19,30 +19,48 @@ def create_folder(filename):
 """ shuffle the generations inside a lineage to destroy inter-generational correlations """
 
 
-def shuffle_lineage_generations(df):
+def shuffle_lineage_generations(df, mm):
     import pandas as pd
     import numpy as np
     
-    # This is where we will keep all the data and later save as a csv
-    no_epi_df = pd.DataFrame(columns=phenotypic_variables + ['dataset', 'trap_ID', 'trace', 'generation'])
-    
-    # loop for every dataset and its traps and traces
-    for dataset in np.unique(df['dataset']):
+    if mm:
         
-        for trap_id in np.unique(df[(df['dataset'] == dataset)]['trap_ID']):
+        # This is where we will keep all the data and later save as a csv
+        no_epi_df = pd.DataFrame(columns=phenotypic_variables + ['lineage_ID', 'generation'])
+        
+        for lin_id in df.lineage_ID.unique():
+            lineage = df[(df['lineage_ID'] == lin_id)]
             
-            for trace in ['A', 'B']:
+            new_lineage = lineage[phenotypic_variables].sample(frac=1, replace=False)  # .reset_index(drop=True)
+            new_lineage['lineage_ID'] = lineage.lineage_ID.unique()[0]
+            new_lineage[phenotypic_variables] = lineage[phenotypic_variables].sample(frac=1, replace=False)
+            new_lineage['generation'] = np.arange(len(lineage))
+            
+            # adds it to the dataframe
+            no_epi_df = no_epi_df.append(new_lineage, ignore_index=True)
+    else:
+        
+        # This is where we will keep all the data and later save as a csv
+        no_epi_df = pd.DataFrame(columns=phenotypic_variables + ['lineage_ID', 'dataset', 'trap_ID', 'trace', 'generation'])
+        
+        # loop for every dataset and its traps and traces
+        for dataset in np.unique(df['dataset']):
+            
+            for trap_id in np.unique(df[(df['dataset'] == dataset)]['trap_ID']):
                 
-                lineage = df[(df['dataset'] == dataset) & (df['trap_ID'] == trap_id) & (df['trace'] == trace)]
-                
-                new_lineage = lineage[phenotypic_variables].sample(frac=1, replace=False)#.reset_index(drop=True)
-                new_lineage['dataset'] = dataset
-                new_lineage['trap_ID'] = trap_id
-                new_lineage['trace'] = trace
-                new_lineage['generation'] = np.arange(len(lineage))
-
-                # adds it to the dataframe
-                no_epi_df = no_epi_df.append(new_lineage, ignore_index=True)
+                for trace in ['A', 'B']:
+                    
+                    lineage = df[(df['dataset'] == dataset) & (df['trap_ID'] == trap_id) & (df['trace'] == trace)]
+                    
+                    new_lineage = lineage[phenotypic_variables].sample(frac=1, replace=False)  # .reset_index(drop=True)
+                    new_lineage['lineage_ID'] = lineage.lineage_ID.unique()[0]
+                    new_lineage['dataset'] = dataset
+                    new_lineage['trap_ID'] = trap_id
+                    new_lineage['trace'] = trace
+                    new_lineage['generation'] = np.arange(len(lineage))
+                    
+                    # adds it to the dataframe
+                    no_epi_df = no_epi_df.append(new_lineage, ignore_index=True)
                 
                 # exit()
                 #
@@ -93,12 +111,12 @@ def limit_lineage_length(df, min_gens):
                     new_lineage['trap_ID'] = trap_id
                     new_lineage['trace'] = trace
                     new_lineage['generation'] = np.arange(min_gens)
-
+                    
                     # adds it to the dataframe
                     new_df = new_df.append(new_lineage, ignore_index=True)
                 else:
                     pass
-                
+    
     return new_df
 
 
@@ -108,13 +126,13 @@ def limit_lineage_length(df, min_gens):
 def trace_center_a_dataframe(df):
     import pandas as pd
     import numpy as np
-
+    
     tc_df = pd.DataFrame(columns=df.columns)
     
     for dataset in df['dataset'].unique():
         for trap_id in df[df['dataset'] == dataset]['trap_ID'].unique():
             for trace in ['A', 'B']:
-                lineage = df[(df['dataset']==dataset) & (df['trap_ID']==trap_id) & (df['trace']==trace)]
+                lineage = df[(df['dataset'] == dataset) & (df['trap_ID'] == trap_id) & (df['trace'] == trace)]
                 
                 new_lineage = lineage[phenotypic_variables] - lineage[phenotypic_variables].mean()
                 new_lineage['dataset'] = dataset
@@ -123,7 +141,7 @@ def trace_center_a_dataframe(df):
                 new_lineage['generation'] = np.arange(len(lineage))
                 
                 tc_df = tc_df.append(new_lineage, ignore_index=True)
-                
+    
     return tc_df
 
 
@@ -178,47 +196,48 @@ def shuffle_info(info, mm):
     # what is the trace length of each trace? This is the only thing that stays the same
     if mm:
         sizes = {'{}'.format(lineage_ID): len(info[(info['lineage_ID'] == lineage_ID)]) for lineage_ID in info['lineage_ID'].unique()}
-
+        
         for lineage_id in np.unique(info['lineage_ID']):
             # trace length
             size = sizes['{}'.format(lineage_id)]
-    
+            
             # sample from the old dataframe
             samples = info.sample(replace=False, n=size)
-    
+            
             # drop what we sampled
             info = info.drop(index=samples.index)
-    
+            
             # add some correct labels even though they don't matter so that the dataframe structure is still intact
             samples['lineage_ID'] = lineage_id
             samples['generation'] = np.arange(size)
-    
+            
             # add them to the new, shuffled dataframe
             new_info = new_info.append(samples, ignore_index=True)
     else:
-        sizes = {'{} {} {}'.format(dataset, trap_ID, trace): len(info[(info['trap_ID'] == trap_ID) & (info['trace'] == trace) & (info['dataset'] == dataset)]) for dataset in np.unique(info['dataset']) for
-             trap_ID in np.unique(info[info['dataset'] == dataset]['trap_ID']) for trace in ['A', 'B']}
-
+        sizes = {'{} {} {}'.format(dataset, trap_ID, trace): len(info[(info['trap_ID'] == trap_ID) & (info['trace'] == trace) & (info['dataset'] == dataset)]) for dataset in np.unique(info['dataset'])
+                 for
+                 trap_ID in np.unique(info[info['dataset'] == dataset]['trap_ID']) for trace in ['A', 'B']}
+        
         lineage_id = 0
         for dataset in np.unique(info['dataset']):
             for trap_ID in np.unique(info[info['dataset'] == dataset]['trap_ID']):
                 for trace in ['A', 'B']:
                     # trace length
                     size = sizes['{} {} {}'.format(dataset, trap_ID, trace)]
-            
+                    
                     # sample from the old dataframe
                     samples = info.sample(replace=False, n=size)
-            
+                    
                     # drop what we sampled
                     info = info.drop(index=samples.index)
-            
+                    
                     # add some correct labels even though they don't matter so that the dataframe structure is still intact
                     samples['dataset'] = dataset
                     samples['trap_ID'] = trap_ID
                     samples['trace'] = trace
                     samples['lineage_ID'] = lineage_id
                     samples['generation'] = np.arange(size)
-            
+                    
                     # add them to the new, shuffled dataframe
                     new_info = new_info.append(samples, ignore_index=True)
                     
@@ -297,19 +316,29 @@ def cut_uneven_pairs(info):
 import pandas as pd
 import seaborn as sns
 
-phenotypic_variables = ['fold_growth', 'division_ratio', 'added_length', 'generationtime', 'length_birth', 'length_final', 'growth_rate']
+phenotypic_variables = ['div_then_fold', 'div_and_fold', 'fold_then_div', 'fold_growth', 'division_ratio', 'added_length', 'generationtime', 'length_birth', 'length_final', 'growth_rate']
 symbols = {
-    'physical_units': dict(zip(phenotypic_variables, [r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'])),
-    'trace_centered': dict(zip(phenotypic_variables, [r'$\delta \phi$', r'$\delta f$', r'$\delta \Delta$', r'$\delta \tau$', r'$\delta x_0$', r'$\delta x_\tau$', r'$\delta \alpha$'])),
+    'physical_units': dict(
+        zip(phenotypic_variables, [r'$f_n e^{\phi_{n+1}}$', r'$f_n e^{\phi_{n}}$', r'$f_{n+1} e^{\phi_n}$', r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'])),
+    'trace_centered': dict(zip(phenotypic_variables,
+                               [r'$\delta (f_n e^{\phi_{n+1}})$', r'$\delta (f_n e^{\phi_{n}})$', r'$\delta (f_{n+1} e^{\phi_n})$', r'$\delta \phi$', r'$\delta f$', r'$\delta \Delta$',
+                                r'$\delta \tau$', r'$\delta x_0$', r'$\delta x_\tau$', r'$\delta \alpha$'])),
     'time_averages': dict(
-        zip(phenotypic_variables, [r'$\overline{\phi}$', r'$\overline{f}$', r'$\overline{\Delta}$', r'$\overline{\tau}$', r'$\overline{x_0}$', r'$\overline{x_\tau}$', r'$\overline{\alpha}$'])),
+        zip(phenotypic_variables,
+            [r'$\overline{f_n e^{\phi_{n+1}}}$', r'$\overline{f_n e^{\phi_{n}}}$', r'$\overline{f_{n+1} e^{\phi_n}}$', r'$\overline{\phi}$', r'$\overline{f}$', r'$\overline{\Delta}$',
+             r'$\overline{\tau}$', r'$\overline{x_0}$', r'$\overline{x_\tau}$', r'$\overline{\alpha}$'])),
     'model': dict(zip(phenotypic_variables, [r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'])),
     'old_var': dict(zip(phenotypic_variables, [r'$\phi_{old}$', r'$f_{old}$', r'$\Delta_{old}$', r'$\tau_{old}$', r'$x_{0, old}$', r'$x_{\tau, old}$', r'$\alpha_{old}$'])),
     'young_var': dict(zip(phenotypic_variables, [r'$\phi_{young}$', r'$f_{young}$', r'$\Delta_{young}$', r'$\tau_{young}$', r'$x_{0, young}$', r'$x_{\tau, young}$', r'$\alpha_{young}$'])),
     'with_n_ta': dict(zip(phenotypic_variables, [r'$\overline{\phi_{n}}$', r'$\overline{f_{n}}$', r'$\overline{\Delta_{n}}$', r'$\overline{\tau_{n}}$', r'$\overline{x_{0, n}}$',
                                                  r'$\overline{x_{\tau, n}}$', r'$\overline{\alpha_{n}}$'])),
     'unique_ta': dict(
-        zip(phenotypic_variables, [r'$\overline{\phi}$', r'$\overline{f}$', r'$\overline{\Delta}$', r'$\overline{\tau}$', r'$\overline{x_0}$', r'$\overline{x_\tau}$', r'$\overline{\alpha}$'])),
+        zip(phenotypic_variables,
+            [r'$\overline{f_n e^{\phi_{n+1}}}$', r'$\overline{f_n e^{\phi_{n}}}$', r'$\overline{f_{n+1} e^{\phi_n}}$', r'$\overline{\phi}$', r'$\overline{f}$', r'$\overline{\Delta}$',
+             r'$\overline{\tau}$', r'$\overline{x_0}$', r'$\overline{x_\tau}$', r'$\overline{\alpha}$'])),
+    # 'new_pu': dict(zip(phenotypic_variables,
+    #                    [r'$\overline{\phi}$', r'$\overline{f}$', r'$\overline{\Delta}$', r'$\overline{\tau}$', r'$\overline{x_0}$', r'$\overline{x_\tau}$', r'$\overline{\alpha}$',
+    #                     r'$\overline{\frac{x_{0, n+1}}{x_{0, n}}}$']))
 }
 datasets = ['SL', 'NL', 'CTRL']
 units = dict(zip(phenotypic_variables, [r'', r'', r'$\mu m$', r'$(hr)$', r'$(\mu m)$', r'$(\mu m)$', r'$(\frac{1}{hr})$']))
@@ -319,5 +348,6 @@ bounds = {
     'generationtime': [0.01, 1], 'fold_growth': [.27, 1], 'growth_rate': [.8, 1.8], 'length_birth': [.7, 4.5], 'length_final': [2.3, 8.3], 'division_ratio': [.35, .65], 'added_length': [.4, 5]
 }
 symbols_bounds = {symbols['physical_units'][key]: val for key, val in bounds.items()}
-mm_data_names = ['lambda_LB', 'MG1655_inLB_LongTraces', 'Maryam_LongTraces']  # , 'LAC_M9'
+dataset_names = ['1015_NL', '062718_SL', '071318_SL', '072818_SL_NL', '101218_SL_NL', 'Pooled_SM', '8-31-16 Continue', 'MC4100_25C', 'MC4100_27C', 'MC4100_37C']  # , 'LAC_M9', , '4-28-2017'
+# dataset_names2 = ['SM', 'MG1655_inLB_LongTraces', 'Maryam_LongTraces', 'lambda_LB', 'MC4100_25C', 'MC4100_27C', 'MC4100_37C']  # , 'LAC_M9', , '4-28-2017'
 cmap = sns.color_palette('tab10')

@@ -4,9 +4,10 @@ import pandas as pd
 import numpy as np
 import glob
 import matplotlib.pyplot as plt
+import os
 from scipy.stats import zscore
 from sklearn.linear_model import LinearRegression
-from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, mm_data_names
+from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, dataset_names
 
 """ This function takes care of which statistic we want to subtract the trajectories to get what we asked for """
 
@@ -164,6 +165,11 @@ def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, 
         # plt.plot(domain, np.exp(range))
         # plt.show()
         # plt.close()
+    
+    # The experimental size variables
+    cycle_variables_lineage['div_then_fold'] = np.append(np.nan, cycle_variables_lineage['division_ratio'].values[:-1] * np.exp(cycle_variables_lineage['fold_growth'].values[1:]))
+    cycle_variables_lineage['div_and_fold'] = cycle_variables_lineage['division_ratio'] * cycle_variables_lineage['fold_growth']
+    cycle_variables_lineage['fold_then_div'] = np.append(cycle_variables_lineage['division_ratio'].values[1:] * np.exp(cycle_variables_lineage['fold_growth'].values[:-1]), np.nan)
 
     # Without throwing away outliers
     without_nans = cycle_variables_lineage.copy().reset_index(drop=True)
@@ -194,6 +200,8 @@ def main_mm(args):
     elif args.data_origin == 'Maryam_LongTraces':
         infiles = glob.glob(args.raw_data + '/*.csv')
         infiles = infiles + glob.glob(args.raw_data + '/*.xls')
+    elif args.data_origin == 'LB_pooled':
+        infiles = glob.glob(args.raw_data + '/*')
     else:
         infiles = glob.glob(args.raw_data + '/*.txt')
     
@@ -204,103 +212,98 @@ def main_mm(args):
     # The dataframe for our raw data lineages
     raw_data = pd.DataFrame(columns=['time', 'length', 'lineage_ID', 'filename'])
     
-    # filenames_with_nans = [
-    #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_09252019_nd041xy02ch03R.csv',
-    #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_09252019_nd041xy03ch02.csv',
-    #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_09252019_nd041xy03ch01.csv',
-    #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_09252019_nd041xy09ch05.csv',
-    #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_09252019_nd041xy08ch01.csv',
-    #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_xy11ch01.csv',
-    #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_xy11ch03.csv',
-    #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_xy11ch06.csv',
-    #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_xy11ch07.csv',
-    #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_xy09ch02.csv',
-    #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_09252019_nd041xy02ch08L.csv',
-    #     '/Users/alestawsky/PycharmProjects/Thesis/RawData/Maryam_LongTraces/d_09252019_nd041xy06ch01.csv'
-    # ]
-    
     extra_column = [
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos0-1.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos0-1-daughter.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos1.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos4.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos5-lower cell.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos5-upper cell.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos6-1-1.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos6-1.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos6-2.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos7-1-1.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos7-1-2.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos7-2-1.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos7-2-2.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos7-3.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos8.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos10-1.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos16-1.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos16-2.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos16-3.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos17-1.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos17-2.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos17-3.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos18-2.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos18-3.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos19-2.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos19-3.txt',
-        '/Users/alestawsky/PycharmProjects/Thesis/RawData/lambda_LB/pos20.txt'
+        'pos0-1',
+        'pos0-1-daughter',
+        'pos1',
+        'pos4',
+        'pos5-lower cell',
+        'pos5-upper cell',
+        'pos6-1-1',
+        'pos6-1',
+        'pos6-2',
+        'pos7-1-1',
+        'pos7-1-2',
+        'pos7-2-1',
+        'pos7-2-2',
+        'pos7-3',
+        'pos8',
+        'pos10-1',
+        'pos16-1',
+        'pos16-2',
+        'pos16-3',
+        'pos17-1',
+        'pos17-2',
+        'pos17-3',
+        'pos18-2',
+        'pos18-3',
+        'pos19-2',
+        'pos19-3',
+        'pos20'
     ]
     
-    # When we take out the outliers we keep trace of how many cycles we lost wrt. the lineage and the pooled ensemble
-    whats_left = {'variable': [], 'lineage': [], 'number_taken_out': []}
+    # # When we take out the outliers we keep trace of how many cycles we lost wrt. the lineage and the pooled ensemble
+    # whats_left = {'variable': [], 'lineage': [], 'number_taken_out': []}
     
     # In case we can't use some files we want the lineage IDs to be in integer order
     offset = 0
     
     # load first sheet of each Excel-File, fill internal data structure
-    for count, filename in enumerate(infiles):
+    for count, file in enumerate(infiles):
+        
+        filename = file.split('/')[-1].split('.')[0]
+        extension = file.split('/')[-1].split('.')[1]
         
         # Tells us the trap ID and the source (filename)
-        print(count, filename.split('/')[-1], sep=': ')
+        print(count+1, filename+'.'+extension, sep=': ')
         
-        # creates a dataframe from the .txt or .csv file
-        if args.data_origin == 'MG1655_inLB_LongTraces':
-            # The only file that has an extra column
-            if filename.split('/')[-1] == 'pos4-4.txt':
-                print('In this particular case the lineage divides after the first time-point and it has an extra column.')
-                # This is because in this particular case the lineage divides after the first time-point and it has an extra column
-                raw_lineage = pd.read_csv(filename, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
-                raw_lineage = raw_lineage.iloc[1:]
-            # All the rest don't have another column
-            else:
-                raw_lineage = pd.read_csv(filename, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
-        elif args.data_origin == 'Maryam_LongTraces':
-            # This is because some the data is in .xls format while others are in .csv
-            try:
-                raw_lineage = pd.read_csv(filename, names=['time', 'length'])[['time', 'length']].dropna(axis=0)
-            except:
-                raw_lineage = pd.read_excel(filename, names=['time', 'length'])[['time', 'length']].dropna(axis=0)
+        # # creates a dataframe from the .txt or .csv file
+        # if args.data_origin == 'MG1655_inLB_LongTraces':
+        #     # The only file that has an extra column
+        #     if filename.split('/')[-1] == 'pos4-4.txt':
+        #         print('In this particular case the lineage divides after the first time-point and it has an extra column.')
+        #         # This is because in this particular case the lineage divides after the first time-point and it has an extra column
+        #         raw_lineage = pd.read_csv(filename, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+        #         raw_lineage = raw_lineage.iloc[1:]
+        #     # All the rest don't have another column
+        #     else:
+        #         raw_lineage = pd.read_csv(filename, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+        # elif args.data_origin == 'Maryam_LongTraces':
+        #     # This is because some the data is in .xls format while others are in .csv
+        #     try:
+        #         raw_lineage = pd.read_csv(filename, names=['time', 'length'])[['time', 'length']].dropna(axis=0)
+        #     except:
+        #         raw_lineage = pd.read_excel(filename, names=['time', 'length'])[['time', 'length']].dropna(axis=0)
+        
+        # elif args.data_origin == 'LAC_M9':
+        #     # Simple :)
+        #     raw_lineage = pd.read_csv(filename, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+        
+        if args.data_origin in ['MC4100_25C', 'MC4100_27C', 'MC4100_37C']:
+            raw_lineage = pd.read_csv(file, delimiter=',', names=['time', 'division_flag', 'length', 'fluor', 'avg_fluor'])
+            raw_lineage['time'] = (raw_lineage['time']-1) / 60
         elif args.data_origin == 'lambda_LB':
             # There are quite a lot of files with an extra column at the beginning
             if filename in extra_column:
-                raw_lineage = pd.read_csv(filename, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
-            elif filename.split('/')[-1] == 'pos15.txt':
+                raw_lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+            elif filename == 'pos15':
                 print('This one is special.')
-                raw_lineage = pd.read_csv(filename, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein', '__', '___', '___1'])[
+                raw_lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein', '__', '___', '___1'])[
                     ['time', 'length']]
             else:
-                raw_lineage = pd.read_csv(filename, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
-        elif args.data_origin == 'LAC_M9':
-            # Simple :)
-            raw_lineage = pd.read_csv(filename, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+                raw_lineage = pd.read_csv(file, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+        elif args.data_origin == '8-31-16 Continue':
+            raw_lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
         else:
             raise IOError('This code is not meant to run the data inputted. Please label the data and put it in as an if-statement.')
         
         # Make the time-steps accurate to two decimal points
-        raw_lineage['time'] = raw_lineage['time'].round(2)
-        raw_lineage['filename'] = filename.split('/')[-1]
+        raw_lineage['time'] = raw_lineage['time']  # .round(2)
+        raw_lineage['filename'] = filename
         raw_lineage = raw_lineage.reset_index(drop=True)
         
         # Add the trap ID
-        raw_lineage['lineage_ID'] = count - offset
+        raw_lineage['lineage_ID'] = count + 1 - offset
         
         if not all(x < y for x, y in zip(raw_lineage['time'].values[:-1], raw_lineage['time'].values[1:])):
             print(filename, ': Time is going backwards. We cannot use this data.')
@@ -325,8 +328,21 @@ def main_mm(args):
         # If not, do not use the trace (Too much of a headache for the phenotypic variable linear regression).
         step_sizes = (raw_lineage['time'].iloc[1:].values - raw_lineage['time'].iloc[:-1].values).round(2)
         if not np.all(step_sizes == step_sizes[0]):
-            print(filename, ' has steps that are not the same size')  # , are we are not gonna use these...')
-            # continue
+            print(filename, ' has steps that are not the same size ', np.unique(step_sizes), ' and we are not using this data then')  # , are we are not gonna use these...')
+            continue
+            # exit()
+            
+        # This is due to data singularities
+        if args.data_origin == 'lambda_LB' and .05 == step_sizes[0]:
+            pass
+        elif args.data_origin == 'lambda_LB' and .1 == step_sizes[0]:
+            print('step size == .1', filename, np.unique(step_sizes))
+            raw_lineage['time'] = raw_lineage['time'] / 2
+        else:
+            print('step size == .06 repeating', filename, np.unique(step_sizes))
+            raw_lineage['time'] = (raw_lineage['time'] * 15) / 20
+            
+        # if args.data_origin == 'lambda_LB':
         
         # Make sure there are no NaNs. If so, stop the program, something is wrong.
         if raw_lineage.isna().values.any():
@@ -335,12 +351,20 @@ def main_mm(args):
             print(raw_lineage)
             print(raw_lineage[raw_lineage.isnull()])
             exit()
+            
+        # print('unique step size:', np.unique(step_sizes))
+        # print(raw_lineage)
         
         # add it to the total data
         raw_data = raw_data.append(raw_lineage, ignore_index=True)
-        
-        # Figure out the indices for the division events
-        start_indices, end_indices = get_division_indices(raw_lineage['length'].values)
+
+        if args.data_origin in ['MC4100_25C', 'MC4100_27C', 'MC4100_37C']:
+            start_indices = np.array(raw_lineage[raw_lineage['division_flag'] == 1].index)
+            end_indices = np.append(start_indices[1:] - 1, len(raw_lineage)-1)
+            # exit()
+        else:
+            # Figure out the indices for the division events
+            start_indices, end_indices = get_division_indices(raw_lineage['length'].values)
         
         # # Check division times
         # plt.plot(np.arange(len(raw_lineage['length']), dtype=int), raw_lineage['length'])
@@ -364,12 +388,13 @@ def main_mm(args):
         data_points_per_cycle = np.array(np.rint(cycle_durations / .05) + np.ones_like(cycle_durations), dtype=int)
         
         # add the cycle variables to the overall dataframe
-        cycle_variables_lineage, with_outliers = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, int(count - offset), fit_the_lengths=True)
+        cycle_variables_lineage, with_outliers = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, int(count + 1 - offset), fit_the_lengths=True)
         
         # append the cycle variables to the
         cycle_variables = cycle_variables.append(cycle_variables_lineage, ignore_index=True)
         with_outliers_cycle_variables = with_outliers_cycle_variables.append(with_outliers, ignore_index=True)
     
+    # exit()
     print('processed data:\n', cycle_variables)
     print('cleaned raw data:\n', raw_data)
     
@@ -380,14 +405,19 @@ def main_mm(args):
             print(variable, cycle_variables[variable].count() / len(cycle_variables[variable]))
     
     # reset the index for good practice
-    raw_data.reset_index(drop=True).sort_values(['lineage_ID']).to_csv(args.save_folder + '/raw_data.csv', index=False)
-    minusing(raw_data.reset_index(drop=True), ['length']).sort_values(['lineage_ID']).to_csv(args.save_folder + '/raw_data_tc.csv', index=False)
-    cycle_variables.reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args.save_folder + '/physical_units.csv', index=False)
-    minusing(cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args.save_folder + '/trace_centered.csv',
+    raw_data.reset_index(drop=True).sort_values(['lineage_ID']).to_csv(os.path.dirname(args.raw_data) + '/{}_all_in_one.csv'.format(args.data_origin), index=False)
+    # raw_data.reset_index(drop=True).sort_values(['lineage_ID']).to_csv(args.save_folder + '/raw_data.csv', index=False)
+    # minusing(raw_data.reset_index(drop=True), ['length']).sort_values(['lineage_ID']).to_csv(args.save_folder + '/raw_data_tc.csv', index=False)
+    
+    without_outliers = args.save_folder + '/z_score_under_3'
+    create_folder(without_outliers)
+    
+    cycle_variables.reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(without_outliers + '/physical_units_without_outliers.csv', index=False)
+    minusing(cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(without_outliers + '/trace_centered_without_outliers.csv',
                                                                                                                                                    index=False)
     
-    with_outliers_cycle_variables.reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args.save_folder + '/physical_units_with_outliers.csv', index=False)
-    minusing(with_outliers_cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args.save_folder + '/trace_centered_with_outliers.csv',
+    with_outliers_cycle_variables.reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args.save_folder + '/physical_units.csv', index=False)
+    minusing(with_outliers_cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args.save_folder + '/trace_centered.csv',
                                                                                                                                                    index=False)
 
 
@@ -464,20 +494,36 @@ def compare_cycle_variables_to_raw_data(args):
         plt.close()
 
 
-""" Reading the raw data into a big pandas Dataframes """
+""" Create the csv files for physical, trace-centered, and trap-centered units for SM data """
 
 
-def get_sm_rawdata(infiles, dataset, data, offset=0):
-    # load first sheet of each Excel-File, fill internal data structure]
-    for count, filename in enumerate(infiles):
-        print(count + offset, filename.split('/')[-1], sep=': ')
+def main_sm(args):
+    # Where we will put the raw data
+    raw_data = pd.DataFrame(columns=['time', 'length', 'dataset', 'trap_ID', 'trace', 'lineage_ID'])
+
+    # The files that have the RawData
+    files = glob.glob(args.raw_data + '/*.xls')
+
+    # load first sheet of each Excel-File, fill rawdata dataframe
+    for count, file in enumerate(files):
+        print(count, file.split('/')[-1], sep=': ')
         
+        # print(45 % 5)
+        # print(46 % 5)
+        # exit()
+    
         # creates a dataframe from the excel file
-        tmpdata = pd.read_excel(filename)
-        
+        tmpdata = pd.read_excel(file)
+    
         # Make sure there are no NaNs in the data
         assert ~tmpdata.isna().values.any()
         
+        # Determine the relationship between the two lineage in a file depending on the name of the file
+        if ('sis' in file.split('/')[-1]) or ('SIS' in file.split('/')[-1]):
+            dataset = 'SL'
+        else:
+            dataset = 'NL'
+    
         # Separate and categorize the traces in the trap
         if dataset == 'SL':
             a_trace = tmpdata[['timeA', 'lengthA']].rename(columns={'timeA': 'time', 'lengthA': 'length'})
@@ -485,77 +531,60 @@ def get_sm_rawdata(infiles, dataset, data, offset=0):
         else:
             a_trace = tmpdata[['timeA', 'L1']].rename(columns={'timeA': 'time', 'L1': 'length'})
             b_trace = tmpdata[['timeB', 'L2']].rename(columns={'timeB': 'time', 'L2': 'length'})
-        
+    
         # Are they SL or NL?
         a_trace['dataset'] = dataset
         b_trace['dataset'] = dataset
-        
+    
         # What trap are they in from the pooled ensemble?
-        a_trace['trap_ID'] = (count + offset + 1)
-        b_trace['trap_ID'] = (count + offset + 1)
-        
+        a_trace['trap_ID'] = (count + 1)
+        b_trace['trap_ID'] = (count + 1)
+    
         # Arbitrarily name the traces
         a_trace['trace'] = 'A'
         b_trace['trace'] = 'B'
-        
+    
         # Give each lineage a unique ID
-        a_trace['lineage_ID'] = (count + offset + 1) * 2 - 1
-        b_trace['lineage_ID'] = (count + offset + 1) * 2
-        
+        a_trace['lineage_ID'] = (count + 1) * 2 - 1
+        b_trace['lineage_ID'] = (count + 1) * 2
+    
         # Set the floats to be accurate to the 2nd decimal point because of the timesteps in hours
         a_trace['time'] = a_trace['time'].round(2)
         b_trace['time'] = b_trace['time'].round(2)
         
+        # Check that they didn't round to 0.06 or something
+        if any([int(np.round(l * 100, 0) % 5) for l in a_trace['time'].values]) or any([int(np.round(l * 100, 0) % 5) for l in a_trace['time'].values]):
+            print('Rounded Wrong to not .05 multiples')
+            exit()
+    
         # Check if time is going forward for the "A" trace
         time_monotony_a = all(x < y for x, y in zip(a_trace['time'].values[:-1], a_trace['time'].values[1:]))
         # Check if time is going forward for the "B" trace
         time_monotony_b = all(x < y for x, y in zip(b_trace['time'].values[:-1], b_trace['time'].values[1:]))
+        
         if (not time_monotony_a) or (not time_monotony_b):
-            print(filename, ': Time is going backwards. We cannot use this data.')
+            print(file, ': Time is going backwards. We cannot use this data.')
             print("False is bad! --", "A:", time_monotony_a, "B:", time_monotony_b)
-            
-            # reset the lineage_ID
-            offset += 1
-            
+        
             # # To see this in the lineage itself
             # plt.plot(raw_lineage['time'], raw_lineage['length'])
             # plt.show()
             # plt.close()
-            
-            continue
         
+            continue
+    
         # the data contains all dataframes from the excel files in the directory _infiles
-        data = data.append(a_trace, ignore_index=True)
-        data = data.append(b_trace, ignore_index=True)
-    
+        raw_data = raw_data.append(a_trace, ignore_index=True)
+        raw_data = raw_data.append(b_trace, ignore_index=True)
+
     # There must be some data
-    assert len(data) > 0
+    assert len(raw_data) > 0
     # There can't be any NaNs
-    assert ~data.isna().values.any()
+    assert ~raw_data.isna().values.any()
     
-    return data
-
-
-""" Create the csv files for physical, trace-centered, and trap-centered units for SM data """
-
-
-def main_sm(args):
-    # Where we will put the raw data
-    raw_data = pd.DataFrame(columns=['time', 'length', 'dataset', 'trap_ID', 'trace', 'lineage_ID'])
-    
-    # for dataset, infiles in zip(['SL', 'NL'], [glob.glob(args.sl_infiles + '/*.xls'), glob.glob(args.nl_infiles + '/*.xls')]):
-    #     print(dataset)
-    #     raw_data = get_sm_rawdata(infiles, dataset, raw_data)
-    
-    # Get the raw data for the two datasets of raw data
-    print('SL')
-    raw_data = get_sm_rawdata(glob.glob(args.sl_infiles + '/*.xls'), 'SL', raw_data)
-    print('NL')
-    raw_data = get_sm_rawdata(glob.glob(args.nl_infiles + '/*.xls'), 'NL', raw_data, offset=raw_data.trap_ID.max())
-    
-    # Save the raw data to .csv format
-    raw_data.sort_values(['dataset', 'trap_ID', 'trace']).reset_index(drop=True).to_csv(args.save_folder + '/raw_data.csv', index=False)
-    minusing(raw_data.reset_index(drop=True), ['length']).sort_values(['dataset', 'trap_ID', 'trace']).reset_index(drop=True).to_csv(args.save_folder + '/raw_data_tc.csv', index=False)
+    # # Save the raw data to .csv format
+    # raw_data.sort_values(['dataset', 'trap_ID', 'trace']).reset_index(drop=True).to_csv(args.save_folder + '/raw_data.csv', index=False)
+    # minusing(raw_data.reset_index(drop=True), ['length']).sort_values(['dataset', 'trap_ID', 'trace']).reset_index(drop=True).to_csv(args.save_folder + '/raw_data_tc.csv', index=False)
     
     # This is the order of the cycle variables in the processed dataframe
     order = phenotypic_variables + ['dataset', 'trap_ID', 'trace', 'lineage_ID', 'generation']
@@ -608,26 +637,204 @@ def main_sm(args):
         
         # Append the cycle variables to the processed dataframe
         cycle_variables = cycle_variables.append(cycle_variables_lineage[order], ignore_index=True)
-        with_outliers_cycle_variables = with_outliers_cycle_variables.append(with_outliers, ignore_index=True)
+        with_outliers_cycle_variables = with_outliers_cycle_variables.append(with_outliers[order], ignore_index=True)
     
     print('processed data:\n', cycle_variables)
     
     print('cleaned raw data:\n', raw_data)
-    
+
+    # Check how much NaNs were introduced because of the zscore < 3 condition on one of the dataframes (no outliers)
     for variable in phenotypic_variables:
-        if variable == 'division_ratio':
-            print(variable, cycle_variables[variable].count() / (len(cycle_variables[variable]) - len(cycle_variables['lineage_ID'].unique())))
+        if variable in ['division_ratio', 'div_and_fold', 'fold_then_div']:
+            # This is because, by definition, the first two variables have 1 NaN value at the first generation, while the third variable has 1 NaN at the end of each lineage
+            print(variable, cycle_variables[variable].count() / (len(cycle_variables[variable]) - (1 * len(cycle_variables['lineage_ID'].unique()))))
+        elif variable in ['div_then_fold']:
+            # This is because, by definition, div then fold variable has two NaNs at the first two generations of each lineage
+            print(variable, cycle_variables[variable].count() / (len(cycle_variables[variable]) - (2 * len(cycle_variables['lineage_ID'].unique()))))
         else:
             print(variable, cycle_variables[variable].count() / len(cycle_variables[variable]))
-    
+
     # reset the index for good practice
-    cycle_variables.reset_index(drop=True).sort_values(['dataset', 'trap_ID', 'trace', 'generation']).to_csv(args.save_folder + '/physical_units.csv', index=False)
-    minusing(cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['dataset', 'trap_ID', 'trace', 'generation']).to_csv(
-        args.save_folder + '/trace_centered.csv', index=False)
-    
-    with_outliers_cycle_variables.reset_index(drop=True).sort_values(['dataset', 'trap_ID', 'trace', 'generation']).to_csv(args.save_folder + '/physical_units_with_outliers.csv', index=False)
-    minusing(with_outliers_cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['dataset', 'trap_ID', 'trace', 'generation']).to_csv(
-        args.save_folder + '/trace_centered_with_outliers.csv', index=False)
+    raw_data.reset_index(drop=True).sort_values(['lineage_ID']).to_csv(os.path.dirname(args.raw_data) + '/{}_all_in_one.csv'.format(args.data_origin), index=False)
+
+    without_outliers = args.save_folder + '/z_score_under_3'
+    create_folder(without_outliers)
+
+    cycle_variables.reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(without_outliers + '/physical_units_without_outliers.csv', index=False)
+    minusing(cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(
+        without_outliers + '/trace_centered_without_outliers.csv',
+        index=False)
+
+    with_outliers_cycle_variables.reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args.save_folder + '/physical_units.csv', index=False)
+    minusing(with_outliers_cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(
+        args.save_folder + '/trace_centered.csv',
+        index=False)
+
+
+# """ Reading the raw data into a big pandas Dataframes """
+#
+#
+# def get_sm_rawdata(infiles, dataset, data, offset=0):
+#     # load first sheet of each Excel-File, fill internal data structure]
+#     for count, filename in enumerate(infiles):
+#         print(count + offset, filename.split('/')[-1], sep=': ')
+#
+#         # creates a dataframe from the excel file
+#         tmpdata = pd.read_excel(filename)
+#
+#         # Make sure there are no NaNs in the data
+#         assert ~tmpdata.isna().values.any()
+#
+#         # Separate and categorize the traces in the trap
+#         if dataset == 'SL':
+#             a_trace = tmpdata[['timeA', 'lengthA']].rename(columns={'timeA': 'time', 'lengthA': 'length'})
+#             b_trace = tmpdata[['timeB', 'lengthB']].rename(columns={'timeB': 'time', 'lengthB': 'length'})
+#         else:
+#             a_trace = tmpdata[['timeA', 'L1']].rename(columns={'timeA': 'time', 'L1': 'length'})
+#             b_trace = tmpdata[['timeB', 'L2']].rename(columns={'timeB': 'time', 'L2': 'length'})
+#
+#         # Are they SL or NL?
+#         a_trace['dataset'] = dataset
+#         b_trace['dataset'] = dataset
+#
+#         # What trap are they in from the pooled ensemble?
+#         a_trace['trap_ID'] = (count + offset + 1)
+#         b_trace['trap_ID'] = (count + offset + 1)
+#
+#         # Arbitrarily name the traces
+#         a_trace['trace'] = 'A'
+#         b_trace['trace'] = 'B'
+#
+#         # Give each lineage a unique ID
+#         a_trace['lineage_ID'] = (count + offset + 1) * 2 - 1
+#         b_trace['lineage_ID'] = (count + offset + 1) * 2
+#
+#         # Set the floats to be accurate to the 2nd decimal point because of the timesteps in hours
+#         a_trace['time'] = a_trace['time'].round(2)
+#         b_trace['time'] = b_trace['time'].round(2)
+#
+#         # Check if time is going forward for the "A" trace
+#         time_monotony_a = all(x < y for x, y in zip(a_trace['time'].values[:-1], a_trace['time'].values[1:]))
+#         # Check if time is going forward for the "B" trace
+#         time_monotony_b = all(x < y for x, y in zip(b_trace['time'].values[:-1], b_trace['time'].values[1:]))
+#         if (not time_monotony_a) or (not time_monotony_b):
+#             print(filename, ': Time is going backwards. We cannot use this data.')
+#             print("False is bad! --", "A:", time_monotony_a, "B:", time_monotony_b)
+#
+#             # reset the lineage_ID
+#             offset += 1
+#
+#             # # To see this in the lineage itself
+#             # plt.plot(raw_lineage['time'], raw_lineage['length'])
+#             # plt.show()
+#             # plt.close()
+#
+#             continue
+#
+#         # the data contains all dataframes from the excel files in the directory _infiles
+#         data = data.append(a_trace, ignore_index=True)
+#         data = data.append(b_trace, ignore_index=True)
+#
+#     # There must be some data
+#     assert len(data) > 0
+#     # There can't be any NaNs
+#     assert ~data.isna().values.any()
+#
+#     return data
+#
+#
+# """ Create the csv files for physical, trace-centered, and trap-centered units for SM data """
+#
+#
+# def main_sm(args):
+#     # Where we will put the raw data
+#     raw_data = pd.DataFrame(columns=['time', 'length', 'dataset', 'trap_ID', 'trace', 'lineage_ID'])
+#
+#     # for dataset, infiles in zip(['SL', 'NL'], [glob.glob(args.sl_infiles + '/*.xls'), glob.glob(args.nl_infiles + '/*.xls')]):
+#     #     print(dataset)
+#     #     raw_data = get_sm_rawdata(infiles, dataset, raw_data)
+#
+#     # Get the raw data for the two datasets of raw data
+#     print('SL')
+#     raw_data = get_sm_rawdata(glob.glob(args.sl_infiles + '/*.xls'), 'SL', raw_data)
+#     print('NL')
+#     raw_data = get_sm_rawdata(glob.glob(args.nl_infiles + '/*.xls'), 'NL', raw_data, offset=raw_data.trap_ID.max())
+#
+#     # Save the raw data to .csv format
+#     raw_data.sort_values(['dataset', 'trap_ID', 'trace']).reset_index(drop=True).to_csv(args.save_folder + '/raw_data.csv', index=False)
+#     minusing(raw_data.reset_index(drop=True), ['length']).sort_values(['dataset', 'trap_ID', 'trace']).reset_index(drop=True).to_csv(args.save_folder + '/raw_data_tc.csv', index=False)
+#
+#     # This is the order of the cycle variables in the processed dataframe
+#     order = phenotypic_variables + ['dataset', 'trap_ID', 'trace', 'lineage_ID', 'generation']
+#
+#     # The dataframe for our variables
+#     cycle_variables = pd.DataFrame(columns=order)
+#     with_outliers_cycle_variables = pd.DataFrame(columns=order)
+#
+#     for lineage_id in raw_data.lineage_ID.unique():
+#         print('Lineage ID:', lineage_id)
+#
+#         # Get the lineage
+#         raw_lineage = raw_data[raw_data['lineage_ID'] == lineage_id]
+#
+#         # Figure out the indices for the division events
+#         start_indices, end_indices = get_division_indices(raw_lineage['length'].values)
+#
+#         # # Check division times
+#         # plt.plot(np.arange(len(raw_lineage['length']), dtype=int), raw_lineage['length'])
+#         # for start, end in zip(start_indices, end_indices):
+#         #     plt.axvline(start, color='green')
+#         #     plt.axvline(end, color='red')
+#         # plt.tight_layout()
+#         # plt.show()
+#         # plt.close()
+#
+#         # the inter-division times
+#         cycle_durations = raw_lineage['time'].values[end_indices] - raw_lineage['time'].values[start_indices]
+#
+#         # Each cycle must consist of at least four data points
+#         at_least_number = np.where(cycle_durations > (2 * 0.05))[0]
+#
+#         # Apply the four data points condition
+#         start_indices, end_indices, cycle_durations = start_indices[at_least_number], end_indices[at_least_number], cycle_durations[at_least_number]
+#
+#         # Number of raw data points per generation/cycle
+#         data_points_per_cycle = np.array(np.rint(cycle_durations / .05) + np.ones_like(cycle_durations), dtype=int)
+#
+#         # add the cycle variables to the overall dataframe
+#         cycle_variables_lineage, with_outliers = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, int(lineage_id), fit_the_lengths=True)
+#
+#         # Add the SM categorical variables
+#         cycle_variables_lineage['trap_ID'] = raw_lineage['trap_ID'].unique()[0]
+#         cycle_variables_lineage['trace'] = raw_lineage['trace'].unique()[0]
+#         cycle_variables_lineage['dataset'] = raw_lineage['dataset'].unique()[0]
+#
+#         with_outliers['trap_ID'] = raw_lineage['trap_ID'].unique()[0]
+#         with_outliers['trace'] = raw_lineage['trace'].unique()[0]
+#         with_outliers['dataset'] = raw_lineage['dataset'].unique()[0]
+#
+#         # Append the cycle variables to the processed dataframe
+#         cycle_variables = cycle_variables.append(cycle_variables_lineage[order], ignore_index=True)
+#         with_outliers_cycle_variables = with_outliers_cycle_variables.append(with_outliers, ignore_index=True)
+#
+#     print('processed data:\n', cycle_variables)
+#
+#     print('cleaned raw data:\n', raw_data)
+#
+#     for variable in phenotypic_variables:
+#         if variable == 'division_ratio':
+#             print(variable, cycle_variables[variable].count() / (len(cycle_variables[variable]) - len(cycle_variables['lineage_ID'].unique())))
+#         else:
+#             print(variable, cycle_variables[variable].count() / len(cycle_variables[variable]))
+#
+#     # reset the index for good practice
+#     cycle_variables.reset_index(drop=True).sort_values(['dataset', 'trap_ID', 'trace', 'generation']).to_csv(args.save_folder + '/physical_units.csv', index=False)
+#     minusing(cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['dataset', 'trap_ID', 'trace', 'generation']).to_csv(
+#         args.save_folder + '/trace_centered.csv', index=False)
+#
+#     with_outliers_cycle_variables.reset_index(drop=True).sort_values(['dataset', 'trap_ID', 'trace', 'generation']).to_csv(args.save_folder + '/physical_units_with_outliers.csv', index=False)
+#     minusing(with_outliers_cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['dataset', 'trap_ID', 'trace', 'generation']).to_csv(
+#         args.save_folder + '/trace_centered_with_outliers.csv', index=False)
 
 
 """ Create the csv files for physical, trace-centered, and trap-centered units for MM and SM data """
@@ -635,16 +842,14 @@ def main_sm(args):
 
 def main():
     import argparse
-    import os
     import time
     
-    # How long does running this take?
-    first_time = time.time()
+    # # How long does running this take?
+    # first_time = time.time()
     
     # Do all the Mother Machine data
-    for data_origin in mm_data_names + ['SM']:
-        
-        data_origin = 'lambda_LB'
+    for data_origin in dataset_names:
+        data_origin = 'Pooled_SM'
         
         # Create the arguments for this function
         parser = argparse.ArgumentParser(description='Process Mother Machine and Sister Machine Lineage Data.')
@@ -652,14 +857,14 @@ def main():
         parser.add_argument('-raw_data', '--raw_data', metavar='', type=str, help='Raw Data location.',
                             required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/' + data_origin)
         parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
+                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/ProcessedData/' + data_origin)
         
-        # We need this for the SM data processing
-        if data_origin == 'SM':
-            parser.add_argument('-SL', '--sl_infiles', metavar='', type=str,
-                                help='Location of Sister Lineage Raw Data', required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/SM/SL')
-            parser.add_argument('-NL', '--nl_infiles', metavar='', type=str,
-                                help='Location of Neighboring Lineage Raw Data', required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/SM/NL')
+        # # We need this for the SM data processing
+        # if data_origin == 'SM':
+        #     parser.add_argument('-SL', '--sl_infiles', metavar='', type=str,
+        #                         help='Location of Sister Lineage Raw Data', required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/SM/SL')
+        #     parser.add_argument('-NL', '--nl_infiles', metavar='', type=str,
+        #                         help='Location of Neighboring Lineage Raw Data', required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/RawData/SM/NL')
         
         # Finalize the arguments
         args = parser.parse_args()
@@ -670,17 +875,18 @@ def main():
         
         # compare_cycle_variables_to_raw_data(args)
         
-        if data_origin == 'SM':  # Get SM data
-            # How long did it take to do the mother machine?
-            mm_time = time.time() - first_time
+        if data_origin in ['1015_NL', '062718_SL', '071318_SL', '072818_SL_NL', '101218_SL_NL', 'Pooled_SM']:  # Get SM data
+            
+            # # How long did it take to do the mother machine?
+            # mm_time = time.time() - first_time
             
             # Get SM data
             main_sm(args)
-        else:  # Get MM data
+        else:
+            # Get MM data
             main_mm(args)
         
         print('*' * 200)
-        
         exit()
     
     # # How long did it take to do the mother machine?
@@ -709,9 +915,9 @@ def main():
     # print('*' * 200)
     
     # How long did it take to do the mother machine?
-    sm_time = time.time() - (mm_time + first_time)
+    # sm_time = time.time() - (mm_time + first_time)
     
-    print("--- took {} mins in total: {} mins for the MM data and {} mins for the SM data ---".format((time.time() - first_time) / 60, mm_time / 60, sm_time / 60))
+    # print("--- took {} mins in total: {} mins for the MM data and {} mins for the SM data ---".format((time.time() - first_time) / 60, mm_time / 60, sm_time / 60))
 
 
 if __name__ == '__main__':

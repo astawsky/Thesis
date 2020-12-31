@@ -6,7 +6,7 @@ from scipy.stats import pearsonr, zscore
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import seaborn as sns
-from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, symbols, mm_data_names
+from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, symbols, dataset_names
 from string import ascii_uppercase as uppercase_letters
 
 

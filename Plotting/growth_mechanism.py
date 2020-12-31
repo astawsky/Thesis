@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from CustomFuncsAndVars.global_variables import phenotypic_variables, symbols, create_folder, seaborn_preamble, mm_data_names
+from CustomFuncsAndVars.global_variables import phenotypic_variables, symbols, create_folder, seaborn_preamble, dataset_names
 
 
 def main(args):
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     # How long does running this take?
     first_time = time.time()
     
-    for data_origin in mm_data_names + ['SM']:
+    for data_origin in dataset_names + ['SM']:
         print(data_origin)
         
         parser = argparse.ArgumentParser(description='Create the artificial lineages, ergodicity breaking parameters, and the KL Divergences.')

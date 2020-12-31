@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-from CustomFuncsAndVars.global_variables import phenotypic_variables, mm_data_names, symbols, seaborn_preamble, shuffle_info, create_folder, cmap
+from CustomFuncsAndVars.global_variables import phenotypic_variables, dataset_names, symbols, seaborn_preamble, shuffle_info, create_folder, cmap
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -647,7 +647,7 @@ if __name__ == '__main__':
     first_time = time.time()
     
     # # Do all the Mother Machine data
-    # for data_origin in mm_data_names:
+    # for data_origin in dataset_names:
     #     print(data_origin)
     #
     #     data_origin == 'lambda_LB'

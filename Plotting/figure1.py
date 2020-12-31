@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-from CustomFuncsAndVars.global_variables import symbols, units, mm_data_names, create_folder
+from CustomFuncsAndVars.global_variables import symbols, units, dataset_names, create_folder
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,7 +10,7 @@ import seaborn as sns
 """ This creates the illustration of two lineage distributions vs a gray background Population.  """
 
 
-def kldiv_illustration(info, phenotypic_variables, symbols, units, kl_df, type_of_lineage, MM, ax):
+def kldiv_illustration(info, phenotypic_variables_new, symbols, units, kl_df, type_of_lineage, MM, ax):
     # The latex labels instead of the variable names
     kl_df = kl_df.replace(symbols)
     
@@ -22,7 +22,7 @@ def kldiv_illustration(info, phenotypic_variables, symbols, units, kl_df, type_o
     # So the colors of the illustrations are not mixed with those of the trace and population
     cmap = sns.color_palette("tab10")[5:7]
     
-    for param in phenotypic_variables:
+    for param in phenotypic_variables_new:
         
         # Define the population distribution for the grey background
         pop = info[param]
@@ -168,13 +168,13 @@ def main(args):
     ax1.set_yticks([])
     
     # axis 2
-    kldiv_illustration(info, ['growth_rate'], symbols['physical_units'], units, kl_df, 'Trace', True, ax2)
+    kldiv_illustration(info, ['growth_rate'], symbols['new_pu'], units, kl_df, 'Trace', True, ax2)
     
     # axis 3
-    kldiv_illustration(info, ['fold_growth'], symbols['physical_units'], units, kl_df, 'Trace', True, ax3)
+    kldiv_illustration(info, ['fold_growth'], symbols['new_pu'], units, kl_df, 'Trace', True, ax3)
     
     # axis 4
-    kl_div_per_variable(kl_df, ax4, symbols['physical_units'])
+    kl_div_per_variable(kl_df, ax4, symbols['new_pu'])
     
     # axis 5
     ergodicity_per_variable(eb_df, ax5, symbols['time_averages'])
@@ -207,7 +207,7 @@ def individuals(args):
     sns.set_context('paper')
     sns.set_style("ticks", {'axes.grid': True})
     _, ax = plt.subplots(tight_layout=True, figsize=[3, 3])
-    kl_div_per_variable(pd.read_csv('{}/{}'.format(args.save_folder, args.kld)), ax, symbols['physical_units'])
+    kl_div_per_variable(pd.read_csv('{}/{}'.format(args.save_folder, args.kld)), ax, symbols['new_pu'])
     plt.title(args.data_origin)
     # save the figure
     plt.savefig('{}/KLD.png'.format(args.figs_location), dpi=300)
@@ -223,54 +223,57 @@ if __name__ == '__main__':
     # How long does running this take?
     first_time = time.time()
     
-    # Do all the Mother Machine data
-    for data_origin in mm_data_names:
-
-        parser = argparse.ArgumentParser(description='Process Mother Machine Lineage Data.')
-        parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
-        parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
-        parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
-                            required=False, default='physical_units.csv')
-        parser.add_argument('-pop', '--population_sampled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the population sampled lineages.',
-                            required=False, default='population_lineages.csv')
-        parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
-                            required=False, default='time_averages.csv')
-        parser.add_argument('-ebp', '--ebp', metavar='', type=str, help='What to name the dataframe containing the ergodicity breaking parameter for each variable.',
-                            required=False, default='ergodicity_breaking_parameter.csv')
-        parser.add_argument('-kld', '--kld', metavar='', type=str,
-                            help='What to name the dataframe containing the kullback leibler diverges for each variable between the population ensemble and physical units of lineages.',
-                            required=False, default='kullback_leibler_divergences.csv')
-        parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=True)
-        parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
-                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
-        args = parser.parse_args()
-
-        create_folder(args.figs_location)
-
-        # main(args)
-
-        # set a style on seaborn module
-        sns.set_context('paper')
-        sns.set_style("ticks", {'axes.grid': True})
-        _, ax = plt.subplots(tight_layout=True, figsize=[3, 3])
-        ergodicity_per_variable(pd.read_csv('{}/{}'.format(args.save_folder, args.ebp)), ax, symbols['time_averages'])
-        # save the figure
-        plt.savefig('{}/EBP.png'.format(args.figs_location), dpi=300)
-        # plt.show()
-        plt.close()
-
-        # set a style on seaborn module
-        sns.set_context('paper')
-        sns.set_style("ticks", {'axes.grid': True})
-        _, ax = plt.subplots(tight_layout=True, figsize=[3, 3])
-        kl_div_per_variable(pd.read_csv('{}/{}'.format(args.save_folder, args.kld)), ax, symbols['physical_units'])
-        # save the figure
-        plt.savefig('{}/KLD.png'.format(args.figs_location), dpi=300)
-        # plt.show()
-        plt.close()
-
-        print('*' * 200)
+    # # Do all the Mother Machine data
+    # for data_origin in dataset_names:
+    #
+    #     parser = argparse.ArgumentParser(description='Process Mother Machine Lineage Data.')
+    #     parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
+    #     parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
+    #                         required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
+    #     parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
+    #                         required=False, default='physical_units_with_outliers.csv')
+    #     parser.add_argument('-pop', '--population_sampled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the population sampled lineages.',
+    #                         required=False, default='population_lineages_with_outliers.csv')
+    #     parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
+    #                         required=False, default='time_averages_with_outliers.csv')
+    #     parser.add_argument('-ebp', '--ebp', metavar='', type=str, help='What to name the dataframe containing the ergodicity breaking parameter for each variable.',
+    #                         required=False, default='ergodicity_breaking_parameter_with_outliers.csv')
+    #     parser.add_argument('-kld', '--kld', metavar='', type=str,
+    #                         help='What to name the dataframe containing the kullback leibler diverges for each variable between the population ensemble and physical units of lineages.',
+    #                         required=False, default='kullback_leibler_divergences_with_outliers.csv')
+    #     parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=True)
+    #     parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
+    #                         required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
+    #     args = parser.parse_args()
+    #
+    #     create_folder(args.figs_location)
+    #
+    #     # main(args)
+    #
+    #     # print(pd.read_csv('{}/{}'.format(args.save_folder, args.ebp)))
+    #     # exit()
+    #
+    #     # set a style on seaborn module
+    #     sns.set_context('paper')
+    #     sns.set_style("ticks", {'axes.grid': True})
+    #     _, ax = plt.subplots(tight_layout=True, figsize=[3, 3])
+    #     ergodicity_per_variable(pd.read_csv('{}/{}'.format(args.save_folder, args.ebp)), ax, symbols['new_pu'])
+    #     # save the figure
+    #     plt.savefig('{}/EBP.png'.format(args.figs_location), dpi=300)
+    #     # plt.show()
+    #     plt.close()
+    #
+    #     # set a style on seaborn module
+    #     sns.set_context('paper')
+    #     sns.set_style("ticks", {'axes.grid': True})
+    #     _, ax = plt.subplots(tight_layout=True, figsize=[3, 3])
+    #     kl_div_per_variable(pd.read_csv('{}/{}'.format(args.save_folder, args.kld)), ax, symbols['new_pu'])
+    #     # save the figure
+    #     plt.savefig('{}/KLD.png'.format(args.figs_location), dpi=300)
+    #     # plt.show()
+    #     plt.close()
+    #
+    #     print('*' * 200)
     
     # How long did it take to do the mother machine?
     mm_time = time.time() - first_time
@@ -282,42 +285,37 @@ if __name__ == '__main__':
     parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
                         required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
     parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
-                        required=False, default='physical_units.csv')
+                        required=False, default='physical_units_with_outliers.csv')
     parser.add_argument('-pop', '--population_sampled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the population sampled lineages.',
-                        required=False, default='population_lineages.csv')
+                        required=False, default='population_lineages_with_outliers.csv')
     parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
-                        required=False, default='time_averages.csv')
+                        required=False, default='time_averages_with_outliers.csv')
     parser.add_argument('-ebp', '--ebp', metavar='', type=str, help='What to name the dataframe containing the ergodicity breaking parameter for each variable.',
-                        required=False, default='ergodicity_breaking_parameter.csv')
+                        required=False, default='ergodicity_breaking_parameter_with_outliers.csv')
     parser.add_argument('-kld', '--kld', metavar='', type=str,
                         help='What to name the dataframe containing the kullback leibler diverges for each variable between the population ensemble and physical units of lineages.',
-                        required=False, default='kullback_leibler_divergences.csv')
+                        required=False, default='kullback_leibler_divergences_with_outliers.csv')
     parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=False)
     parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
                         required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
     args = parser.parse_args()
     
     create_folder(args.figs_location)
-
-    # set a style on seaborn module
-    sns.set_context('paper')
-    sns.set_style("ticks", {'axes.grid': True})
-    _, ax = plt.subplots(tight_layout=True, figsize=[3, 3])
-    ergodicity_per_variable(pd.read_csv('{}/{}'.format(args.save_folder, args.ebp)), ax, symbols['time_averages'])
-    # save the figure
-    plt.savefig('{}/EBP.png'.format(args.figs_location), dpi=300)
-    # plt.show()
-    plt.close()
-
-    # set a style on seaborn module
-    sns.set_context('paper')
-    sns.set_style("ticks", {'axes.grid': True})
-    _, ax = plt.subplots(tight_layout=True, figsize=[3, 3])
-    kl_div_per_variable(pd.read_csv('{}/{}'.format(args.save_folder, args.kld)), ax, symbols['physical_units'])
-    # save the figure
-    plt.savefig('{}/KLD.png'.format(args.figs_location), dpi=300)
-    # plt.show()
-    plt.close()
+    
+    for blah in ['A', 'B']:
+        
+        ebp = pd.read_csv('{}/{}_{}'.format(args.save_folder, args.ebp, blah))
+    
+        # set a style on seaborn module
+        sns.set_context('paper')
+        sns.set_style("ticks", {'axes.grid': True})
+        _, ax = plt.subplots(tight_layout=True, figsize=[3, 3])
+        ergodicity_per_variable(ebp, ax, symbols['time_averages'])
+        # save the figure
+        plt.ylim([0, .45])
+        plt.savefig('{}/EBP_{}.png'.format(args.figs_location, blah), dpi=300)
+        # plt.show()
+        plt.close()
     
     # main(args)
     

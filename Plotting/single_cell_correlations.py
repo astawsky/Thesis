@@ -7,7 +7,7 @@ import pingouin as pg
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import seaborn as sns
-from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, symbols, units, mm_data_names
+from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, symbols, units, dataset_names
 
 
 def previous_division_scatterplots(df, label, var_prev, var_after, suffix=''):
@@ -217,7 +217,7 @@ def main(args):
     time_averages = pd.read_csv('{}/{}'.format(args.save_folder, args.ta)).sort_values(['lineage_ID'])
 
     ##### CAREFUL WITH THIS! ######
-    
+
     time_averages = time_averages[time_averages['growth_rate'] > 1.8]
 
     ###############################
@@ -303,7 +303,7 @@ if __name__ == '__main__':
     first_time = time.time()
     
     # Do all the Mother Machine data
-    for data_origin in mm_data_names:
+    for data_origin in dataset_names:
         
         data_origin = 'lambda_LB'
         

@@ -4,7 +4,7 @@ import sys
 
 sys.path.append(r'/Users/alestawsky/PycharmProjects/Thesis')
 import os
-from CustomFuncsAndVars.global_variables import symbols, create_folder, seaborn_preamble, mm_data_names
+from CustomFuncsAndVars.global_variables import symbols, create_folder, seaborn_preamble, dataset_names
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -238,7 +238,7 @@ if __name__ == '__main__':
     first_time = time.time()
     
     # Do all the Mother Machine data
-    for data_origin in mm_data_names:
+    for data_origin in dataset_names:
         print(data_origin)
         
         # This is because this dataset does not have enough generations for the analysis to be relevant

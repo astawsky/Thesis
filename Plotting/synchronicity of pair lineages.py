@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-from CustomFuncsAndVars.global_variables import phenotypic_variables, mm_data_names, symbols, seaborn_preamble, shuffle_info, create_folder
+from CustomFuncsAndVars.global_variables import phenotypic_variables, dataset_names, symbols, seaborn_preamble, shuffle_info, create_folder
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt

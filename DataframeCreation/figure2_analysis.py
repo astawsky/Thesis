@@ -4,7 +4,7 @@ import sys
 
 sys.path.append(r'/Users/alestawsky/PycharmProjects/Thesis')
 import os
-from CustomFuncsAndVars.global_variables import phenotypic_variables, shuffle_info, mm_data_names, seaborn_preamble, symbols, create_folder
+from CustomFuncsAndVars.global_variables import phenotypic_variables, shuffle_info, dataset_names, seaborn_preamble, symbols, create_folder
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -542,7 +542,7 @@ if __name__ == '__main__':
     first_time = time.time()
     
     # Do all the Mother Machine data
-    for data_origin in mm_data_names:
+    for data_origin in dataset_names:
         print(data_origin)
         if data_origin == 'lambda_LB':
             continue
