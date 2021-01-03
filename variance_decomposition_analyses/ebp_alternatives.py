@@ -1,37 +1,11 @@
 #!/usr/bin/env bash
 
-from CustomFuncsAndVars.global_variables import symbols, units, dataset_names, create_folder, shuffle_info, phenotypic_variables, shuffle_lineage_generations, cmap, seaborn_preamble
+from CustomFuncsAndVars.global_variables import symbols, units, dataset_names, create_folder, shuffle_info, phenotypic_variables, shuffle_lineage_generations, cmap, seaborn_preamble, get_time_averages_df
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 from scipy.stats import linregress
-
-""" Returns dataframe with same size containing the time-averages of each phenotypic variable instead of the local value """
-
-
-def get_time_averages_df(info, phenotypic_variables):  # MM
-    # We keep the trap means here
-    means_df = pd.DataFrame(columns=['lineage_ID', 'max_gen', 'generation'] + phenotypic_variables)
-    
-    # specify a lineage
-    for trap_id in info['lineage_ID'].unique():
-        
-        # the values of the lineage we get from physical units
-        lineage = info[(info['lineage_ID'] == trap_id)].copy()
-        
-        # add its time-average
-        to_add = {
-            'lineage_ID': [trap_id for _ in np.arange(len(lineage))],
-            'max_gen': [len(lineage) for _ in np.arange(len(lineage))], 'generation': np.arange(len(lineage))
-        }
-        to_add.update({param: [np.mean(lineage[param]) for _ in np.arange(len(lineage))] for param in phenotypic_variables})
-        to_add = pd.DataFrame(to_add)
-        means_df = means_df.append(to_add, ignore_index=True).reset_index(drop=True)
-    
-    assert len(info) == len(means_df)
-    
-    return means_df
 
 
 """ Two ways to calculate the ergodicity breaking parameter, with an expanding window or using the window of the lineages aleady given """

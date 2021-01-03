@@ -2,12 +2,12 @@
 
 import pandas as pd
 import numpy as np
-from scipy.stats import zscore, linregress
+from scipy.stats import linregress, pearsonr
 import pingouin as pg
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import seaborn as sns
-from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, symbols, units, dataset_names
+from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, symbols, units, dataset_names, get_time_averages_df
 
 
 def previous_division_scatterplots(df, label, var_prev, var_after, suffix=''):
@@ -102,13 +102,10 @@ def main(args):
         latex_symbols = {variable: symbols[label][variable] for variable in variables}
         unit_symbols = {variable: units[variable] if label != 'trace_centered' else '' for variable in variables}
         
+        # Replace the phenotypic variables with their latex counterparts
         df = df[variables].copy().rename(columns=latex_symbols)
-        # if remove_outliers:
-        #     before = len(df)
-        #     df = df[(np.abs(zscore(df, nan_policy='omit')) < 4).all(axis=1)].reset_index(drop=True)
-        #     after = len(df)
-        #     print('percentage that stays after removing all values farther than the fourth standard deviation:', after / before)
         
+        # In case we just want to see one scatterplot
         if len(variables) == 2:
     
             sns.set_context('talk')
@@ -128,8 +125,7 @@ def main(args):
             # plt.savefig('{}/{}/{}{}.png'.format(args.figs_location, args.scc, label, suffix), dpi=300)
             # # plt.show()
             # plt.close()
-            
-        else:
+        else:  # If we want the matrix of scatterplots
             
             fig, axes = plt.subplots(nrows=len(variables) - 1, ncols=len(variables) - 1, figsize=[7, 7])
             
@@ -138,21 +134,33 @@ def main(args):
                     # define the axis we will be plotting on
                     ax = axes[row, col]
                     
+                    # So it looks presentable
                     ax.xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
                     ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
                     
+                    # Lower diagonal matrix
                     if col > row:
                         ax.set_frame_on(False)
                         ax.set_xticks([])
                         ax.set_yticks([])
                     else:
-                        pcorr = str(pg.corr(df[col_var].values, df[row_var].values, method='pearson')['r'].loc['pearson'].round(2))[:4]
+                        index_without_nans = [index for index in df.index if ~np.isnan(df[[col_var, row_var]].loc[index].values).any()]
+
+                        col_array = df[col_var].loc[index_without_nans].values
+                        row_array = df[row_var].loc[index_without_nans].values
+
+                        pcorr = str(pearsonr(col_array, row_array)[0])[:4]
+                        slope, intercept, _, _, std_err = linregress(col_array, row_array)
+                        
+                        # pcorr = str(pg.corr(df[col_var].values, df[row_var].values, method='pearson')['r'].loc['pearson'].round(2))[:4]
                         # slope, intercept = str(linregress(df[list(latex_symbols.values())[1]], df[list(latex_symbols.values())[0]])[0])[:4]
-                        slope, intercept, _, _, std_err = linregress(df[col_var].values, df[row_var].values)
                         
                         # sns.regplot(x=df[col_var], y=df[row_var], data=df, ax=ax, line_kws={'color': 'red'}, scatter_kws={'color': 'grey'})
-                        ax.scatter(df[col_var].values, df[row_var].values, color='gray')
-                        ax.plot(df[col_var].values, [intercept + slope * vel for vel in df[col_var].values])
+                        # ax.scatter(df[col_var].values, df[row_var].values, color='gray')
+                        # ax.plot(df[col_var].values, [intercept + slope * vel for vel in df[col_var].values])
+                        
+                        ax.scatter(col_array, row_array, color='gray', marker='o', alpha=.5)
+                        ax.plot(np.unique(col_array), [intercept + slope * vel for vel in np.unique(col_array)])
                         ax.annotate(r'$\rho = $' + pcorr + '\n' + r'$\beta = {:.2}$'.format(np.round(slope, 2)), xy=(.5, .72), xycoords=ax.transAxes, fontsize=10, ha='center', va='bottom', color='red',
                                     bbox=dict(boxstyle='round,pad=0.2', fc='yellow', alpha=0.7))
                     
@@ -212,19 +220,15 @@ def main(args):
     create_folder('{}/{}'.format(args.figs_location, args.scch))
     
     # import the labeled measured bacteria in trace-centered units
-    physical_units = pd.read_csv('{}/{}'.format(args.save_folder, args.pu)).sort_values(['lineage_ID'])
-    trace_centered = pd.read_csv('{}/{}'.format(args.save_folder, args.tc)).sort_values(['lineage_ID'])
-    time_averages = pd.read_csv('{}/{}'.format(args.save_folder, args.ta)).sort_values(['lineage_ID'])
-
-    ##### CAREFUL WITH THIS! ######
-
-    time_averages = time_averages[time_averages['growth_rate'] > 1.8]
-
-    ###############################
+    physical_units = pd.read_csv('{}/{}'.format(args.save_folder, args.pu))
+    trace_centered = pd.read_csv('{}/{}'.format(args.save_folder, args.tc))
     
-    unique_ta = time_averages[['lineage_ID', 'max_gen', 'fold_growth',
-                               'division_ratio', 'added_length', 'generationtime', 'length_birth',
-                               'length_final', 'growth_rate']].drop_duplicates().sort_values(['lineage_ID'])
+    # time_averages = pd.read_csv('{}/{}'.format(args.save_folder, args.ta))
+    
+    # Calculate this
+    time_averages = get_time_averages_df(physical_units, phenotypic_variables[3:])
+    
+    unique_ta = time_averages[['lineage_ID', 'max_gen']+phenotypic_variables[3:]].drop_duplicates().sort_values(['lineage_ID'])
     
     # physical_units = pd.read_csv('{}/{}'.format(args.save_folder, args.pu)).sort_values(['dataset', 'trap_ID', 'trace'], ascending=[1, 1, 1])
     # trace_centered = pd.read_csv('{}/{}'.format(args.save_folder, args.tc)).sort_values(['dataset', 'trap_ID', 'trace'], ascending=[1, 1, 1])
@@ -233,65 +237,37 @@ def main(args):
     #                            'division_ratio', 'added_length', 'generationtime', 'length_birth',
     #                            'length_final', 'growth_rate']].drop_duplicates().sort_values(['dataset', 'trap_ID', 'trace'], ascending=[1, 1, 1])
 
-    previous_division_scatterplots(trace_centered, 'trace_centered', 'division_ratio', 'growth_rate', suffix=' prev and after HIGH GROWTH RATE')
-    previous_division_scatterplots(trace_centered, 'trace_centered', 'division_ratio', 'generationtime', suffix=' prev and after HIGH GROWTH RATE')
-    previous_division_scatterplots(trace_centered, 'trace_centered', 'division_ratio', 'fold_growth', suffix=' prev and after HIGH GROWTH RATE')
-    # exit()
     
     # print()
     
     # heatmap_analogs(trace_centered, 'trace_centered', variables=['fold_growth', 'division_ratio', 'generationtime', 'length_birth', 'growth_rate'], suffix=' main ones')
     # heatmap_analogs(unique_ta, 'unique_ta', variables=['fold_growth', 'division_ratio', 'generationtime', 'length_birth', 'growth_rate'], suffix=' main ones')
     # put_all_graphs_into_a_big_grid(physical_units, 'physical_units', variables=['fold_growth', 'length_birth'], remove_outliers=True, suffix=' phi and x')
-    put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', variables=['fold_growth', 'length_birth'], remove_outliers=False, suffix=' phi and x HIGH GROWTH RATE')
+    # put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', variables=['fold_growth', 'length_birth'], remove_outliers=False, suffix=' phi and x HIGH GROWTH RATE')
     # put_all_graphs_into_a_big_grid(trace_centered, 'trace_centered', variables=['fold_growth', 'length_birth'], suffix=' phi and x')
-    put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', variables=['generationtime', 'growth_rate'], remove_outliers=False, suffix=' tau and alpha HIGH GROWTH RATE')
-    put_all_graphs_into_a_big_grid(trace_centered, 'trace_centered', variables=['generationtime', 'growth_rate'], remove_outliers=False, suffix=' tau and alpha HIGH GROWTH RATE')
+    # put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', variables=['generationtime', 'growth_rate'], remove_outliers=False, suffix=' tau and alpha HIGH GROWTH RATE')
+    # put_all_graphs_into_a_big_grid(trace_centered, 'trace_centered', variables=['generationtime', 'growth_rate'], remove_outliers=False, suffix=' tau and alpha HIGH GROWTH RATE')
     # put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', variables=['fold_growth', 'length_birth'], remove_outliers=True, suffix=' phi and ln x')
     
     # exit()
     
     print('pu')
-    heatmap_analogs(physical_units, 'physical_units', variables=phenotypic_variables, suffix=' HIGH GROWTH RATE')
+    heatmap_analogs(physical_units, 'physical_units', variables=phenotypic_variables[3:], suffix='')
     print('tc')
-    heatmap_analogs(trace_centered, 'trace_centered', variables=phenotypic_variables, suffix=' HIGH GROWTH RATE')
+    heatmap_analogs(trace_centered, 'trace_centered', variables=phenotypic_variables[3:], suffix='')
     print('ta')
-    heatmap_analogs(time_averages, 'time_averages', variables=phenotypic_variables, suffix=' HIGH GROWTH RATE')
+    heatmap_analogs(time_averages, 'time_averages', variables=phenotypic_variables[3:], suffix='')
     print('ta unique')
-    heatmap_analogs(unique_ta, 'unique_ta', variables=phenotypic_variables, suffix=' HIGH GROWTH RATE')
+    heatmap_analogs(unique_ta, 'unique_ta', variables=phenotypic_variables[3:], suffix='')
     
     print('pu')
-    put_all_graphs_into_a_big_grid(physical_units, 'physical_units', remove_outliers=False, suffix=' HIGH GROWTH RATE')
+    put_all_graphs_into_a_big_grid(physical_units, 'physical_units', variables=phenotypic_variables[3:], remove_outliers=False, suffix='')
     print('tc')
-    put_all_graphs_into_a_big_grid(trace_centered, 'trace_centered', remove_outliers=False, suffix=' HIGH GROWTH RATE')
-    print('ta')
-    put_all_graphs_into_a_big_grid(time_averages, 'time_averages', remove_outliers=False, suffix=' HIGH GROWTH RATE')
+    put_all_graphs_into_a_big_grid(trace_centered, 'trace_centered', variables=phenotypic_variables[3:], remove_outliers=False, suffix='')
+    # print('ta')
+    # put_all_graphs_into_a_big_grid(time_averages, 'time_averages', variables=phenotypic_variables[3:], remove_outliers=False, suffix='')
     print('unique ta')
-    put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', remove_outliers=False, suffix=' HIGH GROWTH RATE')
-
-
-# parser = argparse.ArgumentParser(description='Dataframes containing: KL divergences, Population physical_units lineages, and the ergodicity breaking parameter for both kinds of lineages.')
-# parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-#                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data')
-# parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
-#                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/physical_units.csv')
-# parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
-#                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/time_averages.csv')
-# parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
-#                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/trace_centered.csv')
-# parser.add_argument('-bs', '--bootstraps', metavar='', type=int, help='How many bootstraps per covariance should be done?',
-#                     required=False, default=0)
-# parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
-#                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures')
-# parser.add_argument('-scc', '--scc', metavar='', type=str, help='Where the single cell correlation figures are saved.',
-#                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/single_cell_correlations')
-# parser.add_argument('-scch', '--scch', metavar='', type=str, help='Where the single cell correlation heatmap figures are saved.',
-#                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/single_cell_correlations_heatmaps')
-#
-# args = parser.parse_args()
-#
-# create_folder(args.save_folder)
-# create_folder(args.figs_location)
+    put_all_graphs_into_a_big_grid(unique_ta, 'unique_ta', variables=phenotypic_variables[3:], remove_outliers=False, suffix='')
 
 
 if __name__ == '__main__':
@@ -302,19 +278,19 @@ if __name__ == '__main__':
     # How long does running this take?
     first_time = time.time()
     
+    time_dict = {}
+    
     # Do all the Mother Machine data
     for data_origin in dataset_names:
-        
-        data_origin = 'lambda_LB'
         
         parser = argparse.ArgumentParser(description='Process Mother Machine Lineage Data.')
         parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
         parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
+                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/ProcessedData/' + data_origin)
         parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
                             required=False, default='physical_units.csv')
-        parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
-                            required=False, default='time_averages.csv')
+        parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
+                            required=False, default='trace_centered.csv')
         # parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=True)
         parser.add_argument('-scc', '--scc', metavar='', type=str, help='Where the single cell correlation figures are saved.',
                             required=False, default='single_cell_correlations')
@@ -322,8 +298,6 @@ if __name__ == '__main__':
                             required=False, default='single_cell_correlations_heatmaps')
         parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
                             required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/'+data_origin)
-        parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
-                            required=False, default='trace_centered.csv')
 
         args = parser.parse_args()
         
@@ -331,36 +305,8 @@ if __name__ == '__main__':
         
         print('*' * 200)
         
-        exit()
-    
-    # How long did it take to do the mother machine?
-    mm_time = time.time() - first_time
-    
-    data_origin = 'SM'
-    
-    parser = argparse.ArgumentParser(description='Create the artificial lineages, ergodicity breaking parameters, and the KL Divergences.')
-    parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
-    parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
-    parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
-                        required=False, default='physical_units.csv')
-    parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
-                        required=False, default='time_averages.csv')
-    # parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=True)
-    parser.add_argument('-scc', '--scc', metavar='', type=str, help='Where the single cell correlation figures are saved.',
-                        required=False, default='single_cell_correlations')
-    parser.add_argument('-scch', '--scch', metavar='', type=str, help='Where the single cell correlation heatmap figures are saved.',
-                        required=False, default='single_cell_correlations_heatmaps')
-    parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
-                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
-    parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
-                        required=False, default='trace_centered.csv')
-
-    args = parser.parse_args()
-
-    main(args)
-    
-    # How long did it take to do the mother machine?
-    sm_time = time.time() - (mm_time + first_time)
-    
-    print("--- took {} mins in total: {} mins for the MM data and {} mins for the SM data ---".format((time.time() - first_time) / 60, mm_time / 60, sm_time / 60))
+        time_dict.update({data_origin: time.time() - first_time})
+        
+        first_time = time.time()
+        
+    print(time_dict)

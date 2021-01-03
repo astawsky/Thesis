@@ -28,7 +28,7 @@ plt.ylabel(symbols['physical_units']['growth_rate'] + ' ' + units['growth_rate']
 plt.ylim(top=4, bottom=0)
 plt.xlim(right=2.2)
 plt.legend()
-# plt.savefig('growth rate and generationtime.png', dpi=300)
+plt.savefig('growth rate and generationtime.png', dpi=300)
 plt.show()
 plt.close()
 
@@ -50,7 +50,7 @@ plt.ylabel(symbols['physical_units']['growth_rate'] + ' ' + units['growth_rate']
 plt.ylim(top=4, bottom=0)
 plt.xlim(left=0, right=7.2)
 plt.legend()
-# plt.savefig('growth rate and length_birth.png', dpi=300)
+plt.savefig('growth rate and length_birth.png', dpi=300)
 plt.show()
 plt.close()
 
@@ -73,6 +73,6 @@ plt.ylim(bottom=0, top=7)
 plt.xlim(left=0, right=4)
 plt.legend()
 plt.savefig('length_birth and generationtime.png', dpi=300)
-# plt.show()
+plt.show()
 plt.close()
 

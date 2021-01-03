@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 import pandas as pd
 import numpy as np
 import glob
@@ -103,10 +102,14 @@ def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, 
     # the dataframe for our variables
     cycle_variables_lineage = pd.DataFrame(columns=phenotypic_variables + ['lineage_ID', 'generation'])
     
-    for start, end, inter_div_time, gen in zip(start_indices, end_indices, cycle_durations, np.arange(len(cycle_durations), dtype=int)):
+    for start, end, inter_div_time, gen, ppc in zip(start_indices, end_indices, cycle_durations, np.arange(len(cycle_durations), dtype=int), data_points_per_cycle):
         
         # for our regression
         domain = (raw_lineage['time'].iloc[start: end + 1].copy().values - raw_lineage['time'].iloc[start]).reshape(-1, 1)
+        
+        if ppc != len(domain):
+            print(ppc, len(domain))
+            raise IOError('points per cycle and length of domain are not the same! {} != {}'.format(ppc, len(domain)))
         
         # domain = np.linspace(raw_lineage['time'].iloc[start], raw_lineage['time'].iloc[end], num=end - start + 1).reshape(-1, 1)
         range = np.log(raw_lineage['length'].iloc[start:end + 1].values).reshape(-1, 1)  # the end+1 is due to indexing
@@ -382,6 +385,10 @@ def main_mm(args):
         
         # the inter-division times
         cycle_durations = raw_lineage['time'].values[end_indices] - raw_lineage['time'].values[start_indices]
+        
+        # print(raw_lineage['time'].values[:11])
+        # print(cycle_durations)
+        # exit()
         
         # Each cycle must be longer than 10 minutes as a physical constraint to help us with the division events
         at_least_number = np.where(cycle_durations > .1)[0]

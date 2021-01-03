@@ -6,6 +6,7 @@ import os
 from CustomFuncsAndVars.global_variables import phenotypic_variables, create_folder, dataset_names
 
 
+
 # pu = pd.read_csv('/Users/alestawsky/PycharmProjects/Thesis/ProcessedData/lambda_LB/physical_units.csv')
 # param1 = 'generationtime'
 # param2 = 'growth_rate'
@@ -17,15 +18,15 @@ from CustomFuncsAndVars.global_variables import phenotypic_variables, create_fol
 # plt.show()
 # plt.close()
 
-date_mapping = {
-    '072818': '072818_SL_NL',
-    '101218': '101218_SL_NL',
-    '071318': '071318_SL',
-    '062718': '062718_SL',
-    '1012': '101218_SL_NL',
-    '1015': '1015_NL',
-    '0728': '072818_SL_NL'
-}
+# date_mapping = {
+#     '072818': '072818_SL_NL',
+#     '101218': '101218_SL_NL',
+#     '071318': '071318_SL',
+#     '062718': '062718_SL',
+#     '1012': '101218_SL_NL',
+#     '1015': '1015_NL',
+#     '0728': '072818_SL_NL'
+# }
 
 # for date in np.unique(list(date_mapping.values())):
 #     create_folder('/Users/alestawsky/PycharmProjects/Thesis/RawData/' + date)
@@ -46,29 +47,29 @@ new_date_mapping = date_mapping.copy()
 #
 #         os.rename(file, new_file)
 
-sister_files = []
-neighbor_files = []
-
-for folder in np.unique(list(date_mapping.values()))[1:]:
-    print('*'*200)
-    print(folder)
-    
-    files = glob.glob(r'/Users/alestawsky/PycharmProjects/Thesis/RawData/' + folder + '/*')
-
-    print(files)
-
-    for file in files:
-        if ('POS' in file) or ('Pos' in file):
-            print(file)
-            # print(file, file.split('.')[0]+'_SL'+file.split('.')[-1])
-            # os.rename(file, file.split('.')[0]+'_SL'+file.split('.')[-1])
-        else:
-            # print(file, file.split('.')[0]+'_NL'+file.split('.')[-1])
-            pass
-            
-    # exit()
-    # print([file if ('POS' in file) or ('Pos' in file) else '' for file in files])
-    #
-    # print(len(files), len([file if ('POS' in file) or ('Pos' in file) else '' for file in files]))
-    # exit()
+# sister_files = []
+# neighbor_files = []
+#
+# for folder in np.unique(list(date_mapping.values()))[1:]:
+#     print('*'*200)
+#     print(folder)
+#
+#     files = glob.glob(r'/Users/alestawsky/PycharmProjects/Thesis/RawData/' + folder + '/*')
+#
+#     print(files)
+#
+#     for file in files:
+#         if ('POS' in file) or ('Pos' in file):
+#             print(file)
+#             # print(file, file.split('.')[0]+'_SL'+file.split('.')[-1])
+#             # os.rename(file, file.split('.')[0]+'_SL'+file.split('.')[-1])
+#         else:
+#             # print(file, file.split('.')[0]+'_NL'+file.split('.')[-1])
+#             pass
+#
+#     # exit()
+#     # print([file if ('POS' in file) or ('Pos' in file) else '' for file in files])
+#     #
+#     # print(len(files), len([file if ('POS' in file) or ('Pos' in file) else '' for file in files]))
+#     # exit()
 
