@@ -379,6 +379,7 @@ def main_mm(args):
         # for start, end in zip(start_indices, end_indices):
         #     plt.axvline(start, color='green')
         #     plt.axvline(end, color='red')
+        # plt.yscale('log')
         # plt.tight_layout()
         # plt.show()
         # plt.close()
