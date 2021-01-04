@@ -167,6 +167,7 @@ def plot_individual_msds(args, variables, dataframe, label):
             plt.savefig('{}/{}/{}/{}_nologlog'.format(args.data_origin, y, label, variable), dpi=300)
             # plt.show()
             plt.close()
+            
 
 
 def heatmap_analogs(args, df, label, variables=phenotypic_variables[3:], suffix=''):
