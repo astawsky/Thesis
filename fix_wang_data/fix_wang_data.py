@@ -30,6 +30,7 @@ def fix(args):
         
         # Import the .dat file
         raw_lineage = pd.read_csv(file, delimiter=' ')  # names=['time', 'division_flag', 'length', 'width', 'area', 'yfp_intensity', 'CMx', 'CMy']
+        
     
         # Sometimes the time indices are called time and others called index
         if 'time' in raw_lineage.columns:
