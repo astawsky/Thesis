@@ -66,6 +66,7 @@ def fix(args):
         zero_indices = raw_lineage[raw_lineage['length'] <= 0].index
         print(zero_indices)
         
+        
         # irregular_step_sizes =
     
         # Make sure we have the measurement time step-size in hours and that it is the same across all rows
