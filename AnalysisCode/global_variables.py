@@ -377,6 +377,11 @@ bounds = {
     'generationtime': [0.01, 1], 'fold_growth': [.27, 1], 'growth_rate': [.8, 1.8], 'length_birth': [.7, 4.5], 'length_final': [2.3, 8.3], 'division_ratio': [.35, .65], 'added_length': [.4, 5]
 }
 symbols_bounds = {symbols['physical_units'][key]: val for key, val in bounds.items()}
-dataset_names = ['1015_NL', '062718_SL', '071318_SL', '072818_SL_NL', '101218_SL_NL', 'Pooled_SM', '8-31-16 Continue', 'MC4100_25C (Tanouchi 2015)', 'MC4100_27C (Tanouchi 2015)',
-                 'MC4100_37C (Tanouchi 2015)']
+wang_datasets = ['20090529_E_coli_Br_SJ119_Wang2010', '20090930_E_coli_MG1655_lexA3_Wang2010', '20090923_E_coli_MG1655_lexA3_Wang2010', '20090922_E_coli_MG1655_lexA3_Wang2010',
+                 '20090412_E_coli_Br_SJ108_Wang2010', '20090210_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090129_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090702_E_coli_MG1655_(CGSC_6300)_Wang2010',
+                 '20090131_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090525_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090512_E_coli_MG1655_(CGSC_6300)_Wang2010']
+tanouchi_datasets = ['MC4100_25C (Tanouchi 2015)', 'MC4100_27C (Tanouchi 2015)', 'MC4100_37C (Tanouchi 2015)']
+sm_datasets = ['1015_NL', '062718_SL', '071318_SL', '072818_SL_NL', '101218_SL_NL', 'Pooled_SM']
+mm_datasets = ['8-31-16 Continue']
+dataset_names = sm_datasets + mm_datasets + tanouchi_datasets + wang_datasets
 cmap = sns.color_palette('tab10')
