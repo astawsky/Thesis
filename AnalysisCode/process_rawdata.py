@@ -29,7 +29,6 @@ def get_division_indices(raw_trace):
     # falls drastically, suggesting a division has occurred.
     diffs = np.diff(raw_trace)
     
-    
     # How much of a difference there has to be between two points to consider division having taken place.
     threshold_of_difference_for_division = -1.2
     
