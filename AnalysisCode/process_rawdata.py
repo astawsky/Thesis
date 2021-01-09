@@ -29,11 +29,6 @@ def get_division_indices(raw_trace):
     # falls drastically, suggesting a division has occurred.
     diffs = np.diff(raw_trace)
     
-    plt.hist(diffs)
-    plt.show()
-    plt.close()
-    exit()
-    
     # How much of a difference there has to be between two points to consider division having taken place.
     threshold_of_difference_for_division = -1.2
     
@@ -325,6 +320,8 @@ def main_mm(args):
                 continue
             
             raw_lineage['time'] = (raw_lineage['time']) / 60  # Because we map the index to the correct time-step-size which is 1 minute
+
+            raw_lineage['length'] = (raw_lineage['length']) * 0.0645  # Convert it from pixel length to micrometers
             
             step_size = 1 / 60  # one-minute measurements!
         else:
@@ -334,6 +331,10 @@ def main_mm(args):
         raw_lineage['time'] = raw_lineage['time']  # .round(2)
         raw_lineage['filename'] = filename
         raw_lineage = raw_lineage.reset_index(drop=True)
+        # print(len(raw_lineage))
+        raw_lineage = raw_lineage[raw_lineage['length'] > 0]  # Goes without saying but there was an instance of this in the Wang Data
+        # print(len(raw_lineage))
+        # exit()
         
         # Add the trap ID
         raw_lineage['lineage_ID'] = count + 1 - offset
@@ -345,18 +346,17 @@ def main_mm(args):
             offset += 1
             continue
 
-        # raw_lineage = raw_lineage[raw_lineage['length'] > 0]  # Goes without saying but there was an instance of this in the Wang Data
-        if len(raw_lineage[raw_lineage['length'] <= 0]) > 0:
-            print('This lineage has a length lower than or equal to 0, so we will not use it.')
-            continue
+        # if len(raw_lineage[raw_lineage['length'] <= 0]) > 0:
+        #     print('This lineage has a length lower than or equal to 0, so we will not use it.')
+        #     continue
         
         # Make sure we have the measurement time step-size in hours and that it is the same across all rows
         # If not, do not use the trace (Too much of a headache for the phenotypic variable linear regression).
         step_sizes = (raw_lineage['time'].iloc[1:].values - raw_lineage['time'].iloc[:-1].values).round(2)
-        if not np.all(step_sizes == step_sizes[0]):
-            print(filename, ' has steps that are not the same size ', np.unique(step_sizes), ' and we are not using this data then')  # , are we are not gonna use these...')
-            continue
-            # exit()
+        # if not np.all(step_sizes == step_sizes[0]):
+        #     print(filename, ' has steps that are not the same size ', np.unique(step_sizes), ' and we are not using this data then')  # , are we are not gonna use these...')
+        #     continue
+        #     # exit()
         
         # This is due to data singularities
         if args['data_origin'] == '8-31-16 Continue' and .05 == step_sizes[0]:
@@ -384,6 +384,13 @@ def main_mm(args):
         
         # add it to the total data
         raw_data = raw_data.append(raw_lineage, ignore_index=True)
+
+        # # Check division times
+        # plt.plot(np.arange(len(raw_lineage['length']), dtype=int), raw_lineage['length'])
+        # # plt.yscale('log')
+        # plt.tight_layout()
+        # plt.show()
+        # plt.close()
         
         # These datasets have a division flag
         if args['data_origin'] in tanouchi_datasets:  #  + wang_datasets
@@ -394,15 +401,7 @@ def main_mm(args):
             # Figure out the indices for the division events
             start_indices, end_indices = get_division_indices(raw_lineage['length'].values)
         
-        # # Check division times
-        # plt.plot(np.arange(len(raw_lineage['length']), dtype=int), raw_lineage['length'])
-        # for start, end in zip(start_indices, end_indices):
-        #     plt.axvline(start, color='green')
-        #     plt.axvline(end, color='red')
-        # plt.yscale('log')
-        # plt.tight_layout()
-        # plt.show()
-        # plt.close()
+        print(start_indices, end_indices)
         
         # the inter-division times
         cycle_durations = raw_lineage['time'].values[end_indices] - raw_lineage['time'].values[start_indices]
@@ -418,6 +417,16 @@ def main_mm(args):
         
         # Number of raw data points per generation/cycle
         data_points_per_cycle = np.array(np.rint(cycle_durations / step_size) + np.ones_like(cycle_durations), dtype=int)
+
+        # Check division times
+        plt.plot(np.arange(len(raw_lineage['length']), dtype=int), raw_lineage['length'])
+        for start, end in zip(start_indices, end_indices):
+            plt.axvline(start, color='green')
+            plt.axvline(end, color='red')
+        plt.yscale('log')
+        plt.tight_layout()
+        plt.show()
+        plt.close()
         
         # add the cycle variables to the overall dataframe
         cycle_variables_lineage, with_outliers = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, int(count + 1 - offset), fit_the_lengths=True)
@@ -425,6 +434,8 @@ def main_mm(args):
         # append the cycle variables to the
         cycle_variables = cycle_variables.append(cycle_variables_lineage, ignore_index=True)
         with_outliers_cycle_variables = with_outliers_cycle_variables.append(with_outliers, ignore_index=True)
+        
+        plt.plot(raw_lineage['length'].values)
     
     # exit()
     print('processed data:\n', cycle_variables)
