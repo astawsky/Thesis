@@ -538,7 +538,7 @@ def compare_cycle_variables_to_raw_data(args):
         # print(len(x), len(raw_trace['length'][start_indices[0]:end_indices[-1] + 1]))
         # print(len(recreated))
         # print('----')
-        print(x, raw_trace['length'][start_indices[0]:end_indices[-1] + 1], sep='\n')
+        # print(x, raw_trace['length'][start_indices[0]:end_indices[-1] + 1], sep='\n')
         # exit()
         
         plt.plot(x, raw_trace['length'][start_indices[0]:end_indices[-1] + 1], label='raw data')
