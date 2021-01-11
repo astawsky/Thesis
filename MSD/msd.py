@@ -284,8 +284,6 @@ if __name__ == '__main__':
     # Do all the Mother Machine data
     for data_origin in input_args.dataset_names:
         print(data_origin)
-        if data_origin not in wang_datasets:
-            continue
 
         """
                 data_origin ==> Name of the dataset we are analysing
