@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 from scipy.stats import linregress, pearsonr
-import pingouin as pg
 
 
 # The function that will do the analysis
