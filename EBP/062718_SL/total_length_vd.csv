@@ -1,0 +1,1156 @@
+param1,param2,variable,n,generation,gamma_ta,label
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.0029211359367500435,Trace
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.0013410746490604625,Trace
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635668,Trace
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338965,Trace
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0002520044193788474,Trace
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142855,Trace
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974312,Trace
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121657,Trace
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.00239204384088063,Trace
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462909,Trace
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.0029211359367500435,Trace
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.0013410746490604625,Trace
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635668,Trace
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338965,Trace
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0002520044193788474,Trace
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142855,Trace
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974312,Trace
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121657,Trace
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.00239204384088063,Trace
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462909,Trace
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035784,Trace
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625457,Trace
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632762,Trace
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477282,Trace
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693126926,Trace
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.0056216695365119375,Trace
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.019713781535486082,Trace
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820604,Trace
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777112,Trace
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.0029211359367500435,Trace
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.0013410746490604625,Trace
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635668,Trace
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338965,Trace
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0002520044193788474,Trace
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142855,Trace
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974312,Trace
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121657,Trace
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.00239204384088063,Trace
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462909,Trace
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035784,Trace
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625457,Trace
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632762,Trace
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477282,Trace
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693126926,Trace
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.0056216695365119375,Trace
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.019713781535486082,Trace
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820604,Trace
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777112,Trace
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908403,Trace
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446468,Trace
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559926,Trace
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644543069e-05,Trace
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.00042533874095951845,Trace
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.006787295885786047,Trace
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720727919,Trace
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.003050240773013577,Trace
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.0029211359367500435,Trace
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.0013410746490604625,Trace
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635668,Trace
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338965,Trace
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0002520044193788474,Trace
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142855,Trace
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974312,Trace
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121657,Trace
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.00239204384088063,Trace
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462909,Trace
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035784,Trace
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625457,Trace
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632762,Trace
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477282,Trace
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693126926,Trace
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.0056216695365119375,Trace
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.019713781535486082,Trace
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820604,Trace
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777112,Trace
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908403,Trace
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446468,Trace
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559926,Trace
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644543069e-05,Trace
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.00042533874095951845,Trace
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.006787295885786047,Trace
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720727919,Trace
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.003050240773013577,Trace
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.024595809675172373,Trace
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.05108063736770346,Trace
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.007226494154601721,Trace
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.004378066716348794,Trace
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03530651201515673,Trace
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,-0.01491562337275574,Trace
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.028793808218408573,Trace
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.0029211359367500435,Trace
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.0013410746490604625,Trace
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635668,Trace
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338965,Trace
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0002520044193788474,Trace
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142855,Trace
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974312,Trace
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121657,Trace
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.00239204384088063,Trace
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462909,Trace
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035784,Trace
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625457,Trace
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632762,Trace
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477282,Trace
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693126926,Trace
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.0056216695365119375,Trace
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.019713781535486082,Trace
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820604,Trace
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777112,Trace
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908403,Trace
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446468,Trace
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559926,Trace
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644543069e-05,Trace
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.00042533874095951845,Trace
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.006787295885786047,Trace
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720727919,Trace
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.003050240773013577,Trace
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.024595809675172373,Trace
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.05108063736770346,Trace
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.007226494154601721,Trace
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.004378066716348794,Trace
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03530651201515673,Trace
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,-0.01491562337275574,Trace
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.028793808218408573,Trace
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.12291696016233827,Trace
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.015429293308217393,Trace
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,-0.005313704804252769,Trace
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.07379294682097329,Trace
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.030898186057977086,Trace
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.06391698252080576,Trace
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.0029211359367500435,Trace
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.0013410746490604625,Trace
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635668,Trace
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338965,Trace
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0002520044193788474,Trace
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142855,Trace
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974312,Trace
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121657,Trace
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.00239204384088063,Trace
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462909,Trace
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035784,Trace
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625457,Trace
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632762,Trace
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477282,Trace
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693126926,Trace
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.0056216695365119375,Trace
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.019713781535486082,Trace
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820604,Trace
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777112,Trace
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908403,Trace
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446468,Trace
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559926,Trace
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644543069e-05,Trace
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.00042533874095951845,Trace
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.006787295885786047,Trace
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720727919,Trace
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.003050240773013577,Trace
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.024595809675172373,Trace
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.05108063736770346,Trace
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.007226494154601721,Trace
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.004378066716348794,Trace
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03530651201515673,Trace
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,-0.01491562337275574,Trace
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.028793808218408573,Trace
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.12291696016233827,Trace
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.015429293308217393,Trace
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,-0.005313704804252769,Trace
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.07379294682097329,Trace
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.030898186057977086,Trace
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.06391698252080576,Trace
+added_length,added_length,$\overline{\Delta}$,14,NA,0.05046497345568525,Trace
+added_length,generationtime,"$($\overline{\Delta}$, $\overline{\tau}$)$",14,NA,-0.009009053596373905,Trace
+added_length,length_birth,"$($\overline{\Delta}$, $\overline{x_0}$)$",14,NA,0.06464534206397898,Trace
+added_length,length_final,"$($\overline{\Delta}$, $\overline{x_\tau}$)$",14,NA,0.08141850711471126,Trace
+added_length,growth_rate,"$($\overline{\Delta}$, $\overline{\alpha}$)$",14,NA,0.028650476639607753,Trace
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.0029211359367500435,Trace
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.0013410746490604625,Trace
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635668,Trace
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338965,Trace
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0002520044193788474,Trace
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142855,Trace
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974312,Trace
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121657,Trace
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.00239204384088063,Trace
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462909,Trace
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035784,Trace
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625457,Trace
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632762,Trace
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477282,Trace
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693126926,Trace
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.0056216695365119375,Trace
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.019713781535486082,Trace
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820604,Trace
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777112,Trace
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908403,Trace
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446468,Trace
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559926,Trace
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644543069e-05,Trace
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.00042533874095951845,Trace
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.006787295885786047,Trace
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720727919,Trace
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.003050240773013577,Trace
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.024595809675172373,Trace
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.05108063736770346,Trace
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.007226494154601721,Trace
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.004378066716348794,Trace
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03530651201515673,Trace
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,-0.01491562337275574,Trace
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.028793808218408573,Trace
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.12291696016233827,Trace
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.015429293308217393,Trace
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,-0.005313704804252769,Trace
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.07379294682097329,Trace
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.030898186057977086,Trace
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.06391698252080576,Trace
+added_length,added_length,$\overline{\Delta}$,14,NA,0.05046497345568525,Trace
+added_length,generationtime,"$($\overline{\Delta}$, $\overline{\tau}$)$",14,NA,-0.009009053596373905,Trace
+added_length,length_birth,"$($\overline{\Delta}$, $\overline{x_0}$)$",14,NA,0.06464534206397898,Trace
+added_length,length_final,"$($\overline{\Delta}$, $\overline{x_\tau}$)$",14,NA,0.08141850711471126,Trace
+added_length,growth_rate,"$($\overline{\Delta}$, $\overline{\alpha}$)$",14,NA,0.028650476639607753,Trace
+generationtime,generationtime,$\overline{\tau}$,14,NA,0.028694228271548425,Trace
+generationtime,length_birth,"$($\overline{\tau}$, $\overline{x_0}$)$",14,NA,-0.023682685363781462,Trace
+generationtime,length_final,"$($\overline{\tau}$, $\overline{x_\tau}$)$",14,NA,-0.021775626429935666,Trace
+generationtime,growth_rate,"$($\overline{\tau}$, $\overline{\alpha}$)$",14,NA,-0.03875142855582484,Trace
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.0029211359367500435,Trace
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.0013410746490604625,Trace
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635668,Trace
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338965,Trace
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0002520044193788474,Trace
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142855,Trace
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974312,Trace
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121657,Trace
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.00239204384088063,Trace
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462909,Trace
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035784,Trace
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625457,Trace
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632762,Trace
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477282,Trace
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693126926,Trace
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.0056216695365119375,Trace
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.019713781535486082,Trace
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820604,Trace
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777112,Trace
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908403,Trace
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446468,Trace
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559926,Trace
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644543069e-05,Trace
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.00042533874095951845,Trace
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.006787295885786047,Trace
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720727919,Trace
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.003050240773013577,Trace
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.024595809675172373,Trace
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.05108063736770346,Trace
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.007226494154601721,Trace
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.004378066716348794,Trace
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03530651201515673,Trace
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,-0.01491562337275574,Trace
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.028793808218408573,Trace
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.12291696016233827,Trace
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.015429293308217393,Trace
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,-0.005313704804252769,Trace
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.07379294682097329,Trace
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.030898186057977086,Trace
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.06391698252080576,Trace
+added_length,added_length,$\overline{\Delta}$,14,NA,0.05046497345568525,Trace
+added_length,generationtime,"$($\overline{\Delta}$, $\overline{\tau}$)$",14,NA,-0.009009053596373905,Trace
+added_length,length_birth,"$($\overline{\Delta}$, $\overline{x_0}$)$",14,NA,0.06464534206397898,Trace
+added_length,length_final,"$($\overline{\Delta}$, $\overline{x_\tau}$)$",14,NA,0.08141850711471126,Trace
+added_length,growth_rate,"$($\overline{\Delta}$, $\overline{\alpha}$)$",14,NA,0.028650476639607753,Trace
+generationtime,generationtime,$\overline{\tau}$,14,NA,0.028694228271548425,Trace
+generationtime,length_birth,"$($\overline{\tau}$, $\overline{x_0}$)$",14,NA,-0.023682685363781462,Trace
+generationtime,length_final,"$($\overline{\tau}$, $\overline{x_\tau}$)$",14,NA,-0.021775626429935666,Trace
+generationtime,growth_rate,"$($\overline{\tau}$, $\overline{\alpha}$)$",14,NA,-0.03875142855582484,Trace
+length_birth,length_birth,$\overline{x_0}$,14,NA,0.16773867112706764,Trace
+length_birth,length_final,"$($\overline{x_0}$, $\overline{x_\tau}$)$",14,NA,0.15494195202065356,Trace
+length_birth,growth_rate,"$($\overline{x_0}$, $\overline{\alpha}$)$",14,NA,-0.007952560613573972,Trace
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.0029211359367500435,Trace
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.0013410746490604625,Trace
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635668,Trace
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338965,Trace
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0002520044193788474,Trace
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142855,Trace
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974312,Trace
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121657,Trace
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.00239204384088063,Trace
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462909,Trace
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035784,Trace
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625457,Trace
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632762,Trace
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477282,Trace
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693126926,Trace
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.0056216695365119375,Trace
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.019713781535486082,Trace
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820604,Trace
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777112,Trace
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908403,Trace
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446468,Trace
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559926,Trace
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644543069e-05,Trace
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.00042533874095951845,Trace
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.006787295885786047,Trace
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720727919,Trace
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.003050240773013577,Trace
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.024595809675172373,Trace
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.05108063736770346,Trace
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.007226494154601721,Trace
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.004378066716348794,Trace
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03530651201515673,Trace
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,-0.01491562337275574,Trace
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.028793808218408573,Trace
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.12291696016233827,Trace
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.015429293308217393,Trace
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,-0.005313704804252769,Trace
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.07379294682097329,Trace
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.030898186057977086,Trace
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.06391698252080576,Trace
+added_length,added_length,$\overline{\Delta}$,14,NA,0.05046497345568525,Trace
+added_length,generationtime,"$($\overline{\Delta}$, $\overline{\tau}$)$",14,NA,-0.009009053596373905,Trace
+added_length,length_birth,"$($\overline{\Delta}$, $\overline{x_0}$)$",14,NA,0.06464534206397898,Trace
+added_length,length_final,"$($\overline{\Delta}$, $\overline{x_\tau}$)$",14,NA,0.08141850711471126,Trace
+added_length,growth_rate,"$($\overline{\Delta}$, $\overline{\alpha}$)$",14,NA,0.028650476639607753,Trace
+generationtime,generationtime,$\overline{\tau}$,14,NA,0.028694228271548425,Trace
+generationtime,length_birth,"$($\overline{\tau}$, $\overline{x_0}$)$",14,NA,-0.023682685363781462,Trace
+generationtime,length_final,"$($\overline{\tau}$, $\overline{x_\tau}$)$",14,NA,-0.021775626429935666,Trace
+generationtime,growth_rate,"$($\overline{\tau}$, $\overline{\alpha}$)$",14,NA,-0.03875142855582484,Trace
+length_birth,length_birth,$\overline{x_0}$,14,NA,0.16773867112706764,Trace
+length_birth,length_final,"$($\overline{x_0}$, $\overline{x_\tau}$)$",14,NA,0.15494195202065356,Trace
+length_birth,growth_rate,"$($\overline{x_0}$, $\overline{\alpha}$)$",14,NA,-0.007952560613573972,Trace
+length_final,length_final,$\overline{x_\tau}$,14,NA,0.16155921500289228,Trace
+length_final,growth_rate,"$($\overline{x_\tau}$, $\overline{\alpha}$)$",14,NA,0.019595418298013253,Trace
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.0029211359367500435,Trace
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.0013410746490604625,Trace
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635668,Trace
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338965,Trace
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0002520044193788474,Trace
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142855,Trace
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974312,Trace
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121657,Trace
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.00239204384088063,Trace
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462909,Trace
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035784,Trace
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625457,Trace
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632762,Trace
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477282,Trace
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693126926,Trace
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.0056216695365119375,Trace
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.019713781535486082,Trace
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820604,Trace
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777112,Trace
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908403,Trace
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446468,Trace
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559926,Trace
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644543069e-05,Trace
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.00042533874095951845,Trace
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.006787295885786047,Trace
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720727919,Trace
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.003050240773013577,Trace
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.024595809675172373,Trace
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.05108063736770346,Trace
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.007226494154601721,Trace
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.004378066716348794,Trace
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03530651201515673,Trace
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,-0.01491562337275574,Trace
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.028793808218408573,Trace
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.12291696016233827,Trace
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.015429293308217393,Trace
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,-0.005313704804252769,Trace
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.07379294682097329,Trace
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.030898186057977086,Trace
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.06391698252080576,Trace
+added_length,added_length,$\overline{\Delta}$,14,NA,0.05046497345568525,Trace
+added_length,generationtime,"$($\overline{\Delta}$, $\overline{\tau}$)$",14,NA,-0.009009053596373905,Trace
+added_length,length_birth,"$($\overline{\Delta}$, $\overline{x_0}$)$",14,NA,0.06464534206397898,Trace
+added_length,length_final,"$($\overline{\Delta}$, $\overline{x_\tau}$)$",14,NA,0.08141850711471126,Trace
+added_length,growth_rate,"$($\overline{\Delta}$, $\overline{\alpha}$)$",14,NA,0.028650476639607753,Trace
+generationtime,generationtime,$\overline{\tau}$,14,NA,0.028694228271548425,Trace
+generationtime,length_birth,"$($\overline{\tau}$, $\overline{x_0}$)$",14,NA,-0.023682685363781462,Trace
+generationtime,length_final,"$($\overline{\tau}$, $\overline{x_\tau}$)$",14,NA,-0.021775626429935666,Trace
+generationtime,growth_rate,"$($\overline{\tau}$, $\overline{\alpha}$)$",14,NA,-0.03875142855582484,Trace
+length_birth,length_birth,$\overline{x_0}$,14,NA,0.16773867112706764,Trace
+length_birth,length_final,"$($\overline{x_0}$, $\overline{x_\tau}$)$",14,NA,0.15494195202065356,Trace
+length_birth,growth_rate,"$($\overline{x_0}$, $\overline{\alpha}$)$",14,NA,-0.007952560613573972,Trace
+length_final,length_final,$\overline{x_\tau}$,14,NA,0.16155921500289228,Trace
+length_final,growth_rate,"$($\overline{x_\tau}$, $\overline{\alpha}$)$",14,NA,0.019595418298013253,Trace
+growth_rate,growth_rate,$\overline{\alpha}$,14,NA,0.10574973547101911,Trace
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.04763014646943661,Artificial
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.046689954610313084,Artificial
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.046415353698436745,Artificial
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.046410056767126104,Artificial
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0075667076633002565,Artificial
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,0.03594187136295533,Artificial
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,0.026214727846683963,Artificial
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.03035504795454302,Artificial
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,0.012429980537415014,Artificial
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.028481254020288924,Artificial
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.04763014646943661,Artificial
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.046689954610313084,Artificial
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.046415353698436745,Artificial
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.046410056767126104,Artificial
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0075667076633002565,Artificial
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,0.03594187136295533,Artificial
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,0.026214727846683963,Artificial
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.03035504795454302,Artificial
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,0.012429980537415014,Artificial
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.028481254020288924,Artificial
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.05839777485257736,Artificial
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.053875055700536,Artificial
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.05474011045633217,Artificial
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-3.836654047892591e-06,Artificial
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.04381882992737417,Artificial
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.033220509796374274,Artificial
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.03279721665385948,Artificial
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,0.017664895421083213,Artificial
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.03119891500217714,Artificial
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.04763014646943661,Artificial
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.046689954610313084,Artificial
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.046415353698436745,Artificial
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.046410056767126104,Artificial
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0075667076633002565,Artificial
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,0.03594187136295533,Artificial
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,0.026214727846683963,Artificial
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.03035504795454302,Artificial
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,0.012429980537415014,Artificial
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.028481254020288924,Artificial
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.05839777485257736,Artificial
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.053875055700536,Artificial
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.05474011045633217,Artificial
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-3.836654047892591e-06,Artificial
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.04381882992737417,Artificial
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.033220509796374274,Artificial
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.03279721665385948,Artificial
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,0.017664895421083213,Artificial
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.03119891500217714,Artificial
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.055344870945288574,Artificial
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,0.05115436218834315,Artificial
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,-0.0008808246051956245,Artificial
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,0.03977969648232968,Artificial
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,0.03287005734853885,Artificial
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,-0.033247400766533354,Artificial
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.013965307939639675,Artificial
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,0.024237929969185442,Artificial
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.04763014646943661,Artificial
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.046689954610313084,Artificial
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.046415353698436745,Artificial
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.046410056767126104,Artificial
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0075667076633002565,Artificial
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,0.03594187136295533,Artificial
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,0.026214727846683963,Artificial
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.03035504795454302,Artificial
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,0.012429980537415014,Artificial
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.028481254020288924,Artificial
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.05839777485257736,Artificial
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.053875055700536,Artificial
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.05474011045633217,Artificial
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-3.836654047892591e-06,Artificial
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.04381882992737417,Artificial
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.033220509796374274,Artificial
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.03279721665385948,Artificial
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,0.017664895421083213,Artificial
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.03119891500217714,Artificial
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.055344870945288574,Artificial
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,0.05115436218834315,Artificial
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,-0.0008808246051956245,Artificial
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,0.03977969648232968,Artificial
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,0.03287005734853885,Artificial
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,-0.033247400766533354,Artificial
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.013965307939639675,Artificial
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,0.024237929969185442,Artificial
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.05356225538506532,Artificial
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.0061060688808069405,Artificial
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.0416395327026863,Artificial
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.031007811217720824,Artificial
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03448525677932922,Artificial
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,0.01480701562422789,Artificial
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.03223178299351076,Artificial
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.04763014646943661,Artificial
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.046689954610313084,Artificial
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.046415353698436745,Artificial
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.046410056767126104,Artificial
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0075667076633002565,Artificial
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,0.03594187136295533,Artificial
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,0.026214727846683963,Artificial
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.03035504795454302,Artificial
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,0.012429980537415014,Artificial
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.028481254020288924,Artificial
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.05839777485257736,Artificial
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.053875055700536,Artificial
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.05474011045633217,Artificial
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-3.836654047892591e-06,Artificial
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.04381882992737417,Artificial
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.033220509796374274,Artificial
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.03279721665385948,Artificial
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,0.017664895421083213,Artificial
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.03119891500217714,Artificial
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.055344870945288574,Artificial
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,0.05115436218834315,Artificial
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,-0.0008808246051956245,Artificial
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,0.03977969648232968,Artificial
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,0.03287005734853885,Artificial
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,-0.033247400766533354,Artificial
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.013965307939639675,Artificial
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,0.024237929969185442,Artificial
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.05356225538506532,Artificial
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.0061060688808069405,Artificial
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.0416395327026863,Artificial
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.031007811217720824,Artificial
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03448525677932922,Artificial
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,0.01480701562422789,Artificial
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.03223178299351076,Artificial
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.023483828785973646,Artificial
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.003183028666727389,Artificial
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,0.002561473945457885,Artificial
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.00933028484714299,Artificial
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.002860034315681843,Artificial
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.011217720130488912,Artificial
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.04763014646943661,Artificial
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.046689954610313084,Artificial
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.046415353698436745,Artificial
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.046410056767126104,Artificial
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0075667076633002565,Artificial
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,0.03594187136295533,Artificial
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,0.026214727846683963,Artificial
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.03035504795454302,Artificial
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,0.012429980537415014,Artificial
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.028481254020288924,Artificial
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.05839777485257736,Artificial
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.053875055700536,Artificial
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.05474011045633217,Artificial
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-3.836654047892591e-06,Artificial
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.04381882992737417,Artificial
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.033220509796374274,Artificial
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.03279721665385948,Artificial
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,0.017664895421083213,Artificial
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.03119891500217714,Artificial
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.055344870945288574,Artificial
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,0.05115436218834315,Artificial
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,-0.0008808246051956245,Artificial
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,0.03977969648232968,Artificial
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,0.03287005734853885,Artificial
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,-0.033247400766533354,Artificial
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.013965307939639675,Artificial
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,0.024237929969185442,Artificial
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.05356225538506532,Artificial
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.0061060688808069405,Artificial
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.0416395327026863,Artificial
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.031007811217720824,Artificial
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03448525677932922,Artificial
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,0.01480701562422789,Artificial
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.03223178299351076,Artificial
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.023483828785973646,Artificial
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.003183028666727389,Artificial
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,0.002561473945457885,Artificial
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.00933028484714299,Artificial
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.002860034315681843,Artificial
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.011217720130488912,Artificial
+added_length,added_length,$\overline{\Delta}$,14,NA,0.037477575227025016,Artificial
+added_length,generationtime,"$($\overline{\Delta}$, $\overline{\tau}$)$",14,NA,0.025505562899108436,Artificial
+added_length,length_birth,"$($\overline{\Delta}$, $\overline{x_0}$)$",14,NA,-0.019699028773351123,Artificial
+added_length,length_final,"$($\overline{\Delta}$, $\overline{x_\tau}$)$",14,NA,0.020089019165397404,Artificial
+added_length,growth_rate,"$($\overline{\Delta}$, $\overline{\alpha}$)$",14,NA,0.023838892395022588,Artificial
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.04763014646943661,Artificial
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.046689954610313084,Artificial
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.046415353698436745,Artificial
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.046410056767126104,Artificial
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0075667076633002565,Artificial
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,0.03594187136295533,Artificial
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,0.026214727846683963,Artificial
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.03035504795454302,Artificial
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,0.012429980537415014,Artificial
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.028481254020288924,Artificial
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.05839777485257736,Artificial
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.053875055700536,Artificial
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.05474011045633217,Artificial
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-3.836654047892591e-06,Artificial
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.04381882992737417,Artificial
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.033220509796374274,Artificial
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.03279721665385948,Artificial
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,0.017664895421083213,Artificial
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.03119891500217714,Artificial
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.055344870945288574,Artificial
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,0.05115436218834315,Artificial
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,-0.0008808246051956245,Artificial
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,0.03977969648232968,Artificial
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,0.03287005734853885,Artificial
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,-0.033247400766533354,Artificial
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.013965307939639675,Artificial
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,0.024237929969185442,Artificial
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.05356225538506532,Artificial
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.0061060688808069405,Artificial
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.0416395327026863,Artificial
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.031007811217720824,Artificial
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03448525677932922,Artificial
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,0.01480701562422789,Artificial
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.03223178299351076,Artificial
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.023483828785973646,Artificial
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.003183028666727389,Artificial
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,0.002561473945457885,Artificial
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.00933028484714299,Artificial
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.002860034315681843,Artificial
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.011217720130488912,Artificial
+added_length,added_length,$\overline{\Delta}$,14,NA,0.037477575227025016,Artificial
+added_length,generationtime,"$($\overline{\Delta}$, $\overline{\tau}$)$",14,NA,0.025505562899108436,Artificial
+added_length,length_birth,"$($\overline{\Delta}$, $\overline{x_0}$)$",14,NA,-0.019699028773351123,Artificial
+added_length,length_final,"$($\overline{\Delta}$, $\overline{x_\tau}$)$",14,NA,0.020089019165397404,Artificial
+added_length,growth_rate,"$($\overline{\Delta}$, $\overline{\alpha}$)$",14,NA,0.023838892395022588,Artificial
+generationtime,generationtime,$\overline{\tau}$,14,NA,0.027673980552320086,Artificial
+generationtime,length_birth,"$($\overline{\tau}$, $\overline{x_0}$)$",14,NA,-0.017406995571357223,Artificial
+generationtime,length_final,"$($\overline{\tau}$, $\overline{x_\tau}$)$",14,NA,0.011285942006103018,Artificial
+generationtime,growth_rate,"$($\overline{\tau}$, $\overline{\alpha}$)$",14,NA,0.0024305090174355183,Artificial
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.04763014646943661,Artificial
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.046689954610313084,Artificial
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.046415353698436745,Artificial
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.046410056767126104,Artificial
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0075667076633002565,Artificial
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,0.03594187136295533,Artificial
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,0.026214727846683963,Artificial
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.03035504795454302,Artificial
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,0.012429980537415014,Artificial
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.028481254020288924,Artificial
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.05839777485257736,Artificial
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.053875055700536,Artificial
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.05474011045633217,Artificial
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-3.836654047892591e-06,Artificial
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.04381882992737417,Artificial
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.033220509796374274,Artificial
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.03279721665385948,Artificial
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,0.017664895421083213,Artificial
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.03119891500217714,Artificial
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.055344870945288574,Artificial
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,0.05115436218834315,Artificial
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,-0.0008808246051956245,Artificial
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,0.03977969648232968,Artificial
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,0.03287005734853885,Artificial
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,-0.033247400766533354,Artificial
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.013965307939639675,Artificial
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,0.024237929969185442,Artificial
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.05356225538506532,Artificial
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.0061060688808069405,Artificial
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.0416395327026863,Artificial
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.031007811217720824,Artificial
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03448525677932922,Artificial
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,0.01480701562422789,Artificial
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.03223178299351076,Artificial
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.023483828785973646,Artificial
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.003183028666727389,Artificial
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,0.002561473945457885,Artificial
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.00933028484714299,Artificial
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.002860034315681843,Artificial
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.011217720130488912,Artificial
+added_length,added_length,$\overline{\Delta}$,14,NA,0.037477575227025016,Artificial
+added_length,generationtime,"$($\overline{\Delta}$, $\overline{\tau}$)$",14,NA,0.025505562899108436,Artificial
+added_length,length_birth,"$($\overline{\Delta}$, $\overline{x_0}$)$",14,NA,-0.019699028773351123,Artificial
+added_length,length_final,"$($\overline{\Delta}$, $\overline{x_\tau}$)$",14,NA,0.020089019165397404,Artificial
+added_length,growth_rate,"$($\overline{\Delta}$, $\overline{\alpha}$)$",14,NA,0.023838892395022588,Artificial
+generationtime,generationtime,$\overline{\tau}$,14,NA,0.027673980552320086,Artificial
+generationtime,length_birth,"$($\overline{\tau}$, $\overline{x_0}$)$",14,NA,-0.017406995571357223,Artificial
+generationtime,length_final,"$($\overline{\tau}$, $\overline{x_\tau}$)$",14,NA,0.011285942006103018,Artificial
+generationtime,growth_rate,"$($\overline{\tau}$, $\overline{\alpha}$)$",14,NA,0.0024305090174355183,Artificial
+length_birth,length_birth,$\overline{x_0}$,14,NA,0.033403017127720876,Artificial
+length_birth,length_final,"$($\overline{x_0}$, $\overline{x_\tau}$)$",14,NA,0.0031854483103417454,Artificial
+length_birth,growth_rate,"$($\overline{x_0}$, $\overline{\alpha}$)$",14,NA,-0.022107287952399,Artificial
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.04763014646943661,Artificial
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.046689954610313084,Artificial
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.046415353698436745,Artificial
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.046410056767126104,Artificial
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0075667076633002565,Artificial
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,0.03594187136295533,Artificial
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,0.026214727846683963,Artificial
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.03035504795454302,Artificial
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,0.012429980537415014,Artificial
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.028481254020288924,Artificial
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.05839777485257736,Artificial
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.053875055700536,Artificial
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.05474011045633217,Artificial
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-3.836654047892591e-06,Artificial
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.04381882992737417,Artificial
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.033220509796374274,Artificial
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.03279721665385948,Artificial
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,0.017664895421083213,Artificial
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.03119891500217714,Artificial
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.055344870945288574,Artificial
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,0.05115436218834315,Artificial
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,-0.0008808246051956245,Artificial
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,0.03977969648232968,Artificial
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,0.03287005734853885,Artificial
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,-0.033247400766533354,Artificial
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.013965307939639675,Artificial
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,0.024237929969185442,Artificial
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.05356225538506532,Artificial
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.0061060688808069405,Artificial
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.0416395327026863,Artificial
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.031007811217720824,Artificial
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03448525677932922,Artificial
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,0.01480701562422789,Artificial
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.03223178299351076,Artificial
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.023483828785973646,Artificial
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.003183028666727389,Artificial
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,0.002561473945457885,Artificial
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.00933028484714299,Artificial
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.002860034315681843,Artificial
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.011217720130488912,Artificial
+added_length,added_length,$\overline{\Delta}$,14,NA,0.037477575227025016,Artificial
+added_length,generationtime,"$($\overline{\Delta}$, $\overline{\tau}$)$",14,NA,0.025505562899108436,Artificial
+added_length,length_birth,"$($\overline{\Delta}$, $\overline{x_0}$)$",14,NA,-0.019699028773351123,Artificial
+added_length,length_final,"$($\overline{\Delta}$, $\overline{x_\tau}$)$",14,NA,0.020089019165397404,Artificial
+added_length,growth_rate,"$($\overline{\Delta}$, $\overline{\alpha}$)$",14,NA,0.023838892395022588,Artificial
+generationtime,generationtime,$\overline{\tau}$,14,NA,0.027673980552320086,Artificial
+generationtime,length_birth,"$($\overline{\tau}$, $\overline{x_0}$)$",14,NA,-0.017406995571357223,Artificial
+generationtime,length_final,"$($\overline{\tau}$, $\overline{x_\tau}$)$",14,NA,0.011285942006103018,Artificial
+generationtime,growth_rate,"$($\overline{\tau}$, $\overline{\alpha}$)$",14,NA,0.0024305090174355183,Artificial
+length_birth,length_birth,$\overline{x_0}$,14,NA,0.033403017127720876,Artificial
+length_birth,length_final,"$($\overline{x_0}$, $\overline{x_\tau}$)$",14,NA,0.0031854483103417454,Artificial
+length_birth,growth_rate,"$($\overline{x_0}$, $\overline{\alpha}$)$",14,NA,-0.022107287952399,Artificial
+length_final,length_final,$\overline{x_\tau}$,14,NA,0.01896462964780641,Artificial
+length_final,growth_rate,"$($\overline{x_\tau}$, $\overline{\alpha}$)$",14,NA,0.007067228288972871,Artificial
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.04763014646943661,Artificial
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.046689954610313084,Artificial
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.046415353698436745,Artificial
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.046410056767126104,Artificial
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.0075667076633002565,Artificial
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,0.03594187136295533,Artificial
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,0.026214727846683963,Artificial
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.03035504795454302,Artificial
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,0.012429980537415014,Artificial
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.028481254020288924,Artificial
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.05839777485257736,Artificial
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.053875055700536,Artificial
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.05474011045633217,Artificial
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-3.836654047892591e-06,Artificial
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.04381882992737417,Artificial
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.033220509796374274,Artificial
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.03279721665385948,Artificial
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,0.017664895421083213,Artificial
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.03119891500217714,Artificial
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.055344870945288574,Artificial
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,0.05115436218834315,Artificial
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,-0.0008808246051956245,Artificial
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,0.03977969648232968,Artificial
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,0.03287005734853885,Artificial
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,-0.033247400766533354,Artificial
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.013965307939639675,Artificial
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,0.024237929969185442,Artificial
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.05356225538506532,Artificial
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.0061060688808069405,Artificial
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.0416395327026863,Artificial
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.031007811217720824,Artificial
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03448525677932922,Artificial
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,0.01480701562422789,Artificial
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.03223178299351076,Artificial
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.023483828785973646,Artificial
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.003183028666727389,Artificial
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,0.002561473945457885,Artificial
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.00933028484714299,Artificial
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.002860034315681843,Artificial
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.011217720130488912,Artificial
+added_length,added_length,$\overline{\Delta}$,14,NA,0.037477575227025016,Artificial
+added_length,generationtime,"$($\overline{\Delta}$, $\overline{\tau}$)$",14,NA,0.025505562899108436,Artificial
+added_length,length_birth,"$($\overline{\Delta}$, $\overline{x_0}$)$",14,NA,-0.019699028773351123,Artificial
+added_length,length_final,"$($\overline{\Delta}$, $\overline{x_\tau}$)$",14,NA,0.020089019165397404,Artificial
+added_length,growth_rate,"$($\overline{\Delta}$, $\overline{\alpha}$)$",14,NA,0.023838892395022588,Artificial
+generationtime,generationtime,$\overline{\tau}$,14,NA,0.027673980552320086,Artificial
+generationtime,length_birth,"$($\overline{\tau}$, $\overline{x_0}$)$",14,NA,-0.017406995571357223,Artificial
+generationtime,length_final,"$($\overline{\tau}$, $\overline{x_\tau}$)$",14,NA,0.011285942006103018,Artificial
+generationtime,growth_rate,"$($\overline{\tau}$, $\overline{\alpha}$)$",14,NA,0.0024305090174355183,Artificial
+length_birth,length_birth,$\overline{x_0}$,14,NA,0.033403017127720876,Artificial
+length_birth,length_final,"$($\overline{x_0}$, $\overline{x_\tau}$)$",14,NA,0.0031854483103417454,Artificial
+length_birth,growth_rate,"$($\overline{x_0}$, $\overline{\alpha}$)$",14,NA,-0.022107287952399,Artificial
+length_final,length_final,$\overline{x_\tau}$,14,NA,0.01896462964780641,Artificial
+length_final,growth_rate,"$($\overline{x_\tau}$, $\overline{\alpha}$)$",14,NA,0.007067228288972871,Artificial
+growth_rate,growth_rate,$\overline{\alpha}$,14,NA,0.048713573781673195,Artificial
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.002921135936750046,Shuffled
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.001341074649060451,Shuffled
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635671,Shuffled
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338757,Shuffled
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.00025200441937879125,Shuffled
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142919,Shuffled
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974276,Shuffled
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121633,Shuffled
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.0023920438408806476,Shuffled
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462906,Shuffled
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.002921135936750046,Shuffled
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.001341074649060451,Shuffled
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635671,Shuffled
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338757,Shuffled
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.00025200441937879125,Shuffled
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142919,Shuffled
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974276,Shuffled
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121633,Shuffled
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.0023920438408806476,Shuffled
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462906,Shuffled
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035785,Shuffled
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625528,Shuffled
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632837,Shuffled
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477314,Shuffled
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693127208,Shuffled
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.005621669536511899,Shuffled
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.01971378153548619,Shuffled
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820618,Shuffled
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777178,Shuffled
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.002921135936750046,Shuffled
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.001341074649060451,Shuffled
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635671,Shuffled
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338757,Shuffled
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.00025200441937879125,Shuffled
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142919,Shuffled
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974276,Shuffled
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121633,Shuffled
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.0023920438408806476,Shuffled
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462906,Shuffled
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035785,Shuffled
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625528,Shuffled
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632837,Shuffled
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477314,Shuffled
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693127208,Shuffled
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.005621669536511899,Shuffled
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.01971378153548619,Shuffled
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820618,Shuffled
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777178,Shuffled
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908945,Shuffled
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446164,Shuffled
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559872,Shuffled
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644552519e-05,Shuffled
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.0004253387409594707,Shuffled
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.0067872958857861255,Shuffled
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720728016,Shuffled
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.0030502407730135855,Shuffled
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.002921135936750046,Shuffled
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.001341074649060451,Shuffled
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635671,Shuffled
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338757,Shuffled
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.00025200441937879125,Shuffled
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142919,Shuffled
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974276,Shuffled
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121633,Shuffled
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.0023920438408806476,Shuffled
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462906,Shuffled
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035785,Shuffled
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625528,Shuffled
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632837,Shuffled
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477314,Shuffled
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693127208,Shuffled
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.005621669536511899,Shuffled
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.01971378153548619,Shuffled
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820618,Shuffled
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777178,Shuffled
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908945,Shuffled
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446164,Shuffled
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559872,Shuffled
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644552519e-05,Shuffled
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.0004253387409594707,Shuffled
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.0067872958857861255,Shuffled
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720728016,Shuffled
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.0030502407730135855,Shuffled
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.02459580967517241,Shuffled
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.05108063736770355,Shuffled
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.007226494154601673,Shuffled
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.004378066716348891,Shuffled
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03530651201515701,Shuffled
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,-0.014915623372755813,Shuffled
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.028793808218408493,Shuffled
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.002921135936750046,Shuffled
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.001341074649060451,Shuffled
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635671,Shuffled
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338757,Shuffled
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.00025200441937879125,Shuffled
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142919,Shuffled
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974276,Shuffled
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121633,Shuffled
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.0023920438408806476,Shuffled
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462906,Shuffled
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035785,Shuffled
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625528,Shuffled
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632837,Shuffled
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477314,Shuffled
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693127208,Shuffled
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.005621669536511899,Shuffled
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.01971378153548619,Shuffled
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820618,Shuffled
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777178,Shuffled
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908945,Shuffled
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446164,Shuffled
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559872,Shuffled
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644552519e-05,Shuffled
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.0004253387409594707,Shuffled
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.0067872958857861255,Shuffled
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720728016,Shuffled
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.0030502407730135855,Shuffled
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.02459580967517241,Shuffled
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.05108063736770355,Shuffled
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.007226494154601673,Shuffled
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.004378066716348891,Shuffled
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03530651201515701,Shuffled
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,-0.014915623372755813,Shuffled
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.028793808218408493,Shuffled
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.1229169601623381,Shuffled
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.015429293308217209,Shuffled
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,-0.005313704804252919,Shuffled
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.07379294682097358,Shuffled
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.030898186057977284,Shuffled
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.0639169825208053,Shuffled
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.002921135936750046,Shuffled
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.001341074649060451,Shuffled
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635671,Shuffled
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338757,Shuffled
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.00025200441937879125,Shuffled
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142919,Shuffled
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974276,Shuffled
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121633,Shuffled
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.0023920438408806476,Shuffled
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462906,Shuffled
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035785,Shuffled
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625528,Shuffled
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632837,Shuffled
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477314,Shuffled
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693127208,Shuffled
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.005621669536511899,Shuffled
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.01971378153548619,Shuffled
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820618,Shuffled
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777178,Shuffled
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908945,Shuffled
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446164,Shuffled
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559872,Shuffled
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644552519e-05,Shuffled
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.0004253387409594707,Shuffled
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.0067872958857861255,Shuffled
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720728016,Shuffled
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.0030502407730135855,Shuffled
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.02459580967517241,Shuffled
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.05108063736770355,Shuffled
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.007226494154601673,Shuffled
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.004378066716348891,Shuffled
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03530651201515701,Shuffled
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,-0.014915623372755813,Shuffled
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.028793808218408493,Shuffled
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.1229169601623381,Shuffled
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.015429293308217209,Shuffled
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,-0.005313704804252919,Shuffled
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.07379294682097358,Shuffled
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.030898186057977284,Shuffled
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.0639169825208053,Shuffled
+added_length,added_length,$\overline{\Delta}$,14,NA,0.05046497345568523,Shuffled
+added_length,generationtime,"$($\overline{\Delta}$, $\overline{\tau}$)$",14,NA,-0.009009053596373856,Shuffled
+added_length,length_birth,"$($\overline{\Delta}$, $\overline{x_0}$)$",14,NA,0.06464534206397884,Shuffled
+added_length,length_final,"$($\overline{\Delta}$, $\overline{x_\tau}$)$",14,NA,0.08141850711471127,Shuffled
+added_length,growth_rate,"$($\overline{\Delta}$, $\overline{\alpha}$)$",14,NA,0.02865047663960778,Shuffled
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.002921135936750046,Shuffled
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.001341074649060451,Shuffled
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635671,Shuffled
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338757,Shuffled
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.00025200441937879125,Shuffled
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142919,Shuffled
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974276,Shuffled
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121633,Shuffled
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.0023920438408806476,Shuffled
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462906,Shuffled
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035785,Shuffled
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625528,Shuffled
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632837,Shuffled
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477314,Shuffled
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693127208,Shuffled
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.005621669536511899,Shuffled
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.01971378153548619,Shuffled
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820618,Shuffled
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777178,Shuffled
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908945,Shuffled
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446164,Shuffled
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559872,Shuffled
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644552519e-05,Shuffled
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.0004253387409594707,Shuffled
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.0067872958857861255,Shuffled
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720728016,Shuffled
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.0030502407730135855,Shuffled
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.02459580967517241,Shuffled
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.05108063736770355,Shuffled
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.007226494154601673,Shuffled
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.004378066716348891,Shuffled
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03530651201515701,Shuffled
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,-0.014915623372755813,Shuffled
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.028793808218408493,Shuffled
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.1229169601623381,Shuffled
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.015429293308217209,Shuffled
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,-0.005313704804252919,Shuffled
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.07379294682097358,Shuffled
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.030898186057977284,Shuffled
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.0639169825208053,Shuffled
+added_length,added_length,$\overline{\Delta}$,14,NA,0.05046497345568523,Shuffled
+added_length,generationtime,"$($\overline{\Delta}$, $\overline{\tau}$)$",14,NA,-0.009009053596373856,Shuffled
+added_length,length_birth,"$($\overline{\Delta}$, $\overline{x_0}$)$",14,NA,0.06464534206397884,Shuffled
+added_length,length_final,"$($\overline{\Delta}$, $\overline{x_\tau}$)$",14,NA,0.08141850711471127,Shuffled
+added_length,growth_rate,"$($\overline{\Delta}$, $\overline{\alpha}$)$",14,NA,0.02865047663960778,Shuffled
+generationtime,generationtime,$\overline{\tau}$,14,NA,0.028694228271548508,Shuffled
+generationtime,length_birth,"$($\overline{\tau}$, $\overline{x_0}$)$",14,NA,-0.023682685363781507,Shuffled
+generationtime,length_final,"$($\overline{\tau}$, $\overline{x_\tau}$)$",14,NA,-0.021775626429935628,Shuffled
+generationtime,growth_rate,"$($\overline{\tau}$, $\overline{\alpha}$)$",14,NA,-0.0387514285558249,Shuffled
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.002921135936750046,Shuffled
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.001341074649060451,Shuffled
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635671,Shuffled
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338757,Shuffled
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.00025200441937879125,Shuffled
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142919,Shuffled
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974276,Shuffled
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121633,Shuffled
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.0023920438408806476,Shuffled
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462906,Shuffled
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035785,Shuffled
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625528,Shuffled
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632837,Shuffled
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477314,Shuffled
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693127208,Shuffled
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.005621669536511899,Shuffled
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.01971378153548619,Shuffled
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820618,Shuffled
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777178,Shuffled
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908945,Shuffled
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446164,Shuffled
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559872,Shuffled
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644552519e-05,Shuffled
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.0004253387409594707,Shuffled
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.0067872958857861255,Shuffled
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720728016,Shuffled
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.0030502407730135855,Shuffled
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.02459580967517241,Shuffled
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.05108063736770355,Shuffled
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.007226494154601673,Shuffled
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.004378066716348891,Shuffled
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03530651201515701,Shuffled
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,-0.014915623372755813,Shuffled
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.028793808218408493,Shuffled
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.1229169601623381,Shuffled
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.015429293308217209,Shuffled
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,-0.005313704804252919,Shuffled
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.07379294682097358,Shuffled
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.030898186057977284,Shuffled
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.0639169825208053,Shuffled
+added_length,added_length,$\overline{\Delta}$,14,NA,0.05046497345568523,Shuffled
+added_length,generationtime,"$($\overline{\Delta}$, $\overline{\tau}$)$",14,NA,-0.009009053596373856,Shuffled
+added_length,length_birth,"$($\overline{\Delta}$, $\overline{x_0}$)$",14,NA,0.06464534206397884,Shuffled
+added_length,length_final,"$($\overline{\Delta}$, $\overline{x_\tau}$)$",14,NA,0.08141850711471127,Shuffled
+added_length,growth_rate,"$($\overline{\Delta}$, $\overline{\alpha}$)$",14,NA,0.02865047663960778,Shuffled
+generationtime,generationtime,$\overline{\tau}$,14,NA,0.028694228271548508,Shuffled
+generationtime,length_birth,"$($\overline{\tau}$, $\overline{x_0}$)$",14,NA,-0.023682685363781507,Shuffled
+generationtime,length_final,"$($\overline{\tau}$, $\overline{x_\tau}$)$",14,NA,-0.021775626429935628,Shuffled
+generationtime,growth_rate,"$($\overline{\tau}$, $\overline{\alpha}$)$",14,NA,-0.0387514285558249,Shuffled
+length_birth,length_birth,$\overline{x_0}$,14,NA,0.16773867112706814,Shuffled
+length_birth,length_final,"$($\overline{x_0}$, $\overline{x_\tau}$)$",14,NA,0.1549419520206532,Shuffled
+length_birth,growth_rate,"$($\overline{x_0}$, $\overline{\alpha}$)$",14,NA,-0.007952560613573745,Shuffled
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.002921135936750046,Shuffled
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.001341074649060451,Shuffled
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635671,Shuffled
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338757,Shuffled
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.00025200441937879125,Shuffled
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142919,Shuffled
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974276,Shuffled
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121633,Shuffled
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.0023920438408806476,Shuffled
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462906,Shuffled
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035785,Shuffled
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625528,Shuffled
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632837,Shuffled
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477314,Shuffled
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693127208,Shuffled
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.005621669536511899,Shuffled
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.01971378153548619,Shuffled
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820618,Shuffled
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777178,Shuffled
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908945,Shuffled
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446164,Shuffled
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559872,Shuffled
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644552519e-05,Shuffled
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.0004253387409594707,Shuffled
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.0067872958857861255,Shuffled
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720728016,Shuffled
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.0030502407730135855,Shuffled
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.02459580967517241,Shuffled
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.05108063736770355,Shuffled
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.007226494154601673,Shuffled
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.004378066716348891,Shuffled
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03530651201515701,Shuffled
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,-0.014915623372755813,Shuffled
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.028793808218408493,Shuffled
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.1229169601623381,Shuffled
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.015429293308217209,Shuffled
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,-0.005313704804252919,Shuffled
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.07379294682097358,Shuffled
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.030898186057977284,Shuffled
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.0639169825208053,Shuffled
+added_length,added_length,$\overline{\Delta}$,14,NA,0.05046497345568523,Shuffled
+added_length,generationtime,"$($\overline{\Delta}$, $\overline{\tau}$)$",14,NA,-0.009009053596373856,Shuffled
+added_length,length_birth,"$($\overline{\Delta}$, $\overline{x_0}$)$",14,NA,0.06464534206397884,Shuffled
+added_length,length_final,"$($\overline{\Delta}$, $\overline{x_\tau}$)$",14,NA,0.08141850711471127,Shuffled
+added_length,growth_rate,"$($\overline{\Delta}$, $\overline{\alpha}$)$",14,NA,0.02865047663960778,Shuffled
+generationtime,generationtime,$\overline{\tau}$,14,NA,0.028694228271548508,Shuffled
+generationtime,length_birth,"$($\overline{\tau}$, $\overline{x_0}$)$",14,NA,-0.023682685363781507,Shuffled
+generationtime,length_final,"$($\overline{\tau}$, $\overline{x_\tau}$)$",14,NA,-0.021775626429935628,Shuffled
+generationtime,growth_rate,"$($\overline{\tau}$, $\overline{\alpha}$)$",14,NA,-0.0387514285558249,Shuffled
+length_birth,length_birth,$\overline{x_0}$,14,NA,0.16773867112706814,Shuffled
+length_birth,length_final,"$($\overline{x_0}$, $\overline{x_\tau}$)$",14,NA,0.1549419520206532,Shuffled
+length_birth,growth_rate,"$($\overline{x_0}$, $\overline{\alpha}$)$",14,NA,-0.007952560613573745,Shuffled
+length_final,length_final,$\overline{x_\tau}$,14,NA,0.1615592150028923,Shuffled
+length_final,growth_rate,"$($\overline{x_\tau}$, $\overline{\alpha}$)$",14,NA,0.019595418298013523,Shuffled
+div_then_fold,div_then_fold,$\overline{f_n e^{\phi_{n+1}}}$,14,NA,0.002921135936750046,Shuffled
+div_then_fold,div_and_fold,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_n e^{\phi_{n}}}$)$",14,NA,0.001341074649060451,Shuffled
+div_then_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,0.001356424270635671,Shuffled
+div_then_fold,fold_growth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\phi}$)$",14,NA,0.0020654085542338757,Shuffled
+div_then_fold,division_ratio,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{f}$)$",14,NA,-0.00025200441937879125,Shuffled
+div_then_fold,added_length,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\Delta}$)$",14,NA,-0.0002054301159142919,Shuffled
+div_then_fold,generationtime,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\tau}$)$",14,NA,-0.0010539842216974276,Shuffled
+div_then_fold,length_birth,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_0}$)$",14,NA,-0.003718641588121633,Shuffled
+div_then_fold,length_final,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{x_\tau}$)$",14,NA,-0.0023920438408806476,Shuffled
+div_then_fold,growth_rate,"$($\overline{f_n e^{\phi_{n+1}}}$, $\overline{\alpha}$)$",14,NA,0.006264143592462906,Shuffled
+div_and_fold,div_and_fold,$\overline{f_n e^{\phi_{n}}}$,14,NA,0.007164584594035785,Shuffled
+div_and_fold,fold_then_div,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f_{n+1} e^{\phi_n}}$)$",14,NA,-0.0007441253248625528,Shuffled
+div_and_fold,fold_growth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\phi}$)$",14,NA,0.012038700311632837,Shuffled
+div_and_fold,division_ratio,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{f}$)$",14,NA,-0.021567142561477314,Shuffled
+div_and_fold,added_length,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\Delta}$)$",14,NA,0.0019986819693127208,Shuffled
+div_and_fold,generationtime,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\tau}$)$",14,NA,0.005621669536511899,Shuffled
+div_and_fold,length_birth,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_0}$)$",14,NA,-0.01971378153548619,Shuffled
+div_and_fold,length_final,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{x_\tau}$)$",14,NA,-0.010058091714820618,Shuffled
+div_and_fold,growth_rate,"$($\overline{f_n e^{\phi_{n}}}$, $\overline{\alpha}$)$",14,NA,0.008896083113777178,Shuffled
+fold_then_div,fold_then_div,$\overline{f_{n+1} e^{\phi_n}}$,14,NA,0.0037429625690908945,Shuffled
+fold_then_div,fold_growth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\phi}$)$",14,NA,-0.0031473130850446164,Shuffled
+fold_then_div,division_ratio,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{f}$)$",14,NA,0.011778899177559872,Shuffled
+fold_then_div,added_length,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\Delta}$)$",14,NA,4.927055644552519e-05,Shuffled
+fold_then_div,generationtime,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\tau}$)$",14,NA,-0.0004253387409594707,Shuffled
+fold_then_div,length_birth,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_0}$)$",14,NA,0.0067872958857861255,Shuffled
+fold_then_div,length_final,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{x_\tau}$)$",14,NA,0.004089320720728016,Shuffled
+fold_then_div,growth_rate,"$($\overline{f_{n+1} e^{\phi_n}}$, $\overline{\alpha}$)$",14,NA,-0.0030502407730135855,Shuffled
+fold_growth,fold_growth,$\overline{\phi}$,14,NA,0.02459580967517241,Shuffled
+fold_growth,division_ratio,"$($\overline{\phi}$, $\overline{f}$)$",14,NA,-0.05108063736770355,Shuffled
+fold_growth,added_length,"$($\overline{\phi}$, $\overline{\Delta}$)$",14,NA,0.007226494154601673,Shuffled
+fold_growth,generationtime,"$($\overline{\phi}$, $\overline{\tau}$)$",14,NA,0.004378066716348891,Shuffled
+fold_growth,length_birth,"$($\overline{\phi}$, $\overline{x_0}$)$",14,NA,-0.03530651201515701,Shuffled
+fold_growth,length_final,"$($\overline{\phi}$, $\overline{x_\tau}$)$",14,NA,-0.014915623372755813,Shuffled
+fold_growth,growth_rate,"$($\overline{\phi}$, $\overline{\alpha}$)$",14,NA,0.028793808218408493,Shuffled
+division_ratio,division_ratio,$\overline{f}$,14,NA,0.1229169601623381,Shuffled
+division_ratio,added_length,"$($\overline{f}$, $\overline{\Delta}$)$",14,NA,-0.015429293308217209,Shuffled
+division_ratio,generationtime,"$($\overline{f}$, $\overline{\tau}$)$",14,NA,-0.005313704804252919,Shuffled
+division_ratio,length_birth,"$($\overline{f}$, $\overline{x_0}$)$",14,NA,0.07379294682097358,Shuffled
+division_ratio,length_final,"$($\overline{f}$, $\overline{x_\tau}$)$",14,NA,0.030898186057977284,Shuffled
+division_ratio,growth_rate,"$($\overline{f}$, $\overline{\alpha}$)$",14,NA,-0.0639169825208053,Shuffled
+added_length,added_length,$\overline{\Delta}$,14,NA,0.05046497345568523,Shuffled
+added_length,generationtime,"$($\overline{\Delta}$, $\overline{\tau}$)$",14,NA,-0.009009053596373856,Shuffled
+added_length,length_birth,"$($\overline{\Delta}$, $\overline{x_0}$)$",14,NA,0.06464534206397884,Shuffled
+added_length,length_final,"$($\overline{\Delta}$, $\overline{x_\tau}$)$",14,NA,0.08141850711471127,Shuffled
+added_length,growth_rate,"$($\overline{\Delta}$, $\overline{\alpha}$)$",14,NA,0.02865047663960778,Shuffled
+generationtime,generationtime,$\overline{\tau}$,14,NA,0.028694228271548508,Shuffled
+generationtime,length_birth,"$($\overline{\tau}$, $\overline{x_0}$)$",14,NA,-0.023682685363781507,Shuffled
+generationtime,length_final,"$($\overline{\tau}$, $\overline{x_\tau}$)$",14,NA,-0.021775626429935628,Shuffled
+generationtime,growth_rate,"$($\overline{\tau}$, $\overline{\alpha}$)$",14,NA,-0.0387514285558249,Shuffled
+length_birth,length_birth,$\overline{x_0}$,14,NA,0.16773867112706814,Shuffled
+length_birth,length_final,"$($\overline{x_0}$, $\overline{x_\tau}$)$",14,NA,0.1549419520206532,Shuffled
+length_birth,growth_rate,"$($\overline{x_0}$, $\overline{\alpha}$)$",14,NA,-0.007952560613573745,Shuffled
+length_final,length_final,$\overline{x_\tau}$,14,NA,0.1615592150028923,Shuffled
+length_final,growth_rate,"$($\overline{x_\tau}$, $\overline{\alpha}$)$",14,NA,0.019595418298013523,Shuffled
+growth_rate,growth_rate,$\overline{\alpha}$,14,NA,0.10574973547101926,Shuffled

@@ -33,7 +33,6 @@ def main(args):
     sns.displot(data=lengths, label=r'${}$ lineages'.format(len(lengths)) + '\n' + r'$\sim {} \pm {}$ long'.format(np.int(np.mean(lengths)), np.int(np.std(lengths))), kind="ecdf")
     plt.xlabel('lineage lengths')
     plt.ylabel('PDF')
-    
     plt.title(args.data_origin)
     plt.legend(title='')
     plt.tight_layout()
@@ -70,6 +69,9 @@ if __name__ == '__main__':
             'pu': processed_data + 'z_score_under_3/physical_units_without_outliers.csv' if data_origin in wang_datasets else processed_data + 'physical_units.csv',
             'figs': processed_data + 'Figures'
         }
+        
+        print(len(pd.read_csv(args['pu']).lineage_ID.unique()))
+        continue
 
         parser = argparse.ArgumentParser(description='Create the artificial lineages, ergodicity breaking parameters, and the KL Divergences.')
         parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)

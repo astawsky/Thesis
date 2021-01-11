@@ -573,7 +573,7 @@ if __name__ == '__main__':
     kind_of_vd = ['total_length', 'per_gen', 'trap_controlled']
     
     # Do all the Mother and Sister Machine data
-    for data_origin in wang_datasets:  # input_args.dataset_names:
+    for data_origin in input_args.dataset_names:  # wang_datasets:  # input_args.dataset_names:
         print(data_origin)
         
         create_folder(data_origin)
