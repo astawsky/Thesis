@@ -294,7 +294,7 @@ if __name__ == '__main__':
             'data_origin': data_origin,
             'processed_data': os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Datasets/' + data_origin + '/ProcessedData/',
             'MM': data_origin not in sm_datasets,
-            'analysis_dataframes_path': r'/Users/alestawsky/PycharmProjects/Thesis/MSD'
+            'analysis_dataframes_path': os.path.dirname(os.path.abspath(__file__))
         }
 
         for time_series in types_to_do_analysis:
