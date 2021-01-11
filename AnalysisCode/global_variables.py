@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 
 
+import pandas as pd
+import seaborn as sns
+import numpy as np
+import os
+
+
 """ create a folder with the name of the string inputted """
 
 
 def create_folder(filename):
-    import os
     
     # create the folder if not created already
     try:
@@ -20,28 +25,29 @@ def create_folder(filename):
 
 
 def get_time_averages_df(info, phenotypic_variables):  # MM
-    import numpy as np
     
+
     # We keep the trap means here
     means_df = pd.DataFrame(columns=['lineage_ID', 'max_gen', 'generation'] + phenotypic_variables)
-    
+
     # specify a lineage
-    for trap_id in info['lineage_ID'].unique():
-        
+    for lin_id in info['lineage_ID'].unique():
+        # print(lin_id)
+    
         # the values of the lineage we get from physical units
-        lineage = info[(info['lineage_ID'] == trap_id)].copy()
-        
+        lineage = info[(info['lineage_ID'] == lin_id)].copy()
+    
         # add its time-average
         to_add = {
-            'lineage_ID': [trap_id for _ in np.arange(len(lineage))],
+            'lineage_ID': [lin_id for _ in np.arange(len(lineage))],
             'max_gen': [len(lineage) for _ in np.arange(len(lineage))], 'generation': np.arange(len(lineage))
         }
         to_add.update({param: [np.mean(lineage[param]) for _ in np.arange(len(lineage))] for param in phenotypic_variables})
         to_add = pd.DataFrame(to_add)
         means_df = means_df.append(to_add, ignore_index=True).reset_index(drop=True)
-    
+
     assert len(info) == len(means_df)
-    
+
     return means_df
 
 
@@ -49,8 +55,6 @@ def get_time_averages_df(info, phenotypic_variables):  # MM
 
 
 def shuffle_lineage_generations(df, mm):
-    import pandas as pd
-    import numpy as np
     
     if mm:
         
@@ -125,7 +129,6 @@ def shuffle_lineage_generations(df, mm):
 
 
 def limit_lineage_length(df, min_gens):
-    import numpy as np
     
     new_df = pd.DataFrame(columns=df.columns)
     for dataset in df['dataset'].unique():
@@ -152,24 +155,33 @@ def limit_lineage_length(df, min_gens):
 """ Feed in a dataframe of our format and subtract the time-averages of each lineage """
 
 
-def trace_center_a_dataframe(df):
-    import pandas as pd
-    import numpy as np
-    
+def trace_center_a_dataframe(df, mm):
+    # Trace-centered dataframe
     tc_df = pd.DataFrame(columns=df.columns)
     
-    for dataset in df['dataset'].unique():
-        for trap_id in df[df['dataset'] == dataset]['trap_ID'].unique():
-            for trace in ['A', 'B']:
-                lineage = df[(df['dataset'] == dataset) & (df['trap_ID'] == trap_id) & (df['trace'] == trace)]
-                
-                new_lineage = lineage[phenotypic_variables] - lineage[phenotypic_variables].mean()
-                new_lineage['dataset'] = dataset
-                new_lineage['trap_ID'] = trap_id
-                new_lineage['trace'] = trace
-                new_lineage['generation'] = np.arange(len(lineage))
-                
-                tc_df = tc_df.append(new_lineage, ignore_index=True)
+    if mm:
+        for lin_id in df.lineage_ID.unique():
+            lineage = df[(df['lineage_ID'] == lin_id)].copy()
+    
+            new_lineage = lineage[phenotypic_variables] - lineage[phenotypic_variables].mean()
+            new_lineage['lineage_ID'] = lin_id
+            new_lineage['generation'] = np.arange(len(lineage))
+    
+            tc_df = tc_df.append(new_lineage, ignore_index=True)
+    else:
+        for dataset in df['dataset'].unique():
+            for trap_id in df[df['dataset'] == dataset]['trap_ID'].unique():
+                for trace in ['A', 'B']:
+        
+                    lineage = df[(df['dataset'] == dataset) & (df['trap_ID'] == trap_id) & (df['trace'] == trace)]
+                    
+                    new_lineage = lineage[phenotypic_variables] - lineage[phenotypic_variables].mean()
+                    new_lineage['dataset'] = dataset
+                    new_lineage['trap_ID'] = trap_id
+                    new_lineage['trace'] = trace
+                    new_lineage['generation'] = np.arange(len(lineage))
+                    
+                    tc_df = tc_df.append(new_lineage, ignore_index=True)
     
     return tc_df
 
@@ -178,8 +190,6 @@ def trace_center_a_dataframe(df):
 
 
 def shuffle_info_OLD(info):
-    import pandas as pd
-    import numpy as np
     
     # Give it a name, contains S, NL
     new_info = pd.DataFrame(columns=info.columns)
@@ -216,8 +226,6 @@ def shuffle_info_OLD(info):
 
 
 def shuffle_info(info, mm):
-    import pandas as pd
-    import numpy as np
     
     # Give it a name, contains S, NL
     new_info = pd.DataFrame(columns=info.columns)
@@ -280,7 +288,6 @@ def shuffle_info(info, mm):
 
 
 def seaborn_preamble():
-    import seaborn as sns
     
     # stylistic reasons
     sns.set_context('paper')
@@ -291,7 +298,7 @@ def seaborn_preamble():
 
 
 def boot_pearson(x, y, number_of_straps):
-    import numpy as np
+    
     from random import choices
     from scipy.stats import pearsonr
     x = np.array(x)
@@ -309,8 +316,6 @@ def boot_pearson(x, y, number_of_straps):
 
 
 def cut_uneven_pairs(info):
-    import numpy as np
-    import pandas as pd
     
     # Correct for traces that aren't the same size
     old_info = info.copy()
@@ -340,10 +345,6 @@ def cut_uneven_pairs(info):
         new_info = new_info.reset_index(drop=True)
     
     return new_info
-
-
-import pandas as pd
-import seaborn as sns
 
 phenotypic_variables = ['div_then_fold', 'div_and_fold', 'fold_then_div', 'fold_growth', 'division_ratio', 'added_length', 'generationtime', 'length_birth', 'length_final', 'growth_rate']
 symbols = {

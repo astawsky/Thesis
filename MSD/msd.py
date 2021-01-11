@@ -201,39 +201,39 @@ def plot_individual_msds(args, variables, where_to_save_figures, dataframe, labe
             plt.close()
 
 
-def heatmap_analogs(args, df, label, variables=phenotypic_variables[3:], suffix=''):
-    sns.set_context('paper')
-    sns.set_style("ticks", {'axes.grid': True})
-    
-    latex_symbols = {variable: symbols[label][variable] for variable in variables}
-    
-    df = df[variables].copy().rename(columns=latex_symbols)
-    
-    to_plot = pg.pairwise_corr(df, method='pearson')
-    
-    # reformat the results into a dataframe we can use for the heatmap
-    to_plot_df = pd.DataFrame(columns=to_plot.X.unique(), index=to_plot.Y.unique(), dtype=float)
-    repeats = []
-    for x in to_plot.X.unique():
-        for y in to_plot.Y.unique():
-            if x != y and y not in repeats:
-                # Add the results
-                to_plot_df[x].loc[y] = to_plot[(to_plot['X'] == x) & (to_plot['Y'] == y)]['r'].values[0]
-        
-        repeats.append(x)
-    
-    # The mask to show only the lower triangle in the heatmap
-    mask = np.ones_like(to_plot_df)
-    mask[np.tril_indices_from(mask)] = False
-    
-    fig, ax = plt.subplots(tight_layout=True, figsize=[7 * (2 / 3), 5.5 * (2 / 3)])
-    
-    sns.heatmap(to_plot_df, annot=True, square=True, vmin=-1, vmax=1, mask=mask, center=0)
-    # plt.title(label)
-    # plt.tight_layout()
-    # plt.savefig('{}/{}/{}{}.png'.format(args.figs_location, args.scch, label, suffix), dpi=300)
-    plt.show()
-    plt.close()
+# def heatmap_analogs(args, df, label, variables=phenotypic_variables[3:], suffix=''):
+#     sns.set_context('paper')
+#     sns.set_style("ticks", {'axes.grid': True})
+#
+#     latex_symbols = {variable: symbols[label][variable] for variable in variables}
+#
+#     df = df[variables].copy().rename(columns=latex_symbols)
+#
+#     to_plot = pg.pairwise_corr(df, method='pearson')
+#
+#     # reformat the results into a dataframe we can use for the heatmap
+#     to_plot_df = pd.DataFrame(columns=to_plot.X.unique(), index=to_plot.Y.unique(), dtype=float)
+#     repeats = []
+#     for x in to_plot.X.unique():
+#         for y in to_plot.Y.unique():
+#             if x != y and y not in repeats:
+#                 # Add the results
+#                 to_plot_df[x].loc[y] = to_plot[(to_plot['X'] == x) & (to_plot['Y'] == y)]['r'].values[0]
+#
+#         repeats.append(x)
+#
+#     # The mask to show only the lower triangle in the heatmap
+#     mask = np.ones_like(to_plot_df)
+#     mask[np.tril_indices_from(mask)] = False
+#
+#     fig, ax = plt.subplots(tight_layout=True, figsize=[7 * (2 / 3), 5.5 * (2 / 3)])
+#
+#     sns.heatmap(to_plot_df, annot=True, square=True, vmin=-1, vmax=1, mask=mask, center=0)
+#     # plt.title(label)
+#     # plt.tight_layout()
+#     # plt.savefig('{}/{}/{}{}.png'.format(args.figs_location, args.scch, label, suffix), dpi=300)
+#     plt.show()
+#     plt.close()
 
 
 def hists_of_regression_stats(dataframe, where_to_save_figure):

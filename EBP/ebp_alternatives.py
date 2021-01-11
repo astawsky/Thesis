@@ -1,245 +1,119 @@
 #!/usr/bin/env bash
 
-from CustomFuncsAndVars.global_variables import symbols, units, dataset_names, create_folder, shuffle_info, phenotypic_variables, shuffle_lineage_generations, cmap, seaborn_preamble
+from AnalysisCode.global_variables import (
+    symbols, units, dataset_names, create_folder, shuffle_info, phenotypic_variables, shuffle_lineage_generations, cmap, seaborn_preamble, sm_datasets,
+    wang_datasets, get_time_averages_df, trace_center_a_dataframe
+)
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 from scipy.stats import linregress
+from itertools import combinations
+
+""" Plot the variance/covariance decompositions and correlations between phenotypic variables as pyramid heatmaps """
 
 
-""" Returns dataframe with same size containing the time-averages of each phenotypic variable instead of the local value """
-
-
-def get_time_averages_df(info, phenotypic_variables):  # MM
-    # We keep the trap means here
-    means_df = pd.DataFrame(columns=['lineage_ID', 'max_gen', 'generation'] + phenotypic_variables)
-    
-    # specify a lineage
-    for trap_id in info['lineage_ID'].unique():
-        
-        # the values of the lineage we get from physical units
-        lineage = info[(info['lineage_ID'] == trap_id)].copy()
-        
-        # add its time-average
-        to_add = {
-            'lineage_ID': [trap_id for _ in np.arange(len(lineage))],
-            'max_gen': [len(lineage) for _ in np.arange(len(lineage))], 'generation': np.arange(len(lineage))
-        }
-        to_add.update({param: [np.mean(lineage[param]) for _ in np.arange(len(lineage))] for param in phenotypic_variables})
-        to_add = pd.DataFrame(to_add)
-        means_df = means_df.append(to_add, ignore_index=True).reset_index(drop=True)
-    
-    assert len(info) == len(means_df)
-    
-    return means_df
-
-
-""" adds to one inputted dataframe the cumulative means, and to the the other inputed dataframe the variance and cv of the TAs of every cycle parameter per lineage length """
-
-
-def expanding_mean_cumsum_and_variances(df, phenotypic_variables, expanding_mean, label, out_df, bs, total_length_df, total_length_bs_df, first_generation, final_generation, bootstraps=False):
-    # For the pooled ensemble
-    pooled_ensemble_total = pd.DataFrame(columns=df.columns)
-    
-    # create the info dataframe with values being the cumulative mean of the lineage
-    for lin_id in df.lineage_ID.unique():
-        
-        # specify the trace, we drop all the NaN rows/cycles because we need the same number of samples for all variables in order to get the covariance
-        lineage = df[(df['lineage_ID'] == lin_id)].sort_values('generation').dropna(axis=0).copy().reset_index(drop=True)
-        
-        # add its time-average up until and including the total number of generations without NaNs
-        to_add = pd.DataFrame.from_dict({
-            'label': [label for _ in range(len(lineage))],
-            'lineage_ID': [int(lin_id) for _ in range(len(lineage))],
-            'generation': [generation for generation in np.arange(len(lineage), dtype=int)]
-        }).reset_index(drop=True)
-        
-        # Get the expanding mean and the cumulative sum, make sure they are robust to the first NaN in division ratio
-        to_add_expanding_mean = pd.concat([lineage[phenotypic_variables].expanding().mean().reset_index(drop=True), to_add], axis=1)
-        expanding_mean = expanding_mean.append(to_add_expanding_mean, ignore_index=True).reset_index(drop=True)
-        
-        if to_add_expanding_mean.isnull().values.any():
-            raise IOError('Got NaNs in the expanding mean, meaning something is wrong')
-        
-        lineage['generation'] = np.arange(len(lineage), dtype=int)
-        
-        pooled_ensemble_total = pooled_ensemble_total.append(lineage, ignore_index=True)
-        
-        if len(to_add_expanding_mean) != len(lineage):
-            
-            print(lineage)
-            print(to_add_expanding_mean)
-            raise IOError('Wronfg lenghts')
-        
-        if not np.array_equal(to_add_expanding_mean['generation'].values, lineage['generation'].values):
-            print(lin_id)
-            print(type(lineage['generation'].iloc[0]))
-            print(type(to_add_expanding_mean['generation'].iloc[0]))
-            raise IOError('Wronfg values of generation')
-    
-    # This is important
-    assert not expanding_mean.isnull().values.any()
-    
-    # This is important
-    assert not pooled_ensemble_total.isnull().values.any()
-    
-    # Get the EBP for the total length of the lineage
-    time_averages = get_time_averages_df(df, phenotypic_variables)
-
-    # for each parameter combination decompose the pooled variance
-    tl_temp = {}
-    tl_bs_temp = {}
-    ind_tl_bs, ind_tl = 0, 0
-    repeat = []
-    for param1 in phenotypic_variables:
-        for param2 in phenotypic_variables:
-            if param2 not in repeat:
-                # Get the variances of each type of series
-                ta_cov = np.cov(time_averages[param1], time_averages[param2])
+def pyramid_heatmaps(args, annot):
+    # pyramid_of_pairwise_covariances()
+    def normalize_correlation(df, variables, kind):
+        cov = df.cov()
+        corr_df = pd.DataFrame(columns=variables, index=variables, dtype=float)
+        for param_1 in variables:
+            for param_2 in variables:
+                if kind == 'decomposition':
+                    # It is NOT a pearson correlation, but is instead normalized by the standard deviations of the pooled ensemble
+                    normalization = (physical_units[param_1].std() * physical_units[param_2].std())
+                elif kind == 'pearson':  # PEARSON CORRELATION
+                    normalization = (df.drop_duplicates()[param_1].std() * df.drop_duplicates()[param_2].std())
+                else:
+                    raise IOError('wrong kind of normalization')
                 
-                pool_var = df[param1].std() * df[param2].std()
+                # # If the value lies in the noise range then make it zero
+                # if -.1 < cov.loc[param_1, param_2] / normalization < .1:
+                #     corr_df.loc[param_1, param_2] = float('nan')  # 0
+                # else:
+                #     corr_df.loc[param_1, param_2] = cov.loc[param_1, param_2] / normalization
+                corr_df.loc[param_1, param_2] = cov.loc[param_1, param_2] / normalization
+        
+        return corr_df
     
-                # Calculate the variance of the time-averages
-                gamma_ta_cov = ta_cov / pool_var
+    # def pyramid_of_pairwise_covariances(figsize=[7, 2.5], figurename='main variables without blanks', annot=True, kind='decomposition')
     
-                # Add it to the dataframe to output
-                tl_temp[ind_tl] = {
-                    'param1': param1, 'param2': param2, 'n': len(time_averages[param1].unique()), 'generation': 'NA', 'gamma_ta': gamma_ta_cov, 'label': label
-                }
+    # The variables we want to plot
+    main_variables = ['fold_growth', 'division_ratio', 'generationtime', 'length_birth', 'growth_rate']
     
-                ind_tl += 1
+    # read the csv file where we keep the data
+    # import/create the trace lineages
+    physical_units = pd.read_csv(args['pu']).sort_values(['lineage_ID', 'generation']).reset_index(drop=True)
+    population_sampled = shuffle_info(physical_units, mm=args['MM'])
 
-                if bootstraps != False:
-                    for _ in np.arange(bootstraps):
-                        # sample randomly from the distribution with replacement
-                        time_averages_replacement = time_averages.sample(replace=True, frac=1).copy()
-                        
-                        # Get the covariance of each type of series
-                        ta_cov = np.cov(time_averages[param1], time_averages[param2])
-                        
-                        pool_var = df[param1].std() * df[param2].std()
+    # ['main_variables', 'all_variables', 'including_extra_variables'], [main_variables, phenotypic_variables[3:], phenotypic_variables]
+    for type_of_var, variables in zip(['main_variables', 'phenotypic_variables'], [main_variables, phenotypic_variables]):
+        
+        mask = np.ones_like(normalize_correlation(physical_units, variables, kind='decomposition'))
+        mask[np.tril_indices_from(mask)] = False
+        vmax, vmin = 1, -1
+        
+        level1 = args['ebp_folder'] + '/' + type_of_var
+        create_folder(level1)
+        
+        print('type of var:', type_of_var)
+        
+        for kind in ['decomposition', 'pearson']:
             
-                        # Calculate the variance of the time-averages
-                        gamma_ta_cov = ta_cov / pool_var
-        
-                        # Add it
-                        tl_bs_temp[ind_tl_bs] = {
-                            'param1': param1, 'param2': param2, 'n': len(time_averages[param1].unique()), 'generation': 'NA', 'gamma_ta': gamma_ta_cov, 'label': label
-                        }
-        
-                        ind_tl_bs += 1
-
-        # To not repeat the calculation twice
-        repeat.append(param1)
-
-        # Append them to the big dataframes
-        total_length_df = total_length_df.append(pd.DataFrame.from_dict(tl_temp, "index"), ignore_index=True)
-        total_length_bs_df = total_length_bs_df.append(pd.DataFrame.from_dict(tl_bs_temp, "index"), ignore_index=True)
-
-    # Important
-    if total_length_df.isnull().values.any():
-        print('ERROR! total_length_df')
-        print(total_length_df)
-        exit()
-    if total_length_bs_df.isnull().values.any():
-        print('ERROR! total_length_bs_df')
-        print(total_length_bs_df)
-        exit()
-    
-    # Calculate the ergodicity breaking parameter over all lineages in the dataset per generation
-    for generation in np.arange(first_generation, final_generation + 1):
-        print(generation)
-        
-        out_temp = {}
-        bs_temp = {}
-        ind_bs, ind_out = 0, 0
-        
-        # Get the time-averages of the lineages that have the generation we are looking for
-        time_averages = expanding_mean[(expanding_mean['label'] == label) & (expanding_mean['generation'] == generation)].copy()  # Excludes all lineages that do not reach this generation
-        
-        # Get the array of which lineages are long enough, ie. have the amount of cycles we need
-        long_enough_lineages = time_averages['lineage_ID'].unique()
-        
-        # Define the pooled ensemble of all the lineages that have at least this generation
-        pooled_ensemble = pooled_ensemble_total[(pooled_ensemble_total['generation'] <= generation) & (pooled_ensemble_total['lineage_ID'].isin(long_enough_lineages))].copy()
-        
-        # That way we have a robust variance across lineages
-        if len(long_enough_lineages) > 1:
+            level2 = level1 + '/' + kind
+            create_folder(level2)
             
-            # for each parameter combination decompose the pooled variance
-            repeat = []
-            for param1 in phenotypic_variables:
-                for param2 in phenotypic_variables:
-                    if param2 not in repeat:
-                        
-                        # The mean is a linear operator
-                        if np.abs(pooled_ensemble[param2].mean() - time_averages[param2].mean()) > 0.000001:
-                            print(pooled_ensemble[param2].mean(), time_averages[param2].mean())
-                            print(pooled_ensemble[param2].mean() - time_averages[param2].mean())
-                            raise IOError('Means are not the same in a big way')
-                        
-                        # We must have the same amount of
-                        if not ((generation + 1) * len(time_averages[param1])) == ((generation + 1) * len(time_averages[param2])) == len(pooled_ensemble[param1]) == len(pooled_ensemble[param2]):
-                            print((generation * len(time_averages[param1])), (generation * len(time_averages[param2])), len(pooled_ensemble[param1]), len(pooled_ensemble[param2]))
-                            raise IOError('Sizes are not the same in a big way')
-                        
-                        # Get the variances of each type of series
-                        ta_cov = ((generation + 1) * (
-                                (time_averages[param1].copy() - time_averages.mean()[param1].copy()) * (time_averages[param2].copy() - time_averages.mean()[param2].copy()))).sum() / (
-                                         len(pooled_ensemble) - 1)
-                        pool_var = pooled_ensemble[param1].std() * pooled_ensemble[param2].std()
-                        
-                        # Calculate the variance of the time-averages
-                        gamma_ta_cov = ta_cov / pool_var
-                        
-                        # Add it to the dataframe to output
-                        out_temp[ind_out] = {
-                            'param1': param1, 'param2': param2, 'n': len(long_enough_lineages), 'generation': generation, 'gamma_ta': gamma_ta_cov, 'label': label
-                        }
-                        
-                        ind_out += 1
-                        
-                        if bootstraps != False:
-                            for _ in np.arange(bootstraps):
-                                # sample randomly from the distribution with replacement
-                                time_averages_replacement = time_averages.sample(replace=True, frac=1)
-                                
-                                # Get the variances of each type of series
-                                ta_cov = ((generation + 1) * (
-                                        (time_averages_replacement[param1].copy() - time_averages_replacement.mean()[param1].copy()) * (
-                                        time_averages_replacement[param2].copy() - time_averages_replacement.mean()[param2].copy()))).sum() / (
-                                                 len(pooled_ensemble) - 1)
-                                pool_var = pooled_ensemble[param1].std() * pooled_ensemble[param2].std()
-                                
-                                # Calculate the variance of the time-averages
-                                gamma_ta_cov = ta_cov / pool_var
-                                
-                                # Add it
-                                bs_temp[ind_bs] = {
-                                    'param1': param1, 'param2': param2, 'n': len(long_enough_lineages), 'generation': generation, 'gamma_ta': gamma_ta_cov, 'label': label
-                                }
-                                
-                                ind_bs += 1
+            print('kind:', kind)
+            
+            # for pu, ta, tc, label in [(physical_units, get_time_averages_df(physical_units, phenotypic_variables), trace_center_a_dataframe(physical_units, args['MM']), 'Trace'),
+            #                           (population_sampled, get_time_averages_df(population_sampled, phenotypic_variables), trace_center_a_dataframe(physical_units, args['MM']), 'Artificial')]:
+            for label in ['Trace', 'Artificial']:
+                if label == 'Trace':
+                    pu = physical_units
+                    ta = get_time_averages_df(physical_units, phenotypic_variables)
+                    tc = trace_center_a_dataframe(physical_units, args['MM'])
+                else:
+                    pu = population_sampled
+                    ta = get_time_averages_df(population_sampled, phenotypic_variables)
+                    tc = trace_center_a_dataframe(population_sampled, args['MM'])
+                    
+                print('label:', label)
                 
-                # To not repeat the calculation twice
-                repeat.append(param1)
+                seaborn_preamble()
                 
-        # Append them to the big dataframes
-        out_df = out_df.append(pd.DataFrame.from_dict(out_temp, "index"), ignore_index=True)
-        bs = bs.append(pd.DataFrame.from_dict(bs_temp, "index"), ignore_index=True)
+                fig, axes = plt.subplots(nrows=1, ncols=3, figsize=[7 * 1.5, 2.5 * 1.5])
+                
+                pu = normalize_correlation(pu, variables, kind=kind).rename(columns=symbols['physical_units'], index=symbols['physical_units'])
+                ta = normalize_correlation(ta, variables, kind=kind).rename(columns=symbols['time_averages'], index=symbols['time_averages'])
+                tc = normalize_correlation(tc, variables, kind=kind).rename(columns=symbols['trace_centered'], index=symbols['trace_centered'])
+                
+                sns.heatmap(pu, annot=annot, center=0, vmax=vmax,
+                            vmin=vmin, cbar=False, ax=axes[0], mask=mask, square=True, fmt='.2f')
+                axes[0].set_title('A', x=-.2, fontsize='xx-large')
+                
+                sns.heatmap(ta, annot=annot, center=0, vmax=vmax, vmin=vmin,
+                            cbar=False, ax=axes[1], mask=mask, square=True, fmt='.2f')
+                axes[1].set_title('B', x=-.2, fontsize='xx-large')
+                
+                cbar_ax = fig.add_axes([.91, .1, .03, .8])
+                
+                sns.heatmap(tc, annot=annot, center=0, vmax=vmax,
+                            vmin=vmin, cbar=True, ax=axes[2], mask=mask, cbar_kws={"orientation": "vertical"}, square=True, cbar_ax=cbar_ax, fmt='.2f')
+                axes[2].set_title('C', x=-.2, fontsize='xx-large')
+                
+                plt.suptitle('{} of {} lineage: '.format(kind, label) + args['data_origin'])
+                
+                fig.tight_layout(rect=[0, 0, .9, 1])
+                
+                plt.savefig('{}/{}_{}.png'.format(level2, label, args['data_origin']), dpi=300)
+                # plt.show()
+                plt.close()
+                
+                print('done!')
     
-    # Important
-    if out_df.isnull().values.any():
-        print('ERROR!')
-        print(out_df)
-        exit()
-    if bs.isnull().values.any():
-        print('ERROR! BS')
-        print(bs)
-        exit()
-    
-    return [out_df, bs, total_length_df, total_length_bs_df]
+    """ Shows how the variance decomposition of the lineage decreases per generation """
 
 
 def ebp_per_gen(df_dict, folder_name):
@@ -280,7 +154,7 @@ def ebp_per_gen(df_dict, folder_name):
                             else:  # It was just minus
                                 relevant.loc[relevant['label'] == lll, 'label'] = [l + r'$: -{:.2} \, n^'.format(np.exp(intercept)) + '{' + r'{:.2}\pm{:.1}'.format(slope, std_err) + '}$' for l in
                                                                                    for_reg['label'].values]
-
+                                
                                 plt.plot(relevant.generation.unique() - 1, [-np.exp(intercept) * ((gen) ** slope) for gen in relevant.generation.unique()], ls='--', alpha=.8)
                         else:
                             relevant.loc[relevant['label'] == lll, 'label'] = [l + r'$: {:.2} \, n^'.format(np.exp(intercept)) + '{' + r'{:.2}\pm{:.1}'.format(slope, std_err) + '}$' for l in
@@ -301,7 +175,7 @@ def ebp_per_gen(df_dict, folder_name):
                 plt.ylim([-1, 1])
                 plt.xlabel('n')
                 # plt.xlim(right=9)
-                plt.savefig(folder_name+'/'+param1+', '+param2+'.png', dpi=300)
+                plt.savefig(folder_name + '/' + param1 + ', ' + param2 + '.png', dpi=300)
                 # plt.show()
                 plt.close()
         
@@ -311,29 +185,59 @@ def ebp_per_gen(df_dict, folder_name):
 """ Shows the bootstrapped coefficient of variation of all Trace and Population lineages per phenotypic variable. """
 
 
-def ergodicity_per_variable(eb_df, ax, symbolss):
+def ergodicity_per_variable(eb_df, ax, variable_pairs):
+    # for pair in variable_pairs:  # vp is a list: [[lb, gt], [gr, gt]]
+    
+    necessary_variables = list(np.unique(variable_pairs))
+    
+    print(necessary_variables)
+    
+    return_proper_latex = lambda param1, param2: symbols['time_averages'][param1] if param1 == param2 else r'({}, {})'.format(symbols['time_averages'][param1], symbols['time_averages'][param2])
+    
+    the_order = [return_proper_latex(param1, param2) for count, param1 in
+                 enumerate(necessary_variables) for param2 in necessary_variables if param2 not in necessary_variables[:count]]
+    
     # The latex labels instead of the variable names
-    eb_df = eb_df.replace(symbolss)#.replace({'Trace': , 'Population': })
+    to_plot = eb_df[(eb_df['param1'].isin(necessary_variables)) | (eb_df['param2'].isin(necessary_variables))].copy()
+    # eb_df = eb_df.replace(symbolss)  # .replace({'Trace': , 'Population': })
     
     # total = pd.DataFrame(columns=['variable', 'kind', 'value'])
     # for kind in ['Trace', 'Population']:
     #     for param in [r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$']:
     #         total = total.append({'variable': param, 'value': 1, 'kind': kind}, ignore_index=True)
+    #
+    # print(total)
+    
+    # print(eb_df['gamma_ta'])
+    # print(eb_df.columns)
     
     # plot the cv
     # sns.barplot(x='variable', y='value', data=total, hue='kind', order=[r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'], ax=ax, edgecolor='black', alpha=.7, hatch = '/') # , label=r'$\delta cov$ \ $\sigma^2$'
-    sns.barplot(x='variable', y='value', data=eb_df, hue='kind', order=list(symbolss.values()), ax=ax, edgecolor='black') # , label=r'$\overline{cov}$ \ $\sigma^2$'
+    
+    sns.barplot(x='variable', y='gamma_ta', data=to_plot, hue='label', order=the_order, ax=ax, edgecolor='black')  # , label=r'$\overline{cov}$ \ $\sigma^2$'
     # sns.boxplot(x='variable', y='value', data=eb_df, showfliers=False, hue='kind', order=[r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'], ax=ax)
     ax.yaxis.grid(True)
     ax.set_xlabel('')
     ax.set_ylabel(r'$\Gamma$')
     ax.get_legend().remove()
+    plt.show()
+    plt.close()
 
 
-""" Creates a dataframe with the ergodicity breaking parameter of each phenotypic variable """
+""" Plot the ratio of variance-decompositions/correlations between trace and artificial lineages for each dataset represented as a point """
 
 
-def ergodicity_breaking_parameter(df, phenotypic_variables, kind, n_boots=0):  # MM
+def deviance_from_universality(datasets):
+    for ds in datasets:
+        print(ds)
+    
+    pass
+
+
+""" Creates a dataframe with the variance/covariance decomposition of each phenotypic variable """
+
+
+def create_vd_dataframe(df, phenotypic_variables, kind, n_boots=0):  # MM
     
     # Initialize where we will put the bootstrapped ergodicity breaking variable
     eb_df = pd.DataFrame(columns=['variable', 'kind', 'value'])
@@ -359,7 +263,7 @@ def ergodicity_breaking_parameter(df, phenotypic_variables, kind, n_boots=0):  #
     else:
         # Get the variance of the time-averages for both kinds of lineages
         variance = time_averages[phenotypic_variables].var() / pop_var
-    
+        
         # add them both to the dataframe where we save it all
         for param in phenotypic_variables:
             eb_df = eb_df.append({'variable': param, 'kind': kind, 'value': variance[param]}, ignore_index=True)
@@ -367,88 +271,317 @@ def ergodicity_breaking_parameter(df, phenotypic_variables, kind, n_boots=0):  #
     return [time_averages, eb_df]
 
 
+""" adds to one inputted dataframe the cumulative means, and to the the other inputed dataframe the variance and cv of the TAs of every cycle parameter per lineage length """
+
+
+def expanding_mean_cumsum_and_variances(df, phenotypic_variables, expanding_mean, label, out_df, bs, total_length_df, total_length_bs_df, first_generation, final_generation, bootstraps=False):
+    # For the pooled ensemble
+    pooled_ensemble_total = pd.DataFrame(columns=df.columns)
+    
+    # create the info dataframe with values being the cumulative mean of the lineage
+    for lin_id in df.lineage_ID.unique():
+        # print(lin_id)
+        
+        # specify the trace, we drop all the NaN rows/cycles because we need the same number of samples for all variables in order to get the covariance
+        lineage = df[(df['lineage_ID'] == lin_id)].sort_values('generation').dropna(axis=0).copy().reset_index(drop=True)
+        
+        # print(lineage)
+        # exit()
+        
+        # print(len(lineage.generation))
+        # print(len(lineage.generation.unique()))
+        
+        # add its time-average up until and including the total number of generations without NaNs
+        to_add = pd.DataFrame.from_dict({
+            'label': [label for _ in range(len(lineage))],
+            'lineage_ID': [int(lin_id) for _ in range(len(lineage))],
+            'generation': [gen for gen in np.arange(len(lineage.generation.unique()))]
+        }).reset_index(drop=True)
+        
+        # Get the expanding mean and the cumulative sum, make sure they are robust to the first NaN in division ratio
+        to_add_expanding_mean = pd.concat([lineage[phenotypic_variables].expanding().mean().reset_index(drop=True), to_add], axis=1)
+        expanding_mean = expanding_mean.append(to_add_expanding_mean, ignore_index=True).reset_index(drop=True)
+        
+        if to_add_expanding_mean.isnull().values.any():
+            raise IOError('Got NaNs in the expanding mean, meaning something is wrong')
+        
+        lineage['generation'] = np.arange(len(lineage), dtype=int)
+        
+        pooled_ensemble_total = pooled_ensemble_total.append(lineage, ignore_index=True)
+        
+        if len(to_add_expanding_mean) != len(lineage):
+            
+            print(lineage)
+            print(to_add_expanding_mean)
+            raise IOError('Wronfg lenghts')
+        
+        if not np.array_equal(to_add_expanding_mean['generation'].values, lineage['generation'].values):
+            print(lin_id)
+            
+            print(type(lineage['generation'].iloc[0]))
+            print(type(to_add_expanding_mean['generation'].iloc[0]))
+            print(lineage['generation'].iloc[0])
+            print(to_add_expanding_mean['generation'].iloc[0])
+            raise IOError('Wronfg values of generation')
+    
+    print('out of lineage ID loop')
+    
+    # This is important
+    assert not expanding_mean.isnull().values.any()
+    
+    # This is important
+    assert not pooled_ensemble_total.isnull().values.any()
+    
+    print('starting time averages')
+    
+    # Get the EBP for the total length of the lineage
+    time_averages = get_time_averages_df(df, phenotypic_variables)
+    
+    print('time_averages is done')
+    
+    # for each parameter combination decompose the pooled variance
+    tl_temp = {}
+    tl_bs_temp = {}
+    ind_tl_bs, ind_tl = 0, 0
+    repeat = []
+    for param1 in phenotypic_variables:
+        for param2 in phenotypic_variables:
+            if param2 not in repeat:
+                ta_cov = time_averages[[param1, param2]].dropna().cov().values[0, 1]
+                
+                if np.isnan(ta_cov):
+                    print(time_averages[time_averages.isnull()])
+                    print(')' * 300)
+                    print(time_averages[param1].isnull().values.any())
+                    print(time_averages[param2].isnull().values.any())
+                    print(ta_cov)
+                    print(time_averages[param1].values, time_averages[param2].values)
+                    print('error with nan')
+                    exit()
+                
+                pool_var = df[param1].std() * df[param2].std()
+                
+                # Calculate the variance of the time-averages
+                gamma_ta_cov = ta_cov / pool_var
+                
+                # Add it to the dataframe to output
+                tl_temp[ind_tl] = {
+                    'param1': param1, 'param2': param2,
+                    'variable': symbols['time_averages'][param1] if param1 == param2 else r'({}, {})'.format(symbols['time_averages'][param1], symbols['time_averages'][param2]),
+                    'n': len(time_averages[param1].unique()), 'generation': 'NA', 'gamma_ta': gamma_ta_cov, 'label': label,
+                    'pearson': time_averages[[param1, param2]].dropna().drop_duplicates().corr().values[0, 1]
+                }
+                
+                # print('tl temp dict')
+                
+                ind_tl += 1
+                
+                if bootstraps != False:
+                    for _ in np.arange(bootstraps):
+                        # sample randomly from the distribution with replacement
+                        time_averages_replacement = time_averages[[param1, param2]].sample(replace=True, frac=1).dropna().reset_index(drop=True).copy()
+                        
+                        # Get the covariance of each type of series
+                        ta_cov = time_averages_replacement.cov().values[0, 1]  # np.cov(time_averages[param1].values, time_averages[param2].values)[0, 1]
+                        
+                        pool_var = df[param1].std() * df[param2].std()
+                        
+                        # Calculate the variance of the time-averages
+                        gamma_ta_cov = ta_cov / pool_var
+                        
+                        # Add it
+                        tl_bs_temp[ind_tl_bs] = {
+                            'param1': param1, 'param2': param2,
+                            'variable': symbols['time_averages'][param1] if param1 == param2 else r'({}, {})'.format(symbols['time_averages'][param1], symbols['time_averages'][param2]),
+                            'n': len(time_averages_replacement[param1].unique()), 'generation': 'NA', 'gamma_ta': gamma_ta_cov, 'label': label,
+                            'pearson': time_averages_replacement.drop_duplicates().corr().values[0, 1]
+                        }
+                        
+                        ind_tl_bs += 1
+        
+        # To not repeat the calculation twice
+        repeat.append(param1)
+        
+        # print('append param1')
+        
+        # Append them to the big dataframes
+        total_length_df = total_length_df.append(pd.DataFrame.from_dict(tl_temp, "index"), ignore_index=True)
+        total_length_bs_df = total_length_bs_df.append(pd.DataFrame.from_dict(tl_bs_temp, "index"), ignore_index=True)
+        
+        # print('added')
+    
+    # Important
+    if total_length_df.isnull().values.any():
+        print('ERROR! total_length_df')
+        print(total_length_df)
+        exit()
+    if total_length_bs_df.isnull().values.any():
+        print('ERROR! total_length_bs_df')
+        print(total_length_bs_df)
+        exit()
+    
+    # # Calculate the ergodicity breaking parameter over all lineages in the dataset per generation
+    # for generation in np.arange(first_generation, final_generation + 1):
+    #     print(generation)
+    #
+    #     out_temp = {}
+    #     bs_temp = {}
+    #     ind_bs, ind_out = 0, 0
+    #
+    #     # Get the time-averages of the lineages that have the generation we are looking for
+    #     time_averages = expanding_mean[(expanding_mean['label'] == label) & (expanding_mean['generation'] == generation)].copy()  # Excludes all lineages that do not reach this generation
+    #
+    #     # Get the array of which lineages are long enough, ie. have the amount of cycles we need
+    #     long_enough_lineages = time_averages['lineage_ID'].unique()
+    #
+    #     # Define the pooled ensemble of all the lineages that have at least this generation
+    #     pooled_ensemble = pooled_ensemble_total[(pooled_ensemble_total['generation'] <= generation) & (pooled_ensemble_total['lineage_ID'].isin(long_enough_lineages))].copy()
+    #
+    #     # That way we have a robust variance across lineages
+    #     if len(long_enough_lineages) > 1:
+    #
+    #         # for each parameter combination decompose the pooled variance
+    #         repeat = []
+    #         for param1 in phenotypic_variables:
+    #             for param2 in phenotypic_variables:
+    #                 if param2 not in repeat:
+    #
+    #                     # The mean is a linear operator
+    #                     if np.abs(pooled_ensemble[param2].mean() - time_averages[param2].mean()) > 0.000001:
+    #                         print(pooled_ensemble[param2].mean(), time_averages[param2].mean())
+    #                         print(pooled_ensemble[param2].mean() - time_averages[param2].mean())
+    #                         raise IOError('Means are not the same in a big way')
+    #
+    #                     # We must have the same amount of
+    #                     if not ((generation + 1) * len(time_averages[param1])) == ((generation + 1) * len(time_averages[param2])) == len(pooled_ensemble[param1]) == len(pooled_ensemble[param2]):
+    #                         print((generation * len(time_averages[param1])), (generation * len(time_averages[param2])), len(pooled_ensemble[param1]), len(pooled_ensemble[param2]))
+    #                         raise IOError('Sizes are not the same in a big way')
+    #
+    #                     # Get the variances of each type of series
+    #                     ta_cov = ((generation + 1) * (
+    #                             (time_averages[param1].copy() - time_averages.mean()[param1].copy()) * (time_averages[param2].copy() - time_averages.mean()[param2].copy()))).sum() / (
+    #                                      len(pooled_ensemble) - 1)
+    #                     pool_var = pooled_ensemble[param1].std() * pooled_ensemble[param2].std()
+    #
+    #                     # Calculate the variance of the time-averages
+    #                     gamma_ta_cov = ta_cov / pool_var
+    #
+    #                     # Add it to the dataframe to output
+    #                     out_temp[ind_out] = {
+    #                         'param1': param1, 'param2': param2, 'n': len(long_enough_lineages), 'generation': generation, 'gamma_ta': gamma_ta_cov, 'label': label
+    #                     }
+    #
+    #                     ind_out += 1
+    #
+    #                     if bootstraps != False:
+    #                         for _ in np.arange(bootstraps):
+    #                             # sample randomly from the distribution with replacement
+    #                             time_averages_replacement = time_averages.sample(replace=True, frac=1)
+    #
+    #                             # Get the variances of each type of series
+    #                             ta_cov = ((generation + 1) * (
+    #                                     (time_averages_replacement[param1].copy() - time_averages_replacement.mean()[param1].copy()) * (
+    #                                     time_averages_replacement[param2].copy() - time_averages_replacement.mean()[param2].copy()))).sum() / (
+    #                                              len(pooled_ensemble) - 1)
+    #                             pool_var = pooled_ensemble[param1].std() * pooled_ensemble[param2].std()
+    #
+    #                             # Calculate the variance of the time-averages
+    #                             gamma_ta_cov = ta_cov / pool_var
+    #
+    #                             # Add it
+    #                             bs_temp[ind_bs] = {
+    #                                 'param1': param1, 'param2': param2, 'n': len(long_enough_lineages), 'generation': generation, 'gamma_ta': gamma_ta_cov, 'label': label
+    #                             }
+    #
+    #                             ind_bs += 1
+    #
+    #             # To not repeat the calculation twice
+    #             repeat.append(param1)
+    #
+    #     # Append them to the big dataframes
+    #     out_df = out_df.append(pd.DataFrame.from_dict(out_temp, "index"), ignore_index=True)
+    #     bs = bs.append(pd.DataFrame.from_dict(bs_temp, "index"), ignore_index=True)
+    
+    # Important
+    if out_df.isnull().values.any():
+        print('ERROR!')
+        print(out_df)
+        exit()
+    if bs.isnull().values.any():
+        print('ERROR! BS')
+        print(bs)
+        exit()
+    
+    return [out_df, bs, total_length_df, total_length_bs_df]
+
+
 def main(args, first_generation, final_generation):
     # import/create the trace lineages
-    physical_units = pd.read_csv('{}/{}'.format(args.save_folder, args.pu)).sort_values(['lineage_ID', 'generation']).reset_index(drop=True)
+    physical_units = pd.read_csv(args['pu']).sort_values(['lineage_ID', 'generation']).reset_index(drop=True)
     
-    # Add what Naama wanted
-    size_fraction = np.array([])
+    population_sampled = shuffle_info(physical_units, mm=args['MM'])
     
-    for lin_id in physical_units.lineage_ID.unique():
-        lineage = physical_units[physical_units['lineage_ID'] == lin_id].copy().sort_values('generation')
-        fr = lineage['length_birth'].values[1:] / lineage['length_birth'].values[:-1]
-        fr = np.append(fr, np.array([np.nan]))
-        size_fraction = np.append(size_fraction, fr)
-    
-    physical_units['size_fraction'] = pd.Series(size_fraction.flatten())
-    
-    # print(physical_units['size_fraction'])
-    # print(physical_units[physical_units['lineage_ID'] == 230.0][['size_fraction', 'generation']])
-    # exit()
-    
-    population_sampled = shuffle_info(physical_units, mm=args.MM)
-    
-    lineage_shuffled = shuffle_lineage_generations(physical_units, args.MM)
+    # lineage_shuffled = shuffle_lineage_generations(physical_units, args['MM'])
     
     # We keep the trap means here
     expanding_mean = pd.DataFrame(columns=['label', 'lineage_ID', 'generation'] + phenotypic_variables)
     
     # Where we keep the gammas
-    out_df = pd.DataFrame(columns=['param1', 'param2', 'n', 'generation', 'gamma_ta', 'label'])
-    bs = pd.DataFrame(columns=['param1', 'param2', 'n', 'generation', 'gamma_ta', 'label'])
-    total_length_ebp = pd.DataFrame(columns=['param1', 'param2', 'n', 'generation', 'gamma_ta', 'label'])
-    total_length_ebp_bs = pd.DataFrame(columns=['param1', 'param2', 'n', 'generation', 'gamma_ta', 'label'])
+    out_df = pd.DataFrame(columns=['param1', 'param2', 'variable', 'n', 'generation', 'gamma_ta', 'label', 'pearson'])
+    bs = pd.DataFrame(columns=['param1', 'param2', 'variable', 'n', 'generation', 'gamma_ta', 'label', 'pearson'])
+    total_length_vd = pd.DataFrame(columns=['param1', 'param2', 'variable', 'n', 'generation', 'gamma_ta', 'label', 'pearson'])
+    total_length_vd_bs = pd.DataFrame(columns=['param1', 'param2', 'variable', 'n', 'generation', 'gamma_ta', 'label', 'pearson'])
     
     # Calculate the cv and TA per lineage length
-    for kind, df in zip(['Trace', 'Artificial', 'Shuffled'], [physical_units, population_sampled, lineage_shuffled]):
+    for kind, df in zip(['Trace', 'Artificial'], [physical_units, population_sampled]):
         
         print(kind)
         
-        out_df, bs, total_length_ebp, total_length_ebp_bs = expanding_mean_cumsum_and_variances(df, phenotypic_variables, expanding_mean, kind, out_df, bs, total_length_ebp, total_length_ebp_bs, first_generation, final_generation, bootstraps=20)
+        out_df, bs, total_length_vd, total_length_vd_bs = expanding_mean_cumsum_and_variances(df, phenotypic_variables, expanding_mean, kind, out_df, bs, total_length_vd, total_length_vd_bs,
+                                                                                              first_generation, final_generation, bootstraps=False)
         
-        print(out_df, bs, total_length_ebp, total_length_ebp_bs, sep='\n'*2)
+        # print(out_df, bs, total_length_vd, total_length_vd_bs, sep='\n' * 2)
         
         print('&' * 300)
-
-    total_length_ebp.to_csv('gamma_ta_corrs.csv', index=False)
-    total_length_ebp_bs.to_csv('gamma_ta_corrs_bs.csv', index=False)
-    out_df.to_csv('gamma_ta_corrs_per_gen.csv', index=False)
-    bs.to_csv('gamma_ta_corrs_per_gen_bs.csv', index=False)
+    
+    total_length_vd.to_csv(args['total_length_vd'], index=False)
+    # total_length_vd_bs.to_csv('gamma_ta_corrs_bs.csv', index=False)
+    out_df.to_csv(args['per_gen_vd'], index=False)
+    # bs.to_csv('gamma_ta_corrs_per_gen_bs.csv', index=False)
 
 
 if __name__ == '__main__':
     import argparse
     import os
     import time
-    
-    # The final_generations for the different datasets
-    fg = {
-        'SM': 45,
-        # 'lambda_LB': 60,
-        'Maryam_LongTraces': 45,
-        'MG1655_inLB_LongTraces': 200,
-        # 'LAC_M9': np.nan
-        '4-28-2017': 30
-    }
+    from shutil import copyfile
     
     # How long does running this take?
     first_time = time.time()
     
     total_ebp_dict = {}
-
+    
     # Create the arguments for this function
     parser = argparse.ArgumentParser(description='Decide which datasets to process Mother Machine and Sister Machine Raw Data for.')
-
+    
     parser.add_argument('-dataset_names', '--dataset_names', metavar='', nargs="+", help='What is the label for this data for the Data and Figures folders?', required=False,
                         default=dataset_names)
-
+    
     # Finalize the arguments
     input_args = parser.parse_args()
-
-    # Do all the Mother and Sister Machine data
-    for data_origin in dataset_names:  # input_args.dataset_names:
-        print(data_origin)
     
+    kind_of_vd = ['total_length', 'per_gen', 'trap_controlled']
+    
+    # Do all the Mother and Sister Machine data
+    for data_origin in wang_datasets:  # input_args.dataset_names:
+        print(data_origin)
+        
+        create_folder(data_origin)
+        
+        ebp_folder = os.path.dirname(os.path.abspath(__file__))
+        
+        processed_data = os.path.dirname(ebp_folder) + '/Datasets/' + data_origin + '/ProcessedData/'
+        
         """
         data_origin ==> Name of the dataset we are analysing
         raw_data ==> Where the folder containing the raw data for this dataset is
@@ -456,59 +589,67 @@ if __name__ == '__main__':
         """
         args = {
             'data_origin': data_origin,
-            'raw_data': os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Datasets/' + data_origin + '/RawData/',
-            'processed_data': os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Datasets/' + data_origin + '/ProcessedData/'
+            'raw_data': os.path.dirname(ebp_folder) + '/Datasets/' + data_origin + '/RawData/',
+            'MM': False if data_origin in sm_datasets else True,
+            # Data singularities, long traces with significant filamentation, sudden drop-offs
+            'ebp_folder': ebp_folder,
+            'pu': processed_data + 'z_score_under_3/physical_units_without_outliers.csv' if data_origin in wang_datasets else processed_data + 'physical_units.csv',
+            'total_length_vd': ebp_folder + '/{}/total_length_vd.csv'.format(data_origin),
+            'per_gen_vd': ebp_folder + '/{}/per_gen_vd.csv'.format(data_origin),
+            'trap_controlled_vd': ebp_folder + '/{}/trap_controlled_vd.csv'.format(data_origin),
+            'total_length_figs': ebp_folder + '/{}/total_length_figs/'.format(data_origin),
+            'per_gen_figs': ebp_folder + '/{}/per_gen_figs/'.format(data_origin),
+            'trap_controlled_figs': ebp_folder + '/{}/trap_controlled_figs/'.format(data_origin)
         }
-        
-        parser = argparse.ArgumentParser(description='Process Mother Machine Lineage Data.')
-        parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
-        parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/ProcessedData/' + data_origin)
-        parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
-                            required=False, default='physical_units.csv')
-        parser.add_argument('-pop', '--population_sampled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the population sampled lineages.',
-                            required=False, default='artificial_lineages.csv')
-        parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
-                            required=False, default='time_averages.csv')
-        parser.add_argument('-ebp', '--ebp', metavar='', type=str, help='What to name the dataframe containing the ergodicity breaking parameter for each variable.',
-                            required=False, default='gamma_ta_corrs_per_gen.csv')
-        parser.add_argument('-kld', '--kld', metavar='', type=str,
-                            help='What to name the dataframe containing the kullback leibler diverges for each variable between the population ensemble and physical units of lineages.',
-                            required=False, default='kullback_leibler_divergences.csv')
-        parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=True)
-        parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
-                            required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
-        args = parser.parse_args()
-        
-        folder_name = args.figs_location + '/ebp_per_gen'
-        create_folder(args.figs_location)
 
-        # folder_name = args.os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/ebp_per_gen_all_datasets'
+        # plot them
+        pyramid_heatmaps(args, annot=True)
         
-        create_folder(folder_name)
+        continue
         
-        if data_origin == 'SM':
-            main(args, first_generation=1, final_generation=25)  # fg[data_origin]
-        else:
-            main(args, first_generation=0, final_generation=24)
+        # '{}variance_decompositions.png'.format(args['total_length_figs'])
+        # 
+        # copyfile('{}variance_decompositions.png'.format(args['total_length_figs']), 'variance_decompositions_{}.png'.format(args['data_origin']))
+        # 
+        # continue
         
-        # ebp = pd.read_csv('{}/{}'.format(args.save_folder, args.ebp))
-        total_length_ebp = pd.read_csv('gamma_ta_corrs.csv')
-        ebp_pergen = pd.read_csv('gamma_ta_corrs_per_gen.csv')
+        #
+        # folder_name = args.figs_location + '/ebp_per_gen'
+        # create_folder(args.figs_location)
+        #
+        # main(args, first_generation=0, final_generation=24)
         
-        total_ebp_dict.update({args.data_origin: ebp_pergen})
+        # kinds of vds
+        total_length_vd = pd.read_csv(args['total_length_vd'])
+        # per_gen_vd = pd.read_csv(args['per_gen_vd'])
         
-        print('moving on to plotting')
-        ebp_per_gen({args.data_origin: ebp_pergen}, folder_name)
-
+        # total_ebp_dict.update({args['data_origin']: ebp_pergen})
+        #
+        # print('moving on to plotting')
+        # ebp_per_gen({args['data_origin']: ebp_pergen}, folder_name)
+        
         # set a style on seaborn module
         sns.set_context('paper')
         sns.set_style("ticks", {'axes.grid': True})
-        _, ax = plt.subplots(tight_layout=True, figsize=[3, 3])
-        ergodicity_per_variable(total_length_ebp, ax, symbols['time_averages'])
+        _, ax = plt.subplots(tight_layout=True, figsize=[7 * 1.5, 2.5 * 1.5])
+        pairs = list(list(combinations(['length_birth', 'generationtime', 'growth_rate'], 2)))  # 'fold_growth', 'division_ratio',
+        pairs = pairs + [(variable, variable) for variable in list(np.unique(pairs))]  # Add the variances to the covariances : OPTIONAL!
+        print(pairs)
+        ergodicity_per_variable(total_length_vd, ax, pairs)
+        
+        sns.set_context('paper')
+        sns.set_style("ticks", {'axes.grid': True})
+        _, ax = plt.subplots(tight_layout=True, figsize=[5, 5])
+        sns.barplot(data=total_length_vd, x='variable', y='gamma_ta', hue='label', order=list(symbols['time_averages'].values()), ax=ax,
+                    edgecolor='black')  # , label=r'$\overline{cov}$ \ $\sigma^2$'
+        ax.yaxis.grid(True)
+        ax.set_xlabel('')
+        ax.set_ylabel(r'$\Gamma$')
+        plt.title(data_origin)
+        ax.get_legend().remove()
         # save the figure
         # plt.ylim([0, .45])
-        plt.savefig('{}/EBP.png'.format(args.figs_location), dpi=300)
+        # plt.savefig('{}variance_decompositions.png'.format(args['total_length_figs']), dpi=300)
         plt.show()
         plt.close()
         
@@ -523,48 +664,3 @@ if __name__ == '__main__':
         # plt.close()
         
         print('*' * 200)
-        exit()
-    
-    # How long did it take to do the mother machine?
-    mm_time = time.time() - first_time
-    
-    data_origin = 'SM'
-    
-    parser = argparse.ArgumentParser(description='Create the artificial lineages, ergodicity breaking parameters, and the KL Divergences.')
-    parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
-    parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Data/' + data_origin)
-    parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
-                        required=False, default='physical_units.csv')
-    parser.add_argument('-pop', '--population_sampled', metavar='', type=str, help='The filename of the dataframe that contains the physical units of the population sampled lineages.',
-                        required=False, default='population_lineages.csv')
-    parser.add_argument('-ta', '--ta', metavar='', type=str, help='What to name the time-averages dataframe.',
-                        required=False, default='time_averages.csv')
-    parser.add_argument('-ebp', '--ebp', metavar='', type=str, help='What to name the dataframe containing the ergodicity breaking parameter for each variable.',
-                        required=False, default='ergodicity_breaking_parameter.csv')
-    parser.add_argument('-kld', '--kld', metavar='', type=str,
-                        help='What to name the dataframe containing the kullback leibler diverges for each variable between the population ensemble and physical units of lineages.',
-                        required=False, default='kullback_leibler_divergences.csv')
-    parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=False)
-    parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
-                        required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/' + data_origin)
-    args = parser.parse_args()
-    
-    create_folder(args.figs_location)
-    
-    # # set a style on seaborn module
-    # sns.set_context('paper')
-    # sns.set_style("ticks", {'axes.grid': True})
-    # _, ax = plt.subplots(tight_layout=True, figsize=[3, 3])
-    # ergodicity_per_variable(pd.read_csv('{}/{}'.format(args.save_folder, args.ebp)), ax, symbols['time_averages'])
-    # # save the figure
-    # plt.savefig('{}/EBP.png'.format(args.figs_location), dpi=300)
-    # # plt.show()
-    # plt.close()
-    
-    # main(args)
-    
-    # How long did it take to do the mother machine?
-    sm_time = time.time() - (mm_time + first_time)
-    
-    print("--- took {} mins in total: {} mins for the MM data and {} mins for the SM data ---".format((time.time() - first_time) / 60, mm_time / 60, sm_time / 60))

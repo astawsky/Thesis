@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import glob
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import os
 from scipy.stats import zscore
 from sklearn.linear_model import LinearRegression
@@ -20,6 +21,12 @@ def minusing(info, parameters):
     
     return tc
 
+    
+""" Check if there are any "singular" points due to camera problems maybe and eliminate them """
+
+def eliminate_drop_offs(raw_lineage):
+    np.diff(raw_lineage)
+
 
 """ Recognizes where division events occur """
 
@@ -28,6 +35,37 @@ def get_division_indices(raw_trace):
     # From the raw data, we see where the difference between two values of length
     # falls drastically, suggesting a division has occurred.
     diffs = np.diff(raw_trace)
+    
+    # print(np.mean(diffs[np.where(np.abs(np.mean(diffs) - diffs) > 2 * np.std(diffs))]))
+    # print(np.mean(diffs[np.where((3 * np.std(diffs) >= np.abs(np.mean(diffs) - diffs)) & (np.abs(np.mean(diffs) - diffs) >= 2 * np.std(diffs)))]))
+    #
+    # fig, ax1 = plt.subplots()
+    # ax1.grid()
+    #
+    #
+    # plt.plot(diffs)
+    # plt.plot(raw_trace - np.mean(raw_trace), ls='--')
+    # plt.axhline(0, ls='-', alpha=.3, color='black')
+    # for ind in np.arange(1, 10):
+    #     plt.axhline(ind * np.std(diffs), alpha=.3, color='black', ls='--')
+    #     plt.axhline(-ind * np.std(diffs), alpha=.3, color='black', ls='--')
+    # # plt.axhline(np.mean(diffs[np.where(np.abs(np.mean(diffs) - diffs) > 2 * np.std(diffs))]), label='2 stds', color='black', ls='--')
+    # # plt.axhline(np.mean(diffs[np.where((3 * np.std(diffs) >= np.abs(np.mean(diffs) - diffs)) & (np.abs(np.mean(diffs) - diffs) >= 2 * np.std(diffs)))]), label='2 stds (-)', color='yellow', ls='--')
+    #
+    # ax1.set_xlabel('index')
+    # # ax1.set_yticks(r'centered length ($\mu$m)')
+    # ax1.set_yticks(diffs[])
+    # ax2 = ax1.twinx()
+    # ax2.set_yticks([r'${}\sigma$'.format(indiiiiii) for indiiiiii in np.arange(1, 10)])
+    # ticks = ticker.FuncFormatter(lambda x, pos: '{0:g}'.format(mapAtoB(x)))
+    # ax2.yaxis.set_major_formatter(ticks)
+    # plt.legend()
+    # # plt.axhline(-1.2, color='black', ls='--')
+    # # plt.axhline(.5, color='black', ls='--')
+    # plt.show()
+    # plt.close()
+    
+    
     
     # How much of a difference there has to be between two points to consider division having taken place.
     threshold_of_difference_for_division = -1.2
@@ -96,6 +134,8 @@ def get_division_indices(raw_trace):
 
 
 def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, lin_id, fit_the_lengths):
+    
+    
     # Make sure everything is aligned
     assert len(start_indices) == len(cycle_durations) == len(data_points_per_cycle) == len(end_indices)
     
