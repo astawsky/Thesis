@@ -386,3 +386,5 @@ sm_datasets = ['1015_NL', '062718_SL', '071318_SL', '072818_SL_NL', '101218_SL_N
 mm_datasets = ['8-31-16 Continue']
 dataset_names = sm_datasets + mm_datasets + tanouchi_datasets + wang_datasets
 cmap = sns.color_palette('tab10')
+
+# '20090529_E_coli_Br_SJ119_Wang2010' '20090930_E_coli_MG1655_lexA3_Wang2010' '20090923_E_coli_MG1655_lexA3_Wang2010' '20090922_E_coli_MG1655_lexA3_Wang2010' '20090412_E_coli_Br_SJ108_Wang2010' '20090210_E_coli_MG1655_(CGSC_6300)_Wang2010' '20090129_E_coli_MG1655_(CGSC_6300)_Wang2010' '20090702_E_coli_MG1655_(CGSC_6300)_Wang2010' '20090131_E_coli_MG1655_(CGSC_6300)_Wang2010' '20090525_E_coli_MG1655_(CGSC_6300)_Wang2010' '20090512_E_coli_MG1655_(CGSC_6300)_Wang2010'

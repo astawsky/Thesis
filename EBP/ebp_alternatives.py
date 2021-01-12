@@ -14,7 +14,7 @@ from itertools import combinations
 """ Plot the variance/covariance decompositions and correlations between phenotypic variables as pyramid heatmaps """
 
 
-def pyramid_heatmaps(args, annot):
+def pyramid_heatmaps(args, annot, input_args):
     # pyramid_of_pairwise_covariances()
     def normalize_correlation(df, variables, kind):
         cov = df.cov()
@@ -38,18 +38,12 @@ def pyramid_heatmaps(args, annot):
         
         return corr_df
     
-    # def pyramid_of_pairwise_covariances(figsize=[7, 2.5], figurename='main variables without blanks', annot=True, kind='decomposition')
-    
-    # The variables we want to plot
-    main_variables = ['fold_growth', 'division_ratio', 'generationtime', 'length_birth', 'growth_rate']
-    
     # read the csv file where we keep the data
     # import/create the trace lineages
     physical_units = pd.read_csv(args['pu']).sort_values(['lineage_ID', 'generation']).reset_index(drop=True)
     population_sampled = shuffle_info(physical_units, mm=args['MM'])
 
-    # ['main_variables', 'all_variables', 'including_extra_variables'], [main_variables, phenotypic_variables[3:], phenotypic_variables]
-    for type_of_var, variables in zip(['main_variables', 'phenotypic_variables'], [main_variables, phenotypic_variables]):
+    for type_of_var, variables in input_args.variable_mapping.items():
         
         mask = np.ones_like(normalize_correlation(physical_units, variables, kind='decomposition'))
         mask[np.tril_indices_from(mask)] = False
@@ -60,15 +54,12 @@ def pyramid_heatmaps(args, annot):
         
         print('type of var:', type_of_var)
         
-        for kind in ['decomposition', 'pearson']:
+        for kind in input_args.kinds_of_correlations:
             
             level2 = level1 + '/' + kind
             create_folder(level2)
             
             print('kind:', kind)
-            
-            # for pu, ta, tc, label in [(physical_units, get_time_averages_df(physical_units, phenotypic_variables), trace_center_a_dataframe(physical_units, args['MM']), 'Trace'),
-            #                           (population_sampled, get_time_averages_df(population_sampled, phenotypic_variables), trace_center_a_dataframe(physical_units, args['MM']), 'Artificial')]:
             for label in ['Trace', 'Artificial']:
                 if label == 'Trace':
                     pu = physical_units
@@ -83,7 +74,10 @@ def pyramid_heatmaps(args, annot):
                 
                 seaborn_preamble()
                 
-                fig, axes = plt.subplots(nrows=1, ncols=3, figsize=[7 * 1.5, 2.5 * 1.5])
+                if type_of_var == 'phenotypic_variables':
+                    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=[7 * 2, 2.5 * 2])
+                else:
+                    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=[7 * 1.5, 2.5 * 1.5])
                 
                 pu = normalize_correlation(pu, variables, kind=kind).rename(columns=symbols['physical_units'], index=symbols['physical_units'])
                 ta = normalize_correlation(ta, variables, kind=kind).rename(columns=symbols['time_averages'], index=symbols['time_averages'])
@@ -553,19 +547,21 @@ def main(args, first_generation, final_generation):
 if __name__ == '__main__':
     import argparse
     import os
-    import time
-    from shutil import copyfile
     
-    # How long does running this take?
-    first_time = time.time()
-    
-    total_ebp_dict = {}
+    # The variables we want to plot
+    main_variables = ['fold_growth', 'division_ratio', 'generationtime', 'length_birth', 'growth_rate']
     
     # Create the arguments for this function
     parser = argparse.ArgumentParser(description='Decide which datasets to process Mother Machine and Sister Machine Raw Data for.')
     
     parser.add_argument('-dataset_names', '--dataset_names', metavar='', nargs="+", help='What is the label for this data for the Data and Figures folders?', required=False,
                         default=dataset_names)
+    parser.add_argument('-kinds_of_correlations', '--kinds_of_correlations', metavar='', nargs="+", help='Calculate pearson and/or variance decomposition correlation?', required=False,
+                        default=['decomposition', 'pearson'])
+    parser.add_argument('-variable_mapping', '--variable_mapping', metavar='', nargs="+", help='Calculate for what variables in the figure?', required=False,
+                        default=dict(zip(['phenotypic_variables'], [phenotypic_variables])))
+    # parser.add_argument('-variable_mapping', '--variable_mapping', metavar='', nargs="+", help='Calculate for what variables in the figure?', required=False,
+    #                     default=dict(zip(['main_variables', 'phenotypic_variables'], [main_variables, phenotypic_variables])))
     
     # Finalize the arguments
     input_args = parser.parse_args()
@@ -599,11 +595,11 @@ if __name__ == '__main__':
             'trap_controlled_vd': ebp_folder + '/{}/trap_controlled_vd.csv'.format(data_origin),
             'total_length_figs': ebp_folder + '/{}/total_length_figs/'.format(data_origin),
             'per_gen_figs': ebp_folder + '/{}/per_gen_figs/'.format(data_origin),
-            'trap_controlled_figs': ebp_folder + '/{}/trap_controlled_figs/'.format(data_origin)
+            'trap_controlled_figs': ebp_folder + '/{}/trap_controlled_figs/'.format(data_origin),
         }
 
         # plot them
-        pyramid_heatmaps(args, annot=True)
+        pyramid_heatmaps(args, annot=True, input_args=input_args)
         
         continue
         

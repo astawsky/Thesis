@@ -304,8 +304,6 @@ if __name__ == '__main__':
             
             level1 = args['analysis_dataframes_path'] + '/{}'.format(time_series)
             
-            print(level1)
-            
             create_folder(level1)
             
             level2 = level1 + '/Dataframes'
