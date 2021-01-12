@@ -371,7 +371,7 @@ symbols = {
     #                     r'$\overline{\frac{x_{0, n+1}}{x_{0, n}}}$']))
 }
 datasets = ['SL', 'NL', 'CTRL']
-units = dict(zip(phenotypic_variables, [r'', r'', r'', r'', r'', r'$\mu m$', r'$(hr)$', r'$(\mu m)$', r'$(\mu m)$', r'$(\frac{1}{hr})$']))
+units = dict(zip(phenotypic_variables, [r'', r'', r'', r'', r'', r'$(\mu m)$', r'$(hr)$', r'$(\mu m)$', r'$(\mu m)$', r'$(\frac{1}{hr})$']))
 hierarchy = [r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$']
 # This is a manual thing to make the distribution look better without the outliers
 bounds = {

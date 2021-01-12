@@ -95,7 +95,7 @@ def previous_division_scatterplots(df, label, var_prev, var_after, suffix=''):
 
 
 def main(args):
-    def put_all_graphs_into_a_big_grid(df, label, variables=phenotypic_variables, suffix=''):
+    def put_all_graphs_into_a_big_grid(df, label, variables=phenotypic_variables, suffix='', reg_dict=None):
         sns.set_context('paper')
         sns.set_style("ticks", {'axes.grid': True})
         
@@ -130,9 +130,18 @@ def main(args):
 
             pcorr = str(pearsonr(relevant[sym2].values, relevant[sym1].values)[0])[:4]
             # pcorr = str(pg.corr(df[sym2], df[sym1], method='pearson')['r'].loc['pearson'].round(2))[:4]
-            slope, intercept = linregress(relevant[sym2], relevant[sym1])[:2]
+            slope, intercept, r_value, _, std_err = linregress(relevant[sym2], relevant[sym1])
             
-            axes.scatter(relevant[sym2], relevant[sym1], color='gray', marker='o', alpha=.5)
+            reg_dict.update({len(reg_dict): {
+                'kind': kind,
+                'slope': slope,
+                'intercept': intercept,
+                'std_err': std_err,
+                'r_value': r_value
+            }})
+            
+            axes.scatter(relevant[sym2], relevant[sym1], color='gray', marker='o', alpha=.1)
+            # sns.kdeplot(x=relevant[sym2], y=relevant[sym1], ax=axes, color='grey')
             axes.plot(np.unique(relevant[sym2]), [intercept + slope * vel for vel in np.unique(relevant[sym2])])
             
             # sns.regplot(x=df[sym2], y=df[sym1], data=df, ax=axes, line_kws={'color': 'red'}, scatter_kws={'alpha': .1, 'color': 'grey'})
@@ -180,7 +189,7 @@ def main(args):
                         # ax.scatter(df[col_var].values, df[row_var].values, color='gray')
                         # ax.plot(df[col_var].values, [intercept + slope * vel for vel in df[col_var].values])
                         
-                        ax.scatter(col_array, row_array, color='gray', marker='o', alpha=.5)
+                        ax.scatter(col_array, row_array, color='gray', marker='o', alpha=.1)
                         ax.plot(np.unique(col_array), [intercept + slope * vel for vel in np.unique(col_array)])
                         ax.annotate(r'$\rho = $' + pcorr + '\n' + r'$\beta = {:.2}$'.format(np.round(slope, 2)), xy=(.5, .72), xycoords=ax.transAxes, fontsize=7, ha='center', va='bottom', color='red',
                                     bbox=dict(boxstyle='round,pad=0.2', fc='yellow', alpha=0.7))
@@ -200,50 +209,53 @@ def main(args):
         # In case we just want to see one scatterplot
         if len(variables) == 2:
             plt.savefig(args['Figures'] + '/{}/separate/{}/'.format(label, args['data_origin']) + '{}_{}{}.png'.format(variables[0], variables[1], suffix), dpi=300)
+            # plt.show()
+            plt.close()
+            
+            return reg_dict
         else:
-            plt.savefig(args['Figures'] + '/{}/together/'.format(label) + 'regression_plots_{}{}.png'.format(args['data_origin'], suffix), dpi=300)
-        # plt.show()
-        plt.close()
+            plt.savefig(args['Figures'] + '/{}/together/'.format(label) + '{}{}.png'.format(args['data_origin'], suffix), dpi=300)
+            # plt.show()
+            plt.close()
     
-    def heatmap_analogs(df, label, variables=phenotypic_variables, suffix=''):
+    # def heatmap_analogs(df, label, variables=phenotypic_variables, suffix=''):
+    #
+    #     sns.set_context('paper')
+    #     sns.set_style("ticks", {'axes.grid': True})
+    #
+    #     latex_symbols = {variable: symbols[label][variable] for variable in variables}
+    #
+    #     df = df[variables].copy().rename(columns=latex_symbols)
+    #
+    #     to_plot = pg.pairwise_corr(df, method='pearson')
+    #
+    #     # reformat the results into a dataframe we can use for the heatmap
+    #     to_plot_df = pd.DataFrame(columns=to_plot.X.unique(), index=to_plot.Y.unique(), dtype=float)
+    #     repeats = []
+    #     for x in to_plot.X.unique():
+    #         for y in to_plot.Y.unique():
+    #             if x != y and y not in repeats:
+    #                 # Add the results
+    #                 to_plot_df[x].loc[y] = to_plot[(to_plot['X'] == x) & (to_plot['Y'] == y)]['r'].values[0]
+    #
+    #         repeats.append(x)
+    #
+    #     # The mask to show only the lower triangle in the heatmap
+    #     mask = np.ones_like(to_plot_df)
+    #     mask[np.tril_indices_from(mask)] = False
+    #
+    #     fig, ax = plt.subplots(tight_layout=True, figsize=[7, 5.5])  #  * (2 / 3) on both
+    #
+    #     sns.heatmap(to_plot_df, annot=True, square=True, vmin=-1, vmax=1, mask=mask, center=0)
+    #     plt.title(args['data_origin'] + ', ' + label)
+    #     # plt.tight_layout()
+    #     plt.savefig(args['Figures'] + '/{}/together/'.format(label) + 'heatmap_{}{}.png'.format(args['data_origin'], suffix), dpi=300)
+    #     # plt.savefig('{}/{}/{}{}.png'.format(args.figs_location, args.scch, label, suffix), dpi=300)
+    #     # plt.show()
+    #     plt.close()
         
-        sns.set_context('paper')
-        sns.set_style("ticks", {'axes.grid': True})
-        
-        latex_symbols = {variable: symbols[label][variable] for variable in variables}
-        
-        df = df[variables].copy().rename(columns=latex_symbols)
-        
-        to_plot = pg.pairwise_corr(df, method='pearson')
-        
-        # reformat the results into a dataframe we can use for the heatmap
-        to_plot_df = pd.DataFrame(columns=to_plot.X.unique(), index=to_plot.Y.unique(), dtype=float)
-        repeats = []
-        for x in to_plot.X.unique():
-            for y in to_plot.Y.unique():
-                if x != y and y not in repeats:
-                    # Add the results
-                    to_plot_df[x].loc[y] = to_plot[(to_plot['X'] == x) & (to_plot['Y'] == y)]['r'].values[0]
-                    
-            repeats.append(x)
-        
-        # The mask to show only the lower triangle in the heatmap
-        mask = np.ones_like(to_plot_df)
-        mask[np.tril_indices_from(mask)] = False
-        
-        fig, ax = plt.subplots(tight_layout=True, figsize=[7, 5.5])  #  * (2 / 3) on both
-        
-        sns.heatmap(to_plot_df, annot=True, square=True, vmin=-1, vmax=1, mask=mask, center=0)
-        plt.title(args['data_origin'] + ', ' + label)
-        # plt.tight_layout()
-        plt.savefig(args['Figures'] + '/{}/together/'.format(label) + 'heatmap_{}{}.png'.format(args['data_origin'], suffix), dpi=300)
-        # plt.savefig('{}/{}/{}{}.png'.format(args.figs_location, args.scch, label, suffix), dpi=300)
-        plt.show()
-        plt.close()
-    
-    # # Create the folder where we will save the figures
-    # create_folder('{}/{}'.format(args.figs_location, args.scc))
-    # create_folder('{}/{}'.format(args.figs_location, args.scch))
+    # for the regression parameters
+    regression = {}
     
     # import the labeled measured bacteria in trace-centered units
     physical_units = pd.read_csv(args['pu'])
@@ -255,23 +267,27 @@ def main(args):
     for kind, dataframe in zip(['physical_units', 'trace_centered', 'time_averages'], [physical_units, trace_centered, time_averages]):
         print(kind)
         
-        # Plot all the variables -- Heatmap
-        heatmap_analogs(dataframe, kind, variables=phenotypic_variables, suffix='')
+        # # Plot all the variables -- Heatmap
+        # heatmap_analogs(dataframe, kind, variables=phenotypic_variables, suffix='')
 
         # Plot all the variables -- Scatter Regression Plot
         put_all_graphs_into_a_big_grid(dataframe, kind, variables=phenotypic_variables, suffix='')
 
-        # Scatter Regression Plots for each variable pair individually
-        repeats = []
-        for var1 in phenotypic_variables:
-            for var2 in phenotypic_variables:
-                if var2 in repeats or var2 == var1:
-                    continue
-                print(var1, var2)
-        
-                # the separate figures
-                put_all_graphs_into_a_big_grid(dataframe, kind, variables=[var1, var2], suffix='')
-            repeats.append(var1)
+    #     # Scatter Regression Plots for each variable pair individually
+    #     repeats = []
+    #     for var1 in phenotypic_variables:
+    #         for var2 in phenotypic_variables:
+    #             if var2 in repeats or var2 == var1:
+    #                 continue
+    #
+    #             # the separate figures
+    #             regression = put_all_graphs_into_a_big_grid(dataframe, kind, variables=[var1, var2], suffix='', reg_dict=regression)
+    #
+    #         # So that we don't repeat the scatter plots
+    #         repeats.append(var1)
+    #
+    # # regression dataframe for analysis
+    # pd.DataFrame.from_dict(regression, "index").to_csv('regression_dataframes/'+args['data_origin']+'_regressions.csv', index=False)
     
     # # Plot all the variables -- Heatmap
     # print('pu')
@@ -323,10 +339,12 @@ if __name__ == '__main__':
     input_args = parser.parse_args()
     
     # Do all the Mother and Sister Machine data
-    for data_origin in input_args.dataset_names:
+    for data_origin in input_args.dataset_names[1:]:
         print(data_origin)
         
         filepath = os.path.dirname(os.path.abspath(__file__))
+        
+        create_folder(filepath+'/regression_dataframes')
         
         processed_data = os.path.dirname(filepath) + '/Datasets/' + data_origin + '/ProcessedData/'
         

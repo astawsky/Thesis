@@ -11,6 +11,14 @@ import seaborn as sns
 from scipy.stats import linregress
 from itertools import combinations
 
+
+""" vd conditioning on trap as well as lineage """
+
+
+def ebp_with_trap(datasets):
+    pass
+
+
 """ Plot the variance/covariance decompositions and correlations between phenotypic variables as pyramid heatmaps """
 
 
@@ -28,37 +36,37 @@ def pyramid_heatmaps(args, annot, input_args):
                     normalization = (df.drop_duplicates()[param_1].std() * df.drop_duplicates()[param_2].std())
                 else:
                     raise IOError('wrong kind of normalization')
-                
+
                 # # If the value lies in the noise range then make it zero
                 # if -.1 < cov.loc[param_1, param_2] / normalization < .1:
                 #     corr_df.loc[param_1, param_2] = float('nan')  # 0
                 # else:
                 #     corr_df.loc[param_1, param_2] = cov.loc[param_1, param_2] / normalization
                 corr_df.loc[param_1, param_2] = cov.loc[param_1, param_2] / normalization
-        
+
         return corr_df
-    
+
     # read the csv file where we keep the data
     # import/create the trace lineages
     physical_units = pd.read_csv(args['pu']).sort_values(['lineage_ID', 'generation']).reset_index(drop=True)
     population_sampled = shuffle_info(physical_units, mm=args['MM'])
 
     for type_of_var, variables in input_args.variable_mapping.items():
-        
+
         mask = np.ones_like(normalize_correlation(physical_units, variables, kind='decomposition'))
         mask[np.tril_indices_from(mask)] = False
         vmax, vmin = 1, -1
-        
+
         level1 = args['ebp_folder'] + '/' + type_of_var
         create_folder(level1)
-        
+
         print('type of var:', type_of_var)
-        
+
         for kind in input_args.kinds_of_correlations:
-            
+
             level2 = level1 + '/' + kind
             create_folder(level2)
-            
+
             print('kind:', kind)
             for label in ['Trace', 'Artificial']:
                 if label == 'Trace':
@@ -69,45 +77,46 @@ def pyramid_heatmaps(args, annot, input_args):
                     pu = population_sampled
                     ta = get_time_averages_df(population_sampled, phenotypic_variables)
                     tc = trace_center_a_dataframe(population_sampled, args['MM'])
-                    
+
                 print('label:', label)
-                
+
                 seaborn_preamble()
-                
+
                 if type_of_var == 'phenotypic_variables':
                     fig, axes = plt.subplots(nrows=1, ncols=3, figsize=[7 * 2, 2.5 * 2])
                 else:
                     fig, axes = plt.subplots(nrows=1, ncols=3, figsize=[7 * 1.5, 2.5 * 1.5])
-                
+
                 pu = normalize_correlation(pu, variables, kind=kind).rename(columns=symbols['physical_units'], index=symbols['physical_units'])
                 ta = normalize_correlation(ta, variables, kind=kind).rename(columns=symbols['time_averages'], index=symbols['time_averages'])
                 tc = normalize_correlation(tc, variables, kind=kind).rename(columns=symbols['trace_centered'], index=symbols['trace_centered'])
-                
+
                 sns.heatmap(pu, annot=annot, center=0, vmax=vmax,
                             vmin=vmin, cbar=False, ax=axes[0], mask=mask, square=True, fmt='.2f')
                 axes[0].set_title('A', x=-.2, fontsize='xx-large')
-                
+
                 sns.heatmap(ta, annot=annot, center=0, vmax=vmax, vmin=vmin,
                             cbar=False, ax=axes[1], mask=mask, square=True, fmt='.2f')
                 axes[1].set_title('B', x=-.2, fontsize='xx-large')
-                
+
                 cbar_ax = fig.add_axes([.91, .1, .03, .8])
-                
+
                 sns.heatmap(tc, annot=annot, center=0, vmax=vmax,
                             vmin=vmin, cbar=True, ax=axes[2], mask=mask, cbar_kws={"orientation": "vertical"}, square=True, cbar_ax=cbar_ax, fmt='.2f')
                 axes[2].set_title('C', x=-.2, fontsize='xx-large')
-                
+
                 plt.suptitle('{} of {} lineage: '.format(kind, label) + args['data_origin'])
-                
+
                 fig.tight_layout(rect=[0, 0, .9, 1])
-                
+
                 plt.savefig('{}/{}_{}.png'.format(level2, label, args['data_origin']), dpi=300)
                 # plt.show()
                 plt.close()
-                
+
                 print('done!')
-    
-    """ Shows how the variance decomposition of the lineage decreases per generation """
+                
+
+""" Shows how the variance decomposition of the lineage decreases per generation """
 
 
 def ebp_per_gen(df_dict, folder_name):
@@ -221,9 +230,57 @@ def ergodicity_per_variable(eb_df, ax, variable_pairs):
 """ Plot the ratio of variance-decompositions/correlations between trace and artificial lineages for each dataset represented as a point """
 
 
-def deviance_from_universality(datasets):
+def ratio_of_all_datasets(datasets, variable_pairs):
+    # where we will put all the ratios
+    ratio_df = pd.DataFrame(columns=['dataset', 'param1', 'param2', 'variable', 'gamma_ta_ratio', 'pearson_ratio'])
+    
     for ds in datasets:
         print(ds)
+        df = pd.read_csv(os.path.dirname(os.path.abspath(__file__))+'/{}/total_length_vd.csv'.format(ds)).drop_duplicates()
+        
+        # print(df)
+        # print(df.columns)
+        
+        for param1, param2, variable in df[['param1', 'param2', 'variable']].drop_duplicates().values:
+            rel = df[(df['variable'] == variable)]
+            g_ratio = rel[rel['label'] == 'Trace'].gamma_ta.values / rel[rel['label'] == 'Artificial'].gamma_ta.values
+            p_ratio = 0  # rel[rel['label'] == 'Trace']['pearson'].values / rel[rel['label'] == 'Artificial']['pearson'].values
+            ratio_df = ratio_df.append({
+                'dataset': ds, 'param1': param1, 'param2': param2, 'variable': variable, 'gamma_ta_ratio': g_ratio[0], 'pearson_ratio': p_ratio  # p_ratio[0]
+            }, ignore_index=True)
+
+    necessary_variables = list(np.unique(variable_pairs))
+
+    print(necessary_variables)
+
+    return_proper_latex = lambda param1, param2: symbols['time_averages'][param1] if param1 == param2 else r'({}, {})'.format(symbols['time_averages'][param1], symbols['time_averages'][param2])
+
+    # the_order = [return_proper_latex(param1, param2) for count, param1 in
+    #              enumerate(necessary_variables) for param2 in necessary_variables if param2 not in necessary_variables[:count]]
+
+    the_order = [return_proper_latex(param1, param1) for count, param1 in enumerate(phenotypic_variables)]
+
+    # The latex labels instead of the variable names
+    to_plot = ratio_df[(ratio_df['param1'].isin(necessary_variables)) | (ratio_df['param2'].isin(necessary_variables))].copy()
+    
+    seaborn_preamble()
+    
+    # sns.barplot(x='variable', y='gamma_ta_ratio', data=to_plot, hue='dataset', order=the_order, edgecolor='black')  # , label=r'$\overline{cov}$ \ $\sigma^2$'
+    sns.stripplot(x='variable', y='gamma_ta_ratio', data=to_plot, hue='dataset', order=the_order, linewidth=1, jitter=True)  # , label=r'$\overline{cov}$ \ $\sigma^2$'
+    # for ds in datasets:
+    #     sns.lineplot(x='variable', y='gamma_ta_ratio', data=to_plot[to_plot['dataset'] == ds], hue='dataset', dodge=True)
+    # sns.lineplot(x='variable', y='gamma_ta_ratio', data=to_plot, hue='dataset')
+    # sns.pointplot(x='variable', y='gamma_ta_ratio', data=to_plot[['variable', 'gamma_ta_ratio']], order=the_order, color='black', ci='sd', markers='s', capsize=.2)
+    # plt.grid(True)
+    # plt.yscale('log')
+    plt.xlabel('')
+    plt.ylabel(r'$\frac{\Gamma_{Trace}}{\Gamma_{Artificial}}$')
+    plt.legend('')
+    # plt.get_legend().remove()
+    plt.savefig('ratios_of_gamma_ta.png', dpi=300)
+    plt.show()
+    plt.close()
+    exit()
     
     pass
 
@@ -567,6 +624,14 @@ if __name__ == '__main__':
     input_args = parser.parse_args()
     
     kind_of_vd = ['total_length', 'per_gen', 'trap_controlled']
+
+    # pairs = list(list(combinations(phenotypic_variables, 2)))  # ['length_birth', 'generationtime', 'growth_rate', 'division_ratio', 'fold_growth']
+    # pairs = pairs + [(variable, variable) for variable in list(np.unique(pairs))]  # Add the variances to the covariances : OPTIONAL!
+    pairs = [(variable, variable) for variable in list(np.unique(phenotypic_variables))]
+
+    ratio_of_all_datasets(input_args.dataset_names, pairs)
+    
+    exit()
     
     # Do all the Mother and Sister Machine data
     for data_origin in input_args.dataset_names:  # wang_datasets:  # input_args.dataset_names:
@@ -597,11 +662,11 @@ if __name__ == '__main__':
             'per_gen_figs': ebp_folder + '/{}/per_gen_figs/'.format(data_origin),
             'trap_controlled_figs': ebp_folder + '/{}/trap_controlled_figs/'.format(data_origin),
         }
-
-        # plot them
-        pyramid_heatmaps(args, annot=True, input_args=input_args)
         
-        continue
+        # ebp_with_trap(args)
+        #
+        # # plot them
+        # pyramid_heatmaps(args, annot=True, input_args=input_args)
         
         # '{}variance_decompositions.png'.format(args['total_length_figs'])
         # 
@@ -617,6 +682,10 @@ if __name__ == '__main__':
         
         # kinds of vds
         total_length_vd = pd.read_csv(args['total_length_vd'])
+
+        pyramid_heatmaps1(args, total_length_vd, annot=True, input_args=input_args)
+        
+        exit()
         # per_gen_vd = pd.read_csv(args['per_gen_vd'])
         
         # total_ebp_dict.update({args['data_origin']: ebp_pergen})
