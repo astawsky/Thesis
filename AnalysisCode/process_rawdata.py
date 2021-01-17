@@ -133,11 +133,10 @@ def get_division_indices(raw_trace):
 """We use this for linear regression in the cycle parameter process """
 
 
-def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, lin_id, fit_the_lengths):
-    
+def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, lin_id, fit_the_lengths):
     
     # Make sure everything is aligned
-    assert len(start_indices) == len(cycle_durations) == len(data_points_per_cycle) == len(end_indices)
+    assert len(start_indices) == len(cycle_durations) == len(end_indices)
     
     # the dataframe for our variables
     cycle_variables_lineage = pd.DataFrame(columns=phenotypic_variables + ['lineage_ID', 'generation'])
@@ -166,6 +165,10 @@ def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, 
         
         # our regression
         reg = LinearRegression().fit(domain, range)
+        
+        # If the growth rate is non-positive then it is obviously not a credible cycle, probably a glitch
+        if reg.coef_[0][0] <= 0:
+            continue
         
         # the phenotypic variables of a cycle
         cycle = pd.Series()
@@ -235,7 +238,7 @@ def linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, 
     
     # Throwing away outliers
     cycle_variables_lineage[phenotypic_variables] = cycle_variables_lineage[phenotypic_variables].where(
-        cycle_variables_lineage[phenotypic_variables] < ((3 * cycle_variables_lineage[phenotypic_variables].std()) + cycle_variables_lineage[phenotypic_variables].mean()),
+        np.abs(cycle_variables_lineage[phenotypic_variables] - cycle_variables_lineage[phenotypic_variables].mean()) < (3 * cycle_variables_lineage[phenotypic_variables].std()),
         other=np.nan
     )
     
@@ -460,30 +463,27 @@ def main_mm(args):
         if len(cycle_durations) != len(at_least_number):
             print('{} cycle(s) were faster than 10 minutes, so we will not use them'.format(len(cycle_durations) - len(at_least_number)))
         
-        # # Apply the four data points condition
-        # start_indices, end_indices, cycle_durations = start_indices[at_least_number], end_indices[at_least_number], cycle_durations[at_least_number]
-        
-        # Number of raw data points per generation/cycle
-        data_points_per_cycle = np.array(np.rint(cycle_durations / step_size), dtype=int)
+        # Apply the four data points condition
+        start_indices, end_indices, cycle_durations = start_indices[at_least_number], end_indices[at_least_number], cycle_durations[at_least_number]
         
         # add the cycle variables to the overall dataframe
-        cycle_variables_lineage, with_outliers = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, int(count + 1 - offset), fit_the_lengths=True)
+        cycle_variables_lineage, with_outliers = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, int(count + 1 - offset), fit_the_lengths=True)
 
-        # # Check division times
-        # interpolation = np.array([lb * np.exp(np.linspace(0, gt, int(np.round(gt * 60, 0)) + 1) * gr) for gt, gr, lb in zip(with_outliers['generationtime'], with_outliers['growth_rate'], with_outliers['length_birth'])])
-        # interpolation = np.concatenate(interpolation, axis=0)
-        #
-        # plt.plot(np.arange(len(raw_lineage['length']), dtype=int), raw_lineage['length'], color='blue', label='raw_lineage')
-        # plt.plot(np.arange(start_indices[0], len(interpolation)+start_indices[0]), interpolation, color='orange', label='cycle variable fit', ls='--')
-        # plt.scatter(start_indices, raw_lineage['length'].iloc[start_indices], color='green', label='start indices')
-        # plt.scatter(end_indices, raw_lineage['length'].iloc[end_indices], color='red', label='end indices')
-        # plt.title(filename)
-        # plt.xlabel('index')
-        # plt.ylabel(r'length ($\mu$m)')
-        # plt.yscale('log')
-        # plt.tight_layout()
-        # plt.show()
-        # plt.close()
+        # Check division times
+        interpolation = np.array([lb * np.exp(np.linspace(0, gt, int(np.round(gt * 60, 0)) + 1) * gr) for gt, gr, lb in zip(with_outliers['generationtime'], with_outliers['growth_rate'], with_outliers['length_birth'])])
+        interpolation = np.concatenate(interpolation, axis=0)
+
+        plt.plot(np.arange(len(raw_lineage['length']), dtype=int), raw_lineage['length'], color='blue', label='raw_lineage')
+        plt.plot(np.arange(start_indices[0], len(interpolation)+start_indices[0]), interpolation, color='orange', label='cycle variable fit', ls='--')
+        plt.scatter(start_indices, raw_lineage['length'].iloc[start_indices], color='green', label='start indices')
+        plt.scatter(end_indices, raw_lineage['length'].iloc[end_indices], color='red', label='end indices')
+        plt.title(filename)
+        plt.xlabel('index')
+        plt.ylabel(r'length ($\mu$m)')
+        plt.yscale('log')
+        plt.tight_layout()
+        plt.show()
+        plt.close()
         
         # append the cycle variables to the
         cycle_variables = cycle_variables.append(cycle_variables_lineage, ignore_index=True)
@@ -500,8 +500,6 @@ def main_mm(args):
     
     # reset the index for good practice
     raw_data.reset_index(drop=True).sort_values(['lineage_ID']).to_csv(os.path.dirname(os.path.dirname(args['raw_data'])) + '/raw_data_all_in_one.csv', index=False)
-    # raw_data.reset_index(drop=True).sort_values(['lineage_ID']).to_csv(args['processed_data'] + '/raw_data.csv', index=False)
-    # minusing(raw_data.reset_index(drop=True), ['length']).sort_values(['lineage_ID']).to_csv(args['processed_data'] + '/raw_data_tc.csv', index=False)
     
     without_outliers = args['processed_data'] + 'z_score_under_3'
     create_folder(without_outliers)
@@ -707,11 +705,8 @@ def main_sm(args):
         # Apply the four data points condition
         start_indices, end_indices, cycle_durations = start_indices[at_least_number], end_indices[at_least_number], cycle_durations[at_least_number]
         
-        # Number of raw data points per generation/cycle
-        data_points_per_cycle = np.array(np.rint(cycle_durations / .05) + np.ones_like(cycle_durations), dtype=int)
-        
         # add the cycle variables to the overall dataframe
-        cycle_variables_lineage, with_outliers = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, data_points_per_cycle, int(lineage_id), fit_the_lengths=True)
+        cycle_variables_lineage, with_outliers = linear_regression(raw_lineage, cycle_durations, start_indices, end_indices, int(lineage_id), fit_the_lengths=True)
 
         # # Check division times
         # interpolation = np.array([lb * np.exp(np.linspace(0, gt, int(np.round(gt * 20, 0)) + 1) * gr) for gt, gr, lb in zip(with_outliers['generationtime'], with_outliers['growth_rate'], with_outliers['length_birth'])])
@@ -818,7 +813,7 @@ def main():
             main_mm(args)
         
         print('*' * 200)
-        exit()
+        # exit()
         
 
 if __name__ == '__main__':

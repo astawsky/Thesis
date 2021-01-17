@@ -323,13 +323,13 @@ def cut_uneven_pairs(info):
     
     for dataset in np.unique(old_info['dataset']):
         for trap_id in np.unique(old_info[(old_info['dataset'] == dataset)]['trap_ID']):
-            # print(trap_id)
-            min_gen = min(max(old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'A') & (old_info['dataset'] == dataset)]['generation']),
-                          max(old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'B') & (old_info['dataset'] == dataset)]['generation']))
+            
+            min_gen = min(max(old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'A') & (old_info['dataset'] == dataset)]['generation'].values),
+                          max(old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'B') & (old_info['dataset'] == dataset)]['generation'].values))
             
             # What we will add
-            a_to_add = old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'A') & (old_info['dataset'] == dataset) & (old_info['generation'] <= min_gen)]
-            b_to_add = old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'B') & (old_info['dataset'] == dataset) & (old_info['generation'] <= min_gen)]
+            a_to_add = old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'A') & (old_info['dataset'] == dataset) & (old_info['generation'] <= min_gen)].copy()
+            b_to_add = old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'B') & (old_info['dataset'] == dataset) & (old_info['generation'] <= min_gen)].copy()
             
             # Check that they are the same size
             if len(a_to_add) != len(b_to_add):
@@ -345,6 +345,129 @@ def cut_uneven_pairs(info):
         new_info = new_info.reset_index(drop=True)
     
     return new_info
+
+
+""" Create and add the Control dataset """
+
+
+def add_control(old_info):
+    from random import sample, uniform
+    from itertools import combinations
+    
+    # Choose randomly combinations of trap IDs
+    possible_combos = sample(list(combinations(np.unique(old_info['trap_ID']), 2)), 85)
+    info = old_info.copy()
+
+    new_id = max(np.unique(old_info['trap_ID'])) + 1
+    for id_A, id_B in possible_combos:
+        
+        # Decide whether to use the A or B trace
+        s1 = 'A' if (uniform(0, 1) > .5) else 'B'
+        s2 = 'A' if (uniform(0, 1) > .5) else 'B'
+        
+        # define the trace
+        A_trace = old_info[(old_info['trap_ID'] == id_A) & (old_info['trace'] == s1)].copy()
+        # change the trap id to a new id number even though it is a copy of the other ID number
+        A_trace['trap_ID'] = new_id
+        # Change the dataset to Control
+        A_trace['dataset'] = 'CTRL'
+        # SO that it is in line with all the other analysis for the SM data
+        A_trace['trace'] = 'A'
+        # Add it to the information dataframe
+        info = pd.concat([info, A_trace], axis=0)
+    
+        # Do the same
+        B_trace = old_info[(old_info['trap_ID'] == id_B) & (old_info['trace'] == s2)].copy()
+        B_trace['trap_ID'] = new_id
+        # SO that it is in line with all the other analysis for the SM data
+        B_trace['trace'] = 'B'
+        B_trace['dataset'] = 'CTRL'
+        info = pd.concat([info, B_trace], axis=0)
+        
+        # print(A_trace, B_trace, sep='\n'*2, end='*' * 100)
+        # input()
+        
+        # create a new ID number to add in the next loop
+        new_id += 1
+
+    # Just for my preference even though we don't rely on indices
+    info = info.reset_index(drop=True)
+
+    return info
+
+def add_control_and_cut_extra_intervals(info):
+    from random import sample, uniform
+    from itertools import combinations
+
+    """
+    Here we will create the Control dataset and equal the length of pair lineages.
+    """
+
+    # For the Control
+    traces_to_choose_from = info['dataset'] + ', ' + info['trap_ID'].astype(str)
+
+    # Choose randomly combinations of trap IDs for the A and B traces
+    possible_combos = sample(list(combinations(np.unique(traces_to_choose_from), 2)), 85)
+
+    # start them as new IDs
+    new_id = max(np.unique(info['trap_ID'])) + 1
+
+    # loop through all traces paired together for Control
+    for combo in possible_combos:
+        # define the trace ID
+        dataset_a, id_a = combo[0].split(', ')
+        dataset_b, id_b = combo[1].split(', ')
+    
+        # define the trace
+        a_trace = info[(info['trap_ID'] == int(id_a)) & (info['trace'] == 'A') & (info['dataset'] == dataset_a)].copy()
+        # change the trap id to a new id number even though it is a copy of the other ID number
+        a_trace['trap_ID'] = new_id
+        # Change the dataset to Control
+        a_trace['dataset'] = 'C'
+        # Add it to the information dataframe
+        info = pd.concat([info, a_trace], axis=0)
+    
+        # Do the same
+        b_trace = info[(info['trap_ID'] == int(id_b)) & (info['trace'] == 'B') & (info['dataset'] == dataset_b)].copy()
+        b_trace['trap_ID'] = new_id
+        b_trace['dataset'] = 'C'
+        info = pd.concat([info, b_trace], axis=0)
+    
+        # create a new ID number to add in the next loop
+        new_id += 1
+
+    # Just for my preference even though we don't rely on indices
+    info = info.reset_index(drop=True)
+
+    # Correct for traces that aren't the same size
+    old_info = info.copy()
+    new_info = pd.DataFrame(columns=info.columns)
+
+    for dataset in np.unique(old_info['dataset']):
+        for trap_id in np.unique(old_info[(old_info['dataset'] == dataset)]['trap_ID']):
+            # print(trap_id)
+            min_gen = min(max(old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'A') & (old_info['dataset'] == dataset)]['interval']),
+                          max(old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'B') & (old_info['dataset'] == dataset)]['interval']))
+        
+            # What we will add
+            a_to_add = old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'A') & (old_info['dataset'] == dataset) & (old_info['interval'] <= min_gen)]
+            b_to_add = old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'B') & (old_info['dataset'] == dataset) & (old_info['interval'] <= min_gen)]
+        
+            # Check that they are the same size
+            if len(a_to_add) != len(b_to_add):
+                print(a_to_add)
+                print(b_to_add)
+                raise IOError()
+        
+            # save them to a new dataframe
+            new_info = new_info.append(a_to_add, ignore_index=True)
+            new_info = new_info.append(b_to_add, ignore_index=True)
+    
+        # good practice
+        new_info = new_info.reset_index(drop=True)
+
+    return new_info
+
 
 phenotypic_variables = ['div_then_fold', 'div_and_fold', 'fold_then_div', 'fold_growth', 'division_ratio', 'added_length', 'generationtime', 'length_birth', 'length_final', 'growth_rate']
 symbols = {
@@ -379,8 +502,8 @@ bounds = {
 }
 symbols_bounds = {symbols['physical_units'][key]: val for key, val in bounds.items()}
 wang_datasets = ['20090529_E_coli_Br_SJ119_Wang2010', '20090930_E_coli_MG1655_lexA3_Wang2010', '20090923_E_coli_MG1655_lexA3_Wang2010', '20090922_E_coli_MG1655_lexA3_Wang2010',
-                 '20090412_E_coli_Br_SJ108_Wang2010', '20090210_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090129_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090702_E_coli_MG1655_(CGSC_6300)_Wang2010',
-                 '20090131_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090525_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090512_E_coli_MG1655_(CGSC_6300)_Wang2010']
+                 '20090210_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090129_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090702_E_coli_MG1655_(CGSC_6300)_Wang2010',
+                 '20090131_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090525_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090512_E_coli_MG1655_(CGSC_6300)_Wang2010']  # '20090412_E_coli_Br_SJ108_Wang2010',
 tanouchi_datasets = ['MC4100_25C (Tanouchi 2015)', 'MC4100_27C (Tanouchi 2015)', 'MC4100_37C (Tanouchi 2015)']
 sm_datasets = ['1015_NL', '062718_SL', '071318_SL', '072818_SL_NL', '101218_SL_NL', 'Pooled_SM']
 mm_datasets = ['8-31-16 Continue']
