@@ -6,12 +6,10 @@ import seaborn as sns
 import numpy as np
 import os
 
-
 """ create a folder with the name of the string inputted """
 
 
 def create_folder(filename):
-    
     # create the folder if not created already
     try:
         # Create target Directory
@@ -26,17 +24,16 @@ def create_folder(filename):
 
 def get_time_averages_df(info, phenotypic_variables):  # MM
     
-
     # We keep the trap means here
     means_df = pd.DataFrame(columns=['lineage_ID', 'max_gen', 'generation'] + phenotypic_variables)
-
+    
     # specify a lineage
     for lin_id in info['lineage_ID'].unique():
         # print(lin_id)
-    
+        
         # the values of the lineage we get from physical units
         lineage = info[(info['lineage_ID'] == lin_id)].copy()
-    
+        
         # add its time-average
         to_add = {
             'lineage_ID': [lin_id for _ in np.arange(len(lineage))],
@@ -45,9 +42,9 @@ def get_time_averages_df(info, phenotypic_variables):  # MM
         to_add.update({param: [np.mean(lineage[param]) for _ in np.arange(len(lineage))] for param in phenotypic_variables})
         to_add = pd.DataFrame(to_add)
         means_df = means_df.append(to_add, ignore_index=True).reset_index(drop=True)
-
+    
     assert len(info) == len(means_df)
-
+    
     return means_df
 
 
@@ -55,7 +52,6 @@ def get_time_averages_df(info, phenotypic_variables):  # MM
 
 
 def shuffle_lineage_generations(df, mm):
-    
     if mm:
         
         # This is where we will keep all the data and later save as a csv
@@ -129,7 +125,6 @@ def shuffle_lineage_generations(df, mm):
 
 
 def limit_lineage_length(df, min_gens):
-    
     new_df = pd.DataFrame(columns=df.columns)
     for dataset in df['dataset'].unique():
         for trap_id in df[(df['dataset'] == dataset)]['trap_ID'].unique():
@@ -162,17 +157,17 @@ def trace_center_a_dataframe(df, mm):
     if mm:
         for lin_id in df.lineage_ID.unique():
             lineage = df[(df['lineage_ID'] == lin_id)].copy()
-    
+            
             new_lineage = lineage[phenotypic_variables] - lineage[phenotypic_variables].mean()
             new_lineage['lineage_ID'] = lin_id
             new_lineage['generation'] = np.arange(len(lineage))
-    
+            
             tc_df = tc_df.append(new_lineage, ignore_index=True)
     else:
         for dataset in df['dataset'].unique():
             for trap_id in df[df['dataset'] == dataset]['trap_ID'].unique():
                 for trace in ['A', 'B']:
-        
+                    
                     lineage = df[(df['dataset'] == dataset) & (df['trap_ID'] == trap_id) & (df['trace'] == trace)]
                     
                     new_lineage = lineage[phenotypic_variables] - lineage[phenotypic_variables].mean()
@@ -190,7 +185,6 @@ def trace_center_a_dataframe(df, mm):
 
 
 def shuffle_info_OLD(info):
-    
     # Give it a name, contains S, NL
     new_info = pd.DataFrame(columns=info.columns)
     
@@ -226,7 +220,6 @@ def shuffle_info_OLD(info):
 
 
 def shuffle_info(info, mm):
-    
     # Give it a name, contains S, NL
     new_info = pd.DataFrame(columns=info.columns)
     
@@ -288,7 +281,6 @@ def shuffle_info(info, mm):
 
 
 def seaborn_preamble():
-    
     # stylistic reasons
     sns.set_context('paper')
     sns.set_style("ticks", {'axes.grid': True})
@@ -298,7 +290,6 @@ def seaborn_preamble():
 
 
 def boot_pearson(x, y, number_of_straps):
-    
     from random import choices
     from scipy.stats import pearsonr
     x = np.array(x)
@@ -316,7 +307,6 @@ def boot_pearson(x, y, number_of_straps):
 
 
 def cut_uneven_pairs(info):
-    
     # Correct for traces that aren't the same size
     old_info = info.copy()
     new_info = pd.DataFrame(columns=info.columns)
@@ -357,7 +347,7 @@ def add_control(old_info):
     # Choose randomly combinations of trap IDs
     possible_combos = sample(list(combinations(np.unique(old_info['trap_ID']), 2)), 85)
     info = old_info.copy()
-
+    
     new_id = max(np.unique(old_info['trap_ID'])) + 1
     for id_A, id_B in possible_combos:
         
@@ -375,7 +365,7 @@ def add_control(old_info):
         A_trace['trace'] = 'A'
         # Add it to the information dataframe
         info = pd.concat([info, A_trace], axis=0)
-    
+        
         # Do the same
         B_trace = old_info[(old_info['trap_ID'] == id_B) & (old_info['trace'] == s2)].copy()
         B_trace['trap_ID'] = new_id
@@ -389,35 +379,36 @@ def add_control(old_info):
         
         # create a new ID number to add in the next loop
         new_id += 1
-
+    
     # Just for my preference even though we don't rely on indices
     info = info.reset_index(drop=True)
-
+    
     return info
+
 
 def add_control_and_cut_extra_intervals(info):
     from random import sample, uniform
     from itertools import combinations
-
+    
     """
     Here we will create the Control dataset and equal the length of pair lineages.
     """
-
+    
     # For the Control
     traces_to_choose_from = info['dataset'] + ', ' + info['trap_ID'].astype(str)
-
+    
     # Choose randomly combinations of trap IDs for the A and B traces
     possible_combos = sample(list(combinations(np.unique(traces_to_choose_from), 2)), 85)
-
+    
     # start them as new IDs
     new_id = max(np.unique(info['trap_ID'])) + 1
-
+    
     # loop through all traces paired together for Control
     for combo in possible_combos:
         # define the trace ID
         dataset_a, id_a = combo[0].split(', ')
         dataset_b, id_b = combo[1].split(', ')
-    
+        
         # define the trace
         a_trace = info[(info['trap_ID'] == int(id_a)) & (info['trace'] == 'A') & (info['dataset'] == dataset_a)].copy()
         # change the trap id to a new id number even though it is a copy of the other ID number
@@ -426,46 +417,46 @@ def add_control_and_cut_extra_intervals(info):
         a_trace['dataset'] = 'C'
         # Add it to the information dataframe
         info = pd.concat([info, a_trace], axis=0)
-    
+        
         # Do the same
         b_trace = info[(info['trap_ID'] == int(id_b)) & (info['trace'] == 'B') & (info['dataset'] == dataset_b)].copy()
         b_trace['trap_ID'] = new_id
         b_trace['dataset'] = 'C'
         info = pd.concat([info, b_trace], axis=0)
-    
+        
         # create a new ID number to add in the next loop
         new_id += 1
-
+    
     # Just for my preference even though we don't rely on indices
     info = info.reset_index(drop=True)
-
+    
     # Correct for traces that aren't the same size
     old_info = info.copy()
     new_info = pd.DataFrame(columns=info.columns)
-
+    
     for dataset in np.unique(old_info['dataset']):
         for trap_id in np.unique(old_info[(old_info['dataset'] == dataset)]['trap_ID']):
             # print(trap_id)
             min_gen = min(max(old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'A') & (old_info['dataset'] == dataset)]['interval']),
                           max(old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'B') & (old_info['dataset'] == dataset)]['interval']))
-        
+            
             # What we will add
             a_to_add = old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'A') & (old_info['dataset'] == dataset) & (old_info['interval'] <= min_gen)]
             b_to_add = old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'B') & (old_info['dataset'] == dataset) & (old_info['interval'] <= min_gen)]
-        
+            
             # Check that they are the same size
             if len(a_to_add) != len(b_to_add):
                 print(a_to_add)
                 print(b_to_add)
                 raise IOError()
-        
+            
             # save them to a new dataframe
             new_info = new_info.append(a_to_add, ignore_index=True)
             new_info = new_info.append(b_to_add, ignore_index=True)
-    
+        
         # good practice
         new_info = new_info.reset_index(drop=True)
-
+    
     return new_info
 
 
@@ -504,10 +495,15 @@ symbols_bounds = {symbols['physical_units'][key]: val for key, val in bounds.ite
 wang_datasets = ['20090529_E_coli_Br_SJ119_Wang2010', '20090930_E_coli_MG1655_lexA3_Wang2010', '20090923_E_coli_MG1655_lexA3_Wang2010', '20090922_E_coli_MG1655_lexA3_Wang2010',
                  '20090210_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090129_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090702_E_coli_MG1655_(CGSC_6300)_Wang2010',
                  '20090131_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090525_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090512_E_coli_MG1655_(CGSC_6300)_Wang2010']  # '20090412_E_coli_Br_SJ108_Wang2010',
+cgsc_6300_wang_exps = ['20090210_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090129_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090702_E_coli_MG1655_(CGSC_6300)_Wang2010',
+                       '20090131_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090525_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090512_E_coli_MG1655_(CGSC_6300)_Wang2010']
+lexA3_wang_exps = ['20090930_E_coli_MG1655_lexA3_Wang2010', '20090923_E_coli_MG1655_lexA3_Wang2010', '20090922_E_coli_MG1655_lexA3_Wang2010']
 tanouchi_datasets = ['MC4100_25C (Tanouchi 2015)', 'MC4100_27C (Tanouchi 2015)', 'MC4100_37C (Tanouchi 2015)']
 sm_datasets = ['1015_NL', '062718_SL', '071318_SL', '072818_SL_NL', '101218_SL_NL', 'Pooled_SM']
 mm_datasets = ['8-31-16 Continue']
 dataset_names = sm_datasets + mm_datasets + tanouchi_datasets + wang_datasets
 cmap = sns.color_palette('tab10')
+
+phenotypic_variables = ['div_and_fold', 'fold_growth', 'division_ratio', 'added_length', 'generationtime', 'length_birth', 'length_final', 'growth_rate']
 
 # '20090529_E_coli_Br_SJ119_Wang2010' '20090930_E_coli_MG1655_lexA3_Wang2010' '20090923_E_coli_MG1655_lexA3_Wang2010' '20090922_E_coli_MG1655_lexA3_Wang2010' '20090412_E_coli_Br_SJ108_Wang2010' '20090210_E_coli_MG1655_(CGSC_6300)_Wang2010' '20090129_E_coli_MG1655_(CGSC_6300)_Wang2010' '20090702_E_coli_MG1655_(CGSC_6300)_Wang2010' '20090131_E_coli_MG1655_(CGSC_6300)_Wang2010' '20090525_E_coli_MG1655_(CGSC_6300)_Wang2010' '20090512_E_coli_MG1655_(CGSC_6300)_Wang2010'

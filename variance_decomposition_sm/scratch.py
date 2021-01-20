@@ -2,7 +2,7 @@
 
 from AnalysisCode.global_variables import (
     symbols, units, dataset_names, create_folder, phenotypic_variables, shuffle_lineage_generations, cmap, seaborn_preamble, sm_datasets,
-    wang_datasets, get_time_averages_df, trace_center_a_dataframe
+    wang_datasets, get_time_averages_df, trace_center_a_dataframe, cgsc_6300_wang_exps, shuffle_info, lexA3_wang_exps
 )
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -14,7 +14,7 @@ from itertools import combinations
 """ Create all information dataframe where the lineage lengths are kept constant but the cells in the trace itself are randomly sampled from the population without replacement """
 
 
-def shuffle_info(info):
+def shuffle_info_sm(info):
     # Give it a name, contains S, NL
     new_info = pd.DataFrame(columns=info.columns)
     
@@ -92,7 +92,7 @@ def vd_with_trap(args):
                 pooled_pu_mean = pu[phenotypic_variables].mean()
             else:
                 pu = pd.read_csv(args['pu']).sort_values(['lineage_ID', 'generation']).reset_index(drop=True)
-                pu = shuffle_info(pu)
+                pu = shuffle_info_sm(pu)
                 pu = pu[pu['dataset'].isin(type_of_lineages)].copy()
         
                 # The pooled mean
@@ -153,6 +153,225 @@ def vd_with_trap(args):
         plt.close()
 
 
+""" vd conditioning on trap as well as lineage """
+
+
+def vd_with_trap_and_experiments(sm_datasets, save_fig):
+    total_df = pd.DataFrame()
+    for data_origin in sm_datasets[:-1]:
+        print(data_origin)
+        pu = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Datasets/' + data_origin + '/ProcessedData/physical_units.csv'
+        # pu = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Datasets/' + data_origin + '/ProcessedData/z_score_under_3/physical_units_without_outliers.csv'
+
+        pu = pd.read_csv(pu)
+        pu['experiment'] = data_origin
+        
+        total_df = total_df.append(pu, ignore_index=True)
+        
+        # print(pu)
+        # print(total_df)
+        # exit()
+
+    # for data_origin in sm_datasets:
+    #     pu = os.path.dirname(current_dir) + '/Datasets/' + data_origin + '/ProcessedData/physical_units.csv'
+    #     # pu = os.path.dirname(current_dir) + '/Datasets/' + data_origin + '/ProcessedData/z_score_under_3/physical_units_without_outliers.csv'
+    #
+    for type_of_lineages, lin_type in zip([['SL'], ['NL'], ['SL', 'NL']], ['SL', 'NL', 'SL and NL']):
+        print('type_of_lineages:', type_of_lineages)
+        output_df = pd.DataFrame(columns=['variable', 'intrinsic', 'environment', 'lineage', 'kind'])
+        
+        # Show what datasets it does not have
+        if lin_type not in total_df.dataset.unique() and lin_type != 'SL and NL':
+            print('does not have {}'.format(lin_type))
+            continue
+        
+        for kind in ['Trace', 'Artificial']:
+            if kind == 'Trace':
+                # pu = pd.read_csv(args['pu']).sort_values(['lineage_ID', 'generation']).reset_index(drop=True)
+                pu = total_df[total_df['dataset'].isin(type_of_lineages)].copy()
+        
+                # The pooled mean
+                pooled_pu_mean = pu[phenotypic_variables].mean()
+            else:
+                # pu = pd.read_csv(args['pu']).sort_values(['lineage_ID', 'generation']).reset_index(drop=True)
+                pu = shuffle_info_sm(total_df)
+                pu['experiment'] = total_df['experiment'].copy().sort_values().values
+                pu = pu[pu['dataset'].isin(type_of_lineages)].copy()
+        
+                # The pooled mean
+                pooled_pu_mean = pu[phenotypic_variables].mean()
+    
+            #
+            delta = pd.DataFrame(columns=phenotypic_variables)
+            diff = pd.DataFrame(columns=phenotypic_variables)
+            trap = pd.DataFrame(columns=phenotypic_variables)
+            expert = pd.DataFrame(columns=phenotypic_variables)
+            
+            for exp in pu.experiment.unique():
+                print('experiment', exp)
+                e_cond = (pu['experiment'] == exp)
+                exp_lins = pu[e_cond].copy()
+                exp_mean = exp_lins[phenotypic_variables].mean()
+                for trap_id in pu[pu['experiment'] == exp].trap_ID.unique():
+                    t_cond = (pu['trap_ID'] == trap_id) & e_cond
+                    trap_lins = pu[t_cond].copy()
+                    trap_means = trap_lins[phenotypic_variables].mean()
+                    
+                    for trace in ['A', 'B']:
+                        lin_cond = (trap_lins['trace'] == trace)
+                        lin = trap_lins[lin_cond].copy()
+                        
+                        expert = expert.append(lin[phenotypic_variables].count() * ((exp_mean - pooled_pu_mean) ** 2), ignore_index=True)
+                        trap = trap.append(lin[phenotypic_variables].count() * ((trap_means - exp_mean) ** 2), ignore_index=True)
+                        diff = diff.append(lin[phenotypic_variables].count() * ((lin[phenotypic_variables].mean() - trap_means) ** 2), ignore_index=True)
+                        delta = delta.append(((lin[phenotypic_variables] - lin[phenotypic_variables].mean()) ** 2).sum(), ignore_index=True)
+                    
+            #
+            # exp_var = expert.sum() / (pu[phenotypic_variables].count())
+            # delta_var = delta.sum() / (pu[phenotypic_variables].count())
+            # diff_var = diff.sum() / (pu[phenotypic_variables].count())
+            # tmean_var = trap.sum() / (pu[phenotypic_variables].count())
+            exp_var = expert.sum() / (pu[phenotypic_variables].count() - 1)
+            delta_var = delta.sum() / (pu[phenotypic_variables].count() - 1)
+            diff_var = diff.sum() / (pu[phenotypic_variables].count() - 1)
+            tmean_var = trap.sum() / (pu[phenotypic_variables].count() - 1)
+
+            # print((np.abs(pu[phenotypic_variables].var() - (exp_var[phenotypic_variables] + delta_var[phenotypic_variables] + diff_var[phenotypic_variables] + tmean_var[phenotypic_variables])) < .0000001))
+            # exit()
+
+            # Make sure it is a true decomposition
+            assert (np.abs(pu[phenotypic_variables].var() - (exp_var[phenotypic_variables] + delta_var[phenotypic_variables] + diff_var[phenotypic_variables] + tmean_var[phenotypic_variables])) < .0000001).all()
+
+            # Add it to the thing
+            for variable in phenotypic_variables:
+                output_df = output_df.append({
+                    'variable': symbols['time_averages'][variable],
+                    'Exp+Env': (exp_var[variable] + tmean_var[variable]) / pu[variable].var(),
+                    'Exp+Env+Lin': (exp_var[variable] + tmean_var[variable] + diff_var[variable]) / pu[variable].var(),
+                    # This is so we can graph it nicely
+                    'Exp': (exp_var[variable]) / pu[variable].var() if kind == 'Trace' else (exp_var[variable] + tmean_var[variable] + diff_var[variable]) / pu[variable].var(),
+                    'kind': kind
+                }, ignore_index=True)
+        
+        seaborn_preamble()
+        fig, ax = plt.subplots()
+        for color, y in zip([cmap[0], cmap[1], cmap[2]], ['Exp+Env+Lin', 'Exp+Env', 'Exp']):
+            palette = {"Trace": color, "Artificial": 'red'}
+            sns.barplot(x='variable', y=y, data=output_df, hue='kind', palette=palette, edgecolor='black')
+
+        handles, labels = ax.get_legend_handles_labels()
+        labels[0] = labels[0] + ': Exp'
+        labels[1] = labels[1] + ': Exp'
+        labels[2] = labels[2] + ': Env'
+        labels[3] = labels[3] + ': Env'
+        labels[4] = labels[4] + ': Lin'
+        labels[5] = labels[5] + ': Lin'
+        plt.legend(handles, labels, title='')
+        
+        plt.title(lin_type)
+        plt.xlabel('')
+        plt.ylabel('Variance Decomposition')
+        plt.ylim([0, .45])
+        plt.tight_layout()
+        plt.savefig(save_fig+'/'+lin_type, dpi=300)
+        # plt.show()
+        plt.close()
+
+
+""" vd conditioning on trap as well as lineage """
+
+
+def vd_with_lineage_and_experiments(mm_datasets, save_fig, lin_type):
+    total_df = pd.DataFrame()
+    for data_origin in mm_datasets:
+        print(data_origin)
+        pu = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Datasets/' + data_origin + '/ProcessedData/z_score_under_3/physical_units_without_outliers.csv'
+
+        pu = pd.read_csv(pu)
+        pu['experiment'] = data_origin
+        
+        total_df = total_df.append(pu, ignore_index=True)
+        
+    output_df = pd.DataFrame(columns=['variable', 'intrinsic', 'environment', 'lineage', 'kind'])
+    
+    for kind in ['Trace', 'Artificial']:
+        print(kind)
+        if kind == 'Trace':
+            # pu = pd.read_csv(args['pu']).sort_values(['lineage_ID', 'generation']).reset_index(drop=True)
+            pu = total_df.copy()
+    
+            # The pooled mean
+            pooled_pu_mean = pu[phenotypic_variables].mean()
+        else:
+            # pu = pd.read_csv(args['pu']).sort_values(['lineage_ID', 'generation']).reset_index(drop=True)
+            pu = shuffle_info(total_df, mm=True)
+            # Shuffle this one manually
+            pu['experiment'] = total_df['experiment'].copy().sort_values().values
+            pu = pu.copy()
+    
+            # The pooled mean
+            pooled_pu_mean = pu[phenotypic_variables].mean()
+
+        #
+        delta = pd.DataFrame(columns=phenotypic_variables)
+        line = pd.DataFrame(columns=phenotypic_variables)
+        expert = pd.DataFrame(columns=phenotypic_variables)
+        
+        for exp in pu.experiment.unique():
+            e_cond = (pu['experiment'] == exp)
+            exp_lins = pu[e_cond].copy()
+            exp_mean = exp_lins[phenotypic_variables].mean()
+            for lin_id in pu[pu['experiment'] == exp].lineage_ID.unique():
+                l_cond = (pu['lineage_ID'] == lin_id) & e_cond
+                lin = pu[l_cond].copy()
+                
+                expert = expert.append(lin[phenotypic_variables].count() * ((exp_mean - pooled_pu_mean) ** 2), ignore_index=True)
+                line = line.append(lin[phenotypic_variables].count() * ((lin[phenotypic_variables].mean() - exp_mean) ** 2), ignore_index=True)
+                delta = delta.append(((lin[phenotypic_variables] - lin[phenotypic_variables].mean()) ** 2).sum(), ignore_index=True)
+                
+        #
+        exp_var = expert.sum() / (pu[phenotypic_variables].count() - 1)
+        delta_var = delta.sum() / (pu[phenotypic_variables].count() - 1)
+        lin_var = line.sum() / (pu[phenotypic_variables].count() - 1)
+        
+        # Make sure it is a true decomposition
+        assert (np.abs(pu[phenotypic_variables].var() - (exp_var[phenotypic_variables]+delta_var[phenotypic_variables]+lin_var[phenotypic_variables])) < .0000001).all()
+        
+        # Add it to the thing
+        for variable in phenotypic_variables:
+            output_df = output_df.append({
+                'variable': symbols['time_averages'][variable],
+                'Exp+Lin': (exp_var[variable] + lin_var[variable]) / pu[variable].var(),
+                # This is so we can graph it nicely
+                'Exp': (exp_var[variable]) / pu[variable].var() if kind == 'Trace' else (exp_var[variable] + lin_var[variable]) / pu[variable].var(),
+                'kind': kind
+            }, ignore_index=True)
+    
+    seaborn_preamble()
+    fig, ax = plt.subplots()
+    for color, y in zip([cmap[0], cmap[1]], ['Exp+Lin', 'Exp']):
+        palette = {"Trace": color, "Artificial": 'red'}
+        sns.barplot(x='variable', y=y, data=output_df, hue='kind', palette=palette, edgecolor='black')
+
+    handles, labels = ax.get_legend_handles_labels()
+    labels[0] = labels[0] + ': Exp'
+    labels[1] = labels[1] + ': Exp'
+    # labels[2] = labels[2] + ': Env'
+    # labels[3] = labels[3] + ': Env'
+    labels[2] = labels[2] + ': Lin'
+    labels[3] = labels[3] + ': Lin'
+    plt.legend(handles, labels, title='')
+    
+    plt.title(lin_type)
+    plt.xlabel('')
+    plt.ylabel('Variance Decomposition')
+    # plt.ylim([0, .45])
+    plt.tight_layout()
+    plt.savefig(save_fig+'/'+lin_type, dpi=300)
+    plt.show()
+    plt.close()
+
+
 if __name__ == '__main__':
     import argparse
     import os
@@ -174,9 +393,18 @@ if __name__ == '__main__':
     input_args = parser.parse_args()
     
     kind_of_vd = ['total_length', 'per_gen', 'trap_controlled']
+
+    # vd_with_lineage_and_experiments(lexA3_wang_exps, os.path.dirname(os.path.abspath(__file__)), lin_type='lexA3_wang_exps')
+    # exit()
+    #
+    # vd_with_lineage_and_experiments(cgsc_6300_wang_exps, os.path.dirname(os.path.abspath(__file__)), lin_type='cgsc_6300_wang_exps')
+    # exit()
+
+    vd_with_trap_and_experiments(sm_datasets, os.path.dirname(os.path.abspath(__file__)))
+    exit()
     
     # Do all the Mother and Sister Machine data
-    for data_origin in sm_datasets:#['Pooled_SM']:  # wang_datasets:  # input_args.dataset_names:
+    for data_origin in sm_datasets[:-1]:#['Pooled_SM']:  # wang_datasets:  # input_args.dataset_names:
         print(data_origin)
         
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -198,4 +426,6 @@ if __name__ == '__main__':
             'tc': processed_data + 'z_score_under_3/trace_centered_without_outliers.csv' if data_origin in wang_datasets else processed_data + 'trace_centered.csv'
         }
         
-        vd_with_trap(args)
+        # vd_with_trap(args)
+
+        vd_with_trap_and_experiments(sm_datasets, current_dir + '/' + data_origin)

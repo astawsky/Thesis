@@ -175,7 +175,6 @@ def main(args):
     relevant = tas.sort_values('trap_ID')[[var1 + '_A', var2 + '_B']].dropna()
 
     x, y = relevant[var1 + '_A'].values, relevant[var2 + '_B'].values
-    
 
     # Calculate the two types of correlations
     corr = pearsonr(x, y)[0]

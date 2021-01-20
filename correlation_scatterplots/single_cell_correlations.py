@@ -2,12 +2,12 @@
 
 import pandas as pd
 import numpy as np
-from scipy.stats import linregress, pearsonr
+from scipy.stats import linregress, pearsonr, spearmanr
 import pingouin as pg
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import seaborn as sns
-from AnalysisCode.global_variables import phenotypic_variables, create_folder, symbols, units, dataset_names, get_time_averages_df, sm_datasets, wang_datasets, tanouchi_datasets
+from AnalysisCode.global_variables import phenotypic_variables, create_folder, symbols, units, dataset_names, get_time_averages_df, sm_datasets, wang_datasets, tanouchi_datasets, seaborn_preamble
 
 
 def previous_division_scatterplots(df, label, var_prev, var_after, suffix=''):
@@ -16,15 +16,6 @@ def previous_division_scatterplots(df, label, var_prev, var_after, suffix=''):
     after_array = np.concatenate([
         df[(df['lineage_ID'] == lineage_id)].sort_values('generation')[var_after].values[1:] for lineage_id in df.lineage_ID.unique()]).flatten()
     
-    # prev_array = prev_array1[(np.abs(zscore(prev_array1)) < 4) & (np.abs(zscore(after_array1)) < 4)]
-    # after_array = after_array1[(np.abs(zscore(prev_array1)) < 4) & (np.abs(zscore(after_array1)) < 4)]
-    
-    # # Remove outliers
-    # for ar in [prev_array, after_array]:
-    #     before = len(ar)
-    #     ar = ar[np.abs(zscore(ar)) < 3]
-    #     after = len(ar)
-    #     print('percentage that stays after removing all values farther than the fourth standard deviation:', after / before)
     
     pcorr = str(pg.corr(prev_array, after_array, method='spearman')['r'].loc['spearman'])[:4]
     slope = str(linregress(prev_array, after_array)[0])[:4]
@@ -34,64 +25,18 @@ def previous_division_scatterplots(df, label, var_prev, var_after, suffix=''):
     
     sns.set_context('talk')
     
-    fig, ax = plt.subplots(figsize=[3.5, 3.5], tight_layout=True)
+    fig, ax = plt.subplots(figsize=[5, 5], tight_layout=True)
     
     sns.regplot(x=prev_array, y=after_array, data=df, ax=ax, line_kws={'color': 'red'}, scatter_kws={'alpha': .1, 'color': 'grey'})
-    ax.annotate(r'$\rho = $' + pcorr + '\n' + r'$\beta = {}$'.format(slope), xy=(.5, .72), xycoords=ax.transAxes, fontsize=13, ha='center', va='bottom', color='red',
+    ax.annotate(r'$\rho = $' + pcorr + '\n' + r'$\beta = {}$'.format(slope), xy=(.5, .92), xycoords=ax.transAxes, fontsize=13, ha='center', va='bottom', color='red',
                 bbox=dict(boxstyle='round,pad=0.2', fc='yellow', alpha=0.7))
     
     plt.grid(True)
     plt.xlabel(symbols[label][var_prev] + r'$_{n-1}$' + ' ' + prev_units)
     plt.ylabel(symbols[label][var_after] + r'$_{n}$' + ' ' + after_units)
     plt.savefig(label + ' ' + var_prev + ' ' + var_after + ' ' + suffix + '.png', dpi=300)
-    # plt.show()
+    plt.show()
     plt.close()
-
-
-# def previous_division_scatterplots(df, label, var_prev, var_after, suffix=''):
-#     prev_array1 = np.concatenate([
-#         df[(df['dataset'] == dataset) & (df['trap_ID'] == trap_id) & (df['trace'] == trace)].sort_values('generation')[var_prev].values[:-1] for dataset in df.dataset.unique() for trap_id in
-#         df[df['dataset'] == dataset].trap_ID.unique() for trace
-#         in ["A", "B"]
-#     ]).flatten()
-#     after_array1 = np.concatenate([
-#         df[(df['dataset'] == dataset) & (df['trap_ID'] == trap_id) & (df['trace'] == trace)].sort_values('generation')[var_after].values[1:] for dataset in df.dataset.unique() for trap_id in
-#         df[df['dataset'] == dataset].trap_ID.unique() for trace
-#         in ["A", "B"]
-#     ])
-#
-#     prev_array = prev_array1[(np.abs(zscore(prev_array1)) < 4) & (np.abs(zscore(after_array1)) < 4)]
-#     after_array = after_array1[(np.abs(zscore(prev_array1)) < 4) & (np.abs(zscore(after_array1)) < 4)]
-#
-#     # # Remove outliers
-#     # for ar in [prev_array, after_array]:
-#     #     before = len(ar)
-#     #     ar = ar[np.abs(zscore(ar)) < 3]
-#     #     after = len(ar)
-#     #     print('percentage that stays after removing all values farther than the fourth standard deviation:', after / before)
-#
-#     print('done with both')
-#
-#     pcorr = str(pearsonr(prev_array, after_array)[0])[:5]
-#     slope = str(linregress(prev_array, after_array)[0])[:4]
-#
-#     prev_units = units[var_prev] if label != 'trace_centered' else ''
-#     after_units = units[var_after] if label != 'trace_centered' else ''
-#
-#     sns.set_context('talk')
-#
-#     fig, ax = plt.subplots(figsize=[3.5, 3.5], tight_layout=True)
-#
-#     sns.regplot(x=prev_array, y=after_array, data=df, ax=ax, line_kws={'color': 'red'}, scatter_kws={'alpha': .1, 'color': 'grey'})
-#     ax.annotate(r'$\rho = $' + pcorr + '\n' + r'$\beta = {}$'.format(slope), xy=(.5, .72), xycoords=ax.transAxes, fontsize=13, ha='center', va='bottom', color='red',
-#                 bbox=dict(boxstyle='round,pad=0.2', fc='yellow', alpha=0.7))
-#
-#     plt.grid(True)
-#     plt.xlabel(symbols[label][var_prev] + r'$_{n-1}$' + ' ' + prev_units)
-#     plt.ylabel(symbols[label][var_after] + r'$_{n}$' + ' ' + after_units)
-#     plt.savefig(label + ' ' + var_prev + ' ' + var_after + ' ' + suffix + '.png', dpi=300)
-#     # plt.show()
-#     plt.close()
 
 
 def main(args):
@@ -101,6 +46,12 @@ def main(args):
         
         latex_symbols = {variable: symbols[label][variable] for variable in variables}
         unit_symbols = {variable: units[variable] if label != 'trace_centered' else '' for variable in variables}
+
+        # Take out the outliers
+        df[variables] = df[variables].where(
+            np.abs(df[variables] - df[variables].mean()) < (3 * df[variables].std()),
+            other=np.nan
+        )
         
         # Replace the phenotypic variables with their latex counterparts
         df = df[variables].copy().rename(columns=latex_symbols)
@@ -110,7 +61,7 @@ def main(args):
     
             sns.set_context('talk')
             
-            fig, axes = plt.subplots(figsize=[3.5, 3.5], tight_layout=True)
+            fig, axes = plt.subplots(figsize=[5, 5], tight_layout=True)
             
             sym1 = list(latex_symbols.values())[0]
             sym2 = list(latex_symbols.values())[1]
@@ -140,13 +91,15 @@ def main(args):
                 'r_value': r_value
             }})
             
-            axes.scatter(relevant[sym2], relevant[sym1], color='gray', marker='o', alpha=.1)
-            # sns.kdeplot(x=relevant[sym2], y=relevant[sym1], ax=axes, color='grey')
-            axes.plot(np.unique(relevant[sym2]), [intercept + slope * vel for vel in np.unique(relevant[sym2])])
+            # axes.scatter(relevant[sym2], relevant[sym1], color='gray', marker='o', alpha=.1)
+            # # sns.kdeplot(x=relevant[sym2], y=relevant[sym1], ax=axes, color='grey')
+            # axes.plot(np.unique(relevant[sym2]), [intercept + slope * vel for vel in np.unique(relevant[sym2])])
+
+            sns.regplot(data=relevant, x=sym2, y=sym1, line_kws={'color': 'black', 'ls': '--', 'lw': 2})
             
             # sns.regplot(x=df[sym2], y=df[sym1], data=df, ax=axes, line_kws={'color': 'red'}, scatter_kws={'alpha': .1, 'color': 'grey'})
             
-            axes.annotate(r'$\rho = $' + pcorr + '\n' + r'$\beta = {}$'.format(str(slope)[:4]), xy=(.5, .79), xycoords=axes.transAxes, fontsize=13, ha='center', va='bottom',
+            axes.annotate(r'$\rho = $' + pcorr + '\n' + r'$\beta = {}$'.format(str(slope)[:4]), xy=(.5, .92), xycoords=axes.transAxes, fontsize=13, ha='center', va='bottom',
                           color='red',
                           bbox=dict(boxstyle='round,pad=0.2', fc='yellow', alpha=0.7))
             axes.set_ylabel(sym1 + ' ' + list(unit_symbols.values())[0])
@@ -217,42 +170,6 @@ def main(args):
             plt.savefig(args['Figures'] + '/{}/together/'.format(label) + '{}{}.png'.format(args['data_origin'], suffix), dpi=300)
             # plt.show()
             plt.close()
-    
-    # def heatmap_analogs(df, label, variables=phenotypic_variables, suffix=''):
-    #
-    #     sns.set_context('paper')
-    #     sns.set_style("ticks", {'axes.grid': True})
-    #
-    #     latex_symbols = {variable: symbols[label][variable] for variable in variables}
-    #
-    #     df = df[variables].copy().rename(columns=latex_symbols)
-    #
-    #     to_plot = pg.pairwise_corr(df, method='pearson')
-    #
-    #     # reformat the results into a dataframe we can use for the heatmap
-    #     to_plot_df = pd.DataFrame(columns=to_plot.X.unique(), index=to_plot.Y.unique(), dtype=float)
-    #     repeats = []
-    #     for x in to_plot.X.unique():
-    #         for y in to_plot.Y.unique():
-    #             if x != y and y not in repeats:
-    #                 # Add the results
-    #                 to_plot_df[x].loc[y] = to_plot[(to_plot['X'] == x) & (to_plot['Y'] == y)]['r'].values[0]
-    #
-    #         repeats.append(x)
-    #
-    #     # The mask to show only the lower triangle in the heatmap
-    #     mask = np.ones_like(to_plot_df)
-    #     mask[np.tril_indices_from(mask)] = False
-    #
-    #     fig, ax = plt.subplots(tight_layout=True, figsize=[7, 5.5])  #  * (2 / 3) on both
-    #
-    #     sns.heatmap(to_plot_df, annot=True, square=True, vmin=-1, vmax=1, mask=mask, center=0)
-    #     plt.title(args['data_origin'] + ', ' + label)
-    #     # plt.tight_layout()
-    #     plt.savefig(args['Figures'] + '/{}/together/'.format(label) + 'heatmap_{}{}.png'.format(args['data_origin'], suffix), dpi=300)
-    #     # plt.savefig('{}/{}/{}{}.png'.format(args.figs_location, args.scch, label, suffix), dpi=300)
-    #     # plt.show()
-    #     plt.close()
         
     # for the regression parameters
     regression = {}
@@ -263,6 +180,34 @@ def main(args):
     
     # Calculate this
     time_averages = get_time_averages_df(physical_units, phenotypic_variables)[['lineage_ID', 'max_gen']+phenotypic_variables].drop_duplicates().sort_values(['lineage_ID'])
+
+    # ##
+    #
+    # time_averages[phenotypic_variables] = time_averages[phenotypic_variables].where(
+    #     np.abs(time_averages[phenotypic_variables] - time_averages[phenotypic_variables].mean()) < (3 * time_averages[phenotypic_variables].std()),
+    #     other=np.nan
+    # )
+    # time_averages = time_averages[['generationtime', 'growth_rate']].dropna()
+    #
+    # # Calculate the two types of correlations
+    # corr = pearsonr(time_averages['generationtime'].values, time_averages['growth_rate'].values)[0]
+    # spear = spearmanr(time_averages['generationtime'].values, time_averages['growth_rate'].values)[0]
+    #
+    # fake_x = np.linspace(np.min(time_averages['generationtime'].values), np.max(time_averages['generationtime'].values))
+    #
+    # seaborn_preamble()
+    # fig, ax = plt.subplots(tight_layout=True, figsize=[5, 5])
+    # sns.scatterplot(data=time_averages, x='generationtime', y='growth_rate')
+    # plt.plot(fake_x, np.log(2) / fake_x, color='black', ls='--', label='log(2)')
+    # ax.annotate(r'$\rho=${:.2}, {:.2}, n={}'.format(corr, spear, len(time_averages)), xy=(.5, .92), xycoords=ax.transAxes, fontsize=13, ha='center', va='bottom', color='red',
+    #             bbox=dict(boxstyle='round,pad=0.2', fc='yellow', alpha=0.7))
+    # plt.xlabel(symbols['time_averages']['generationtime'])
+    # plt.ylabel(symbols['time_averages']['growth_rate'])
+    # plt.savefig('pooled sm same cell tau alpha ln2 no outliers'.format(args['data_origin']), dpi=300)
+    # plt.show()
+    # plt.close()
+    #
+    # exit()
     
     for kind, dataframe in zip(['physical_units', 'trace_centered', 'time_averages'], [physical_units, trace_centered, time_averages]):
         print(kind)
@@ -270,21 +215,21 @@ def main(args):
         # # Plot all the variables -- Heatmap
         # heatmap_analogs(dataframe, kind, variables=phenotypic_variables, suffix='')
 
-        # Plot all the variables -- Scatter Regression Plot
-        put_all_graphs_into_a_big_grid(dataframe, kind, variables=phenotypic_variables, suffix='')
+        # # Plot all the variables -- Scatter Regression Plot
+        # put_all_graphs_into_a_big_grid(dataframe, kind, variables=phenotypic_variables, suffix='')
 
-    #     # Scatter Regression Plots for each variable pair individually
-    #     repeats = []
-    #     for var1 in phenotypic_variables:
-    #         for var2 in phenotypic_variables:
-    #             if var2 in repeats or var2 == var1:
-    #                 continue
-    #
-    #             # the separate figures
-    #             regression = put_all_graphs_into_a_big_grid(dataframe, kind, variables=[var1, var2], suffix='', reg_dict=regression)
-    #
-    #         # So that we don't repeat the scatter plots
-    #         repeats.append(var1)
+        # Scatter Regression Plots for each variable pair individually
+        repeats = []
+        for var1 in phenotypic_variables:
+            for var2 in phenotypic_variables:
+                if var2 in repeats or var2 == var1:
+                    continue
+
+                # the separate figures
+                regression = put_all_graphs_into_a_big_grid(dataframe, kind, variables=[var1, var2], suffix='', reg_dict=regression)
+
+            # So that we don't repeat the scatter plots
+            repeats.append(var1)
     #
     # # regression dataframe for analysis
     # pd.DataFrame.from_dict(regression, "index").to_csv('regression_dataframes/'+args['data_origin']+'_regressions.csv', index=False)
@@ -330,16 +275,12 @@ if __name__ == '__main__':
     
     parser.add_argument('-dataset_names', '--dataset_names', metavar='', nargs="+", help='What is the label for this data for the Data and Figures folders?', required=False,
                         default=dataset_names)
-    # parser.add_argument('-kinds_of_correlations', '--kinds_of_correlations', metavar='', nargs="+", help='Calculate pearson and/or variance decomposition correlation?', required=False,
-    #                     default=['decomposition', 'pearson'])
-    # parser.add_argument('-variable_mapping', '--variable_mapping', metavar='', nargs="+", help='Calculate for what variables in the figure?', required=False,
-    #                     default=dict(zip(['main_variables', 'phenotypic_variables'], [main_variables, phenotypic_variables])))
     
     # Finalize the arguments
     input_args = parser.parse_args()
     
     # Do all the Mother and Sister Machine data
-    for data_origin in input_args.dataset_names[1:]:
+    for data_origin in ['Pooled_SM']:#input_args.dataset_names:
         print(data_origin)
         
         filepath = os.path.dirname(os.path.abspath(__file__))
@@ -369,24 +310,6 @@ if __name__ == '__main__':
             create_folder(args['Figures'] + '/{}/together'.format(lll))
             create_folder(args['Figures'] + '/{}/separate'.format(lll))
             create_folder(args['Figures'] + '/{}/separate/{}'.format(lll, data_origin))
-            
-        # parser = argparse.ArgumentParser(description='Process Mother Machine Lineage Data.')
-        # parser.add_argument('-data_origin', '--data_origin', metavar='', type=str, help='What is the label for this data for the Data and Figures folders?', required=False, default=data_origin)
-        # parser.add_argument('-save', '--save_folder', metavar='', type=str, help='Where to save the dataframes.',
-        #                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/ProcessedData/' + data_origin)
-        # parser.add_argument('-pu', '--pu', metavar='', type=str, help='What to name the physical units dataframe.',
-        #                     required=False, default='physical_units.csv')
-        # parser.add_argument('-tc', '--tc', metavar='', type=str, help='What to name the trace-centered dataframe.',
-        #                     required=False, default='trace_centered.csv')
-        # # parser.add_argument('-MM', '--MM', metavar='', type=bool, help='Is this MM data?', required=False, default=True)
-        # parser.add_argument('-scc', '--scc', metavar='', type=str, help='Where the single cell correlation figures are saved.',
-        #                     required=False, default='single_cell_correlations')
-        # parser.add_argument('-scch', '--scch', metavar='', type=str, help='Where the single cell correlation heatmap figures are saved.',
-        #                     required=False, default='single_cell_correlations_heatmaps')
-        # parser.add_argument('-f', '--figs_location', metavar='', type=str, help='Where the figures are saved.',
-        #                     required=False, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Figures/'+data_origin)
-        #
-        # args = parser.parse_args()
         
         main(args)
         
