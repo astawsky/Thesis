@@ -15,7 +15,6 @@ from itertools import combinations
 
 
 def vd_with_trap(args):
-
     pu = pd.read_csv(args['pu']).sort_values(['lineage_ID', 'generation']).reset_index(drop=True)
     tc = pd.read_csv(args['tc']).sort_values(['lineage_ID', 'generation']).reset_index(drop=True)
     
@@ -24,7 +23,7 @@ def vd_with_trap(args):
     var_delta = pd.DataFrame(columns=phenotypic_variables)
     var_diff = pd.DataFrame(columns=phenotypic_variables)
     var_tmean = pd.DataFrame(columns=phenotypic_variables)
-
+    
     array1_delta = pd.DataFrame(columns=phenotypic_variables)
     array1_diff = pd.DataFrame(columns=phenotypic_variables)
     array1_trap = pd.DataFrame(columns=phenotypic_variables)
@@ -48,7 +47,7 @@ def vd_with_trap(args):
     
     print(delta_var)
     print(tc[phenotypic_variables].var())
-    
+
 
 """ Plot the variance/covariance decompositions and correlations between phenotypic variables as pyramid heatmaps """
 
@@ -220,7 +219,6 @@ def ebp_per_gen(df_dict, folder_name):
 
 
 def ergodicity_per_variable(eb_df, variable_pairs):
-    
     # set a style on seaborn module
     sns.set_context('paper')
     sns.set_style("ticks", {'axes.grid': True})
@@ -659,7 +657,7 @@ if __name__ == '__main__':
     # exit()
     
     # Do all the Mother and Sister Machine data
-    for data_origin in input_args.dataset_names:  # wang_datasets:  # input_args.dataset_names:
+    for data_origin in ['8-31-16 Continue']:  # input_args.dataset_names:  # wang_datasets:  # input_args.dataset_names:
         print(data_origin)
         
         create_folder(data_origin)
@@ -688,9 +686,9 @@ if __name__ == '__main__':
             'per_gen_figs': ebp_folder + '/{}/per_gen_figs/'.format(data_origin),
             'trap_controlled_figs': ebp_folder + '/{}/trap_controlled_figs/'.format(data_origin),
         }
-
-        vd_with_trap(args)
-        exit()
+        
+        # vd_with_trap(args)
+        # exit()
         
         # ebp_with_trap(args)
         #
@@ -712,18 +710,51 @@ if __name__ == '__main__':
         # kinds of vds
         total_length_vd = pd.read_csv(args['total_length_vd'])
         
-        pyramid_heatmaps(args, annot=True, input_args=input_args)
+        # pyramid_heatmaps(args, annot=True, input_args=input_args)
         
         #
-        pairs = list(list(combinations(['length_birth', 'generationtime', 'growth_rate'], 2)))  # 'fold_growth', 'division_ratio',
-        pairs = pairs + [(variable, variable) for variable in list(np.unique(pairs))]  # Add the variances to the covariances : OPTIONAL!
-        print(pairs)
-        ergodicity_per_variable(total_length_vd, pairs)
+        # pairs = list(list(combinations(['length_birth', 'generationtime', 'growth_rate'], 2)))  # 'fold_growth', 'division_ratio',
+        # pairs = pairs + [(variable, variable) for variable in list(np.unique(pairs))]  # Add the variances to the covariances : OPTIONAL!
+        # print(pairs)
+        # ergodicity_per_variable(total_length_vd, pairs)
+        
+        print(total_length_vd)
+        print(total_length_vd.columns)
+        
+        total_length_vd = total_length_vd.append({
+            'param1': '',
+            'param2': '',
+            'variable': 'between1',
+            'n': 0,
+            'generation': 0,
+            'gamma_ta': 0,
+            'label': 'Trace'
+        }, ignore_index=True)
+        
+        total_length_vd = total_length_vd.append({
+            'param1': '',
+            'param2': '',
+            'variable': 'between1',
+            'n': 0,
+            'generation': 0,
+            'gamma_ta': 0,
+            'label': 'Trace'
+        }, ignore_index=True)
+        
+        real_order = []
+        
+        # exit()
         
         sns.set_context('paper')
         sns.set_style("ticks", {'axes.grid': True})
         _, ax = plt.subplots(tight_layout=True, figsize=[5, 5])
-        sns.barplot(data=total_length_vd, x='variable', y='gamma_ta', hue='label', order=list(symbols['time_averages'].values()), ax=ax,
+        
+        plt.fill_between(['before'] + list(symbols['time_averages'].values()) + ['After'],
+                         [total_length_vd[(total_length_vd['label'] == 'Artificial') & (total_length_vd['variable'].isin(list(symbols['time_averages'].values())))]['gamma_ta'].mean() for _ in
+                          range(len(list(symbols['time_averages'].values())) + 2)],
+                         [0 for _ in range(len(list(symbols['time_averages'].values())) + 2)], color='lightgrey')
+        
+        sns.barplot(data=total_length_vd[total_length_vd['label'].isin(['Trace'])], x='variable', y='gamma_ta', order=list(symbols['time_averages'].values()), ax=ax,
                     edgecolor='black')  # , label=r'$\overline{cov}$ \ $\sigma^2$'
         ax.yaxis.grid(True)
         ax.set_xlabel('')
@@ -734,5 +765,6 @@ if __name__ == '__main__':
         # plt.savefig('{}variance_decompositions.png'.format(args['total_length_figs']), dpi=300)
         plt.show()
         plt.close()
+        exit()
         
         print('*' * 200)

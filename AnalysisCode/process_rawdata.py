@@ -169,12 +169,14 @@ def get_division_indices(raw_trace):
     # Make sure they are the same size
     assert len(start_indices) == len(end_indices)
     
-    plt.plot(raw_trace[np.where(~np.isnan(raw_trace))])
-    plt.scatter(start_indices, raw_trace[np.where(~np.isnan(raw_trace))][start_indices], color='green')
-    plt.scatter(end_indices, raw_trace[np.where(~np.isnan(raw_trace))][end_indices], color='red')
-    # plt.axvline()
-    plt.show()
-    plt.close()
+    print(len(raw_trace))
+    
+    # plt.plot(raw_trace[np.where(~np.isnan(raw_trace))])
+    # plt.scatter(start_indices, raw_trace[np.where(~np.isnan(raw_trace))][start_indices], color='green')
+    # plt.scatter(end_indices, raw_trace[np.where(~np.isnan(raw_trace))][end_indices], color='red')
+    # # plt.axvline()
+    # plt.show()
+    # plt.close()
     
     return [start_indices, end_indices]
 
@@ -349,226 +351,281 @@ def linear_regression(raw_lineage, step_size, start_indices, end_indices, lin_id
     return [cycle_variables_lineage.reset_index(drop=True), without_nans, start_indices, end_indices]
 
 
+""" Gets rid of the machine error from the signal as well as possible """
+
+
+def clean_up(lineage):
+    """ Gets rid of the remaining discrepancies """
+    def recursive_rise_exclusion(lin, totals, rises):
+        diff = np.log(lin['length'].values[:-1]) - np.log(
+            lin['length'].values[1:])  # What is the difference between the natural logs of two consecutive length measurements across one unit of time?
+        
+        new_rises = np.where(diff <= -.5)[0]
+        
+        new_new = []
+        for rise in new_rises:
+            if lin['length'].iloc[rise+1] > (lin['length'].mean() + 3 * lin['length'].std()):  # If the next point is abnormally large
+                new_new.append(rise+1)  # replace that point with the one after it, ie. the outlier
+            else:
+                # print('else happened')
+                new_new.append(rise)
+                
+        new_rises = np.array(new_new)
+        
+        rises = np.append(rises, [int(l + np.sum([l >= old for old in totals])) for l in new_rises]).flatten()  # These are the points that shoot up abnormally
+
+        if len(new_rises) > 0:  # Say we find some abnormal rise
+            # Fix the lineage
+            new_lin = lin[~lin.index.isin(new_rises)].reset_index(drop=True)
+            
+            # add to the total indices that are excluded
+            new_totals = np.append(totals,
+                                   [int(l + np.sum([l >= old for old in totals])) for l in new_rises]).flatten()  # Add the rises indices to the total indices we will ignore for analysis
+            
+            # Recursion
+            lin, totals, rises = recursive_rise_exclusion(new_lin, new_totals, rises)
+        
+        return [lin, totals, rises]
+
+    """ Get rid of the non-positive lengths first """
+    total_nans = np.array([])  # Where we will keep all the indices that will be taken out of the corrected lineage
+    non_positives = np.array(lineage[lineage['length'] <= 0].index)  # Where the length is non-positive, which is impossible
+    
+    if len(non_positives) > 0:  # Notify the user and take the non-positives out
+        # print('NOTE: This lineage has a length lower than or equal to 0.')
+        lineage = lineage[~lineage.index.isin(non_positives)].reset_index(drop=True)  # Goes without saying but there was an instance of this in the Wang Data
+    
+    total_nans = np.append(total_nans, non_positives).flatten()  # Add the non-positives to the total indices we will ignore for analysis
+    
+    lineage = lineage.reset_index(drop=True)  # for good-practice
+    
+    """ Get rid of the single-point singularities first """
+    diff = np.log(lineage['length'].values[:-1]) - np.log(
+        lineage['length'].values[1:])  # What is the difference between the natural logs of two consecutive length measurements across one unit of time?
+    
+    # Take out all the singularities
+    straight_up = np.where(diff <= -.4)[0]  # These are the points whose next point in time shoot up abnormally
+    straight_down = np.where(diff >= .4)[0]  # These are the points whose next point in time fall down abnormally
+    
+    singularities = np.array([int(down) for up in straight_up for down in straight_down if (down - up == 1)])  # Singularities that fall
+    singularities = np.append(singularities, np.array([int(up) for up in straight_up for down in straight_down if (up - down == 1)])).flatten()  # Singularities that rise
+    
+    if len(singularities) > 0:  # Notify the user and take the non-positives out
+        # print('NOTE: This lineage has singularities that either rise or fall abnormally rapidly.')
+        lineage = lineage[~lineage.index.isin(singularities)].reset_index(drop=True)  # Goes without saying but there was an instance of this in the Wang Data
+
+    singularities = np.array([int(l + np.sum([l >= old for old in total_nans])) for l in singularities])
+        
+    total_nans = np.append(total_nans, singularities).flatten()  # Add the singularities to the total indices we will ignore for analysis
+    
+    """ Get rid of the remaining singularities recursively """
+    new_lineage, new_total_nans, failures = recursive_rise_exclusion(lineage, total_nans, rises=np.array([]))
+    
+    assert len(lineage) >= len(new_lineage)
+    assert len(total_nans) <= len(new_total_nans)
+    
+    return [new_lineage, new_total_nans, failures, singularities, non_positives]
+
+
 """ Create the csv files for physical, trace-centered, and trap-centered units for MM data of a certain type """
 
 
 def main_mm(args):
     print('type of MM data we are processing:', args['data_origin'])
     
-    # We have to specify the data type, which is different for each experiment
+    # Get the file paths to import the data from. 
+    # We have to specify the data type, which is different for each experiment.
     if args['data_origin'] == 'MG1655_inLB_LongTraces':
-        infiles = glob.glob(args['raw_data'] + '/*.txt')
+        file_paths = glob.glob(args['raw_data'] + '/*.txt')
     elif args['data_origin'] == 'Maryam_LongTraces':
-        infiles = glob.glob(args['raw_data'] + '/*.csv')
-        infiles = infiles + glob.glob(args['raw_data'] + '/*.xls')
+        file_paths = glob.glob(args['raw_data'] + '/*')
+        # file_paths = glob.glob(args['raw_data'] + '/*.csv')
+        # file_paths = file_paths + glob.glob(args['raw_data'] + '/*.xls')
+    elif args['data_origin'] == '8-31-16 Continue':
+        file_paths = glob.glob(args['raw_data'] + '/*')
     elif args['data_origin'] == 'LB_pooled':
-        infiles = glob.glob(args['raw_data'] + '/*')
+        file_paths = glob.glob(args['raw_data'] + '/*')
     elif args['data_origin'] in wang_datasets:
-        infiles = glob.glob(args['raw_data'] + '/*.dat')
+        file_paths = glob.glob(args['raw_data'] + '/*.dat')
+        
+        if args['data_origin'] == '20090529_E_coli_Br_SJ119_Wang2010':  # Take out the trajectories that cannot be used
     
-    # the dataframe for our variables
+            wang_br_sj119_200090529_reject = np.array([
+                29, 33, 38, 50, 68, 76, 83, 96, 132, 138, 141, 145, 155, 158, 181, 198, 208, 220, 228, 233, 237, 240, 254, 268, 270, 276, 277, 281, 296, 299
+            ]) - 1  # 172, 21, 104, 213
+        
+            # wang_br_sj119_200090529_cut = {104: 190}
+            
+            file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_br_sj119_200090529_reject)]]
+    
+    # Create the dataframe for our variables
     cycle_variables = pd.DataFrame(columns=phenotypic_variables + ['lineage_ID', 'generation'])
     with_outliers_cycle_variables = pd.DataFrame(columns=phenotypic_variables + ['lineage_ID', 'generation'])
     
     # The dataframe for our raw data lineages
     raw_data = pd.DataFrame(columns=['time', 'length', 'lineage_ID', 'filename'])
     
-    extra_column = [
-        'pos0-1',
-        'pos0-1-daughter',
-        'pos1',
-        'pos4',
-        'pos5-lower cell',
-        'pos5-upper cell',
-        'pos6-1-1',
-        'pos6-1',
-        'pos6-2',
-        'pos7-1-1',
-        'pos7-1-2',
-        'pos7-2-1',
-        'pos7-2-2',
-        'pos7-3',
-        'pos8',
-        'pos10-1',
-        'pos16-1',
-        'pos16-2',
-        'pos16-3',
-        'pos17-1',
-        'pos17-2',
-        'pos17-3',
-        'pos18-2',
-        'pos18-3',
-        'pos19-2',
-        'pos19-3',
-        'pos20'
-    ]
+    # extra_column = [
+    #     'pos0-1',
+    #     'pos0-1-daughter',
+    #     'pos1',
+    #     'pos4',
+    #     'pos5-lower cell',
+    #     'pos5-upper cell',
+    #     'pos6-1-1',
+    #     'pos6-1',
+    #     'pos6-2',
+    #     'pos7-1-1',
+    #     'pos7-1-2',
+    #     'pos7-2-1',
+    #     'pos7-2-2',
+    #     'pos7-3',
+    #     'pos8',
+    #     'pos10-1',
+    #     'pos16-1',
+    #     'pos16-2',
+    #     'pos16-3',
+    #     'pos17-1',
+    #     'pos17-2',
+    #     'pos17-3',
+    #     'pos18-2',
+    #     'pos18-3',
+    #     'pos19-2',
+    #     'pos19-3',
+    #     'pos20'
+    # ]
     
     # In case we can't use some files we want the lineage IDs to be in integer order
     offset = 0
     
     # load first sheet of each Excel-File, fill internal data structure
-    for count, file in enumerate(infiles[13:]):
+    for count, file in enumerate(file_paths[7:]):
         
         filename = file.split('/')[-1].split('.')[0]
         extension = file.split('/')[-1].split('.')[1]
         
-        # # Tells us the trap ID and the source (filename)
-        # print(count + 1, filename + '.' + extension, sep=': ')
+        # print('count:', count, 'out of', len(file_paths))
         
-        # # creates a dataframe from the .txt or .csv file
-        # if args['data_origin'] == 'MG1655_inLB_LongTraces':
-        #     # The only file that has an extra column
-        #     if filename.split('/')[-1] == 'pos4-4.txt':
-        #         print('In this particular case the lineage divides after the first time-point and it has an extra column.')
-        #         # This is because in this particular case the lineage divides after the first time-point and it has an extra column
-        #         raw_lineage = pd.read_csv(filename, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
-        #         raw_lineage = raw_lineage.iloc[1:]
-        #     # All the rest don't have another column
-        #     else:
-        #         raw_lineage = pd.read_csv(filename, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
-        # elif args['data_origin'] == 'Maryam_LongTraces':
-        #     # This is because some the data is in .xls format while others are in .csv
-        #     try:
-        #         raw_lineage = pd.read_csv(filename, names=['time', 'length'])[['time', 'length']].dropna(axis=0)
-        #     except:
-        #         raw_lineage = pd.read_excel(filename, names=['time', 'length'])[['time', 'length']].dropna(axis=0)
+        # Tells us the trap ID and the source (filename)
+        print(count + 1, '/', str(len(file_paths)), ':', filename)
         
-        # elif args['data_origin'] == 'LAC_M9':
-        #     # Simple :)
-        #     raw_lineage = pd.read_csv(filename, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+        # Import the data in a file into a pandas dataframe with the correct extension and pandas function 
+        if args['data_origin'] == 'MG1655_inLB_LongTraces':
+            step_size = 1/12
+            # The only file that has an extra column
+            if file == 'pos4-4':
+                print('In this particular case the lineage divides after the first time-point and it has an extra column.')
+                # Extra column when importing
+                lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+                # lineage divides after the first time-point
+                lineage = lineage.iloc[1:]
+            else:  # All the rest don't have these problems
+                lineage = pd.read_csv(file, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+            lineage['time'] = lineage['time'] * (5/3)  # Incorrect labelling
         
-        if args['data_origin'] in tanouchi_datasets:
-            raw_lineage = pd.read_csv(file, delimiter=',', names=['time', 'division_flag', 'length', 'fluor', 'avg_fluor'])
-            raw_lineage['time'] = (raw_lineage['time'] - 1) / 60  # Because we map the index to the correct time-step-size which is 1 minute
-            step_size = 1 / 60  # one-minute measurements!
-        elif args['data_origin'] == 'lambda_LB':
-            # There are quite a lot of files with an extra column at the beginning
-            if filename in extra_column:
-                raw_lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
-            elif filename == 'pos15':
-                print('This one is special.')
-                raw_lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein', '__', '___', '___1'])[
-                    ['time', 'length']]
+        elif args['data_origin'] == 'Maryam_LongTraces':
+            step_size = .05
+            # This is because some the data is in .xls format while others are in .csv
+            if extension == 'csv':
+                lineage = pd.read_csv(file, names=['time', 'length'])[['time', 'length']].dropna(axis=0)
+            elif extension == 'xls':
+                lineage = pd.read_excel(file, names=['time', 'length'])[['time', 'length']].dropna(axis=0)
             else:
-                raw_lineage = pd.read_csv(file, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+                raise IOError('For MaryamLongTraces dataset non-xls/csv files have not been inspected!')
+        
+        elif args['data_origin'] in tanouchi_datasets:
+            lineage = pd.read_csv(file, delimiter=',', names=['time', 'division_flag', 'length', 'fluor', 'avg_fluor'])
+            lineage['time'] = (lineage['time'] - 1) / 60  # Because we map the index to the correct time-step-size which is 1 minute
+            step_size = 1 / 60  # one-minute measurements!
         elif args['data_origin'] == '8-31-16 Continue':
-            raw_lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+            lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+            
+            # Sometimes the step sizes were wrongly labeled in the raw data...
+            step_sizes = (lineage['time'].iloc[1:].values - lineage['time'].iloc[:-1].values).round(2)
+            if .05 == step_sizes[0]:
+                # Wrong labeling of time
+                lineage['time'] = lineage['time'] * 2
+            step_size = .1
+        
         elif args['data_origin'] in wang_datasets:
-            raw_lineage = pd.read_csv(file, delimiter=' ')  # names=['time', 'division_flag', 'length', 'width', 'area', 'yfp_intensity', 'CMx', 'CMy']
+            lineage = pd.read_csv(file, delimiter=' ')  # names=['time', 'division_flag', 'length', 'width', 'area', 'yfp_intensity', 'CMx', 'CMy']
             
-            # Sometimes the time indices are called time and others called index
-            if 'time' in raw_lineage.columns:
-                raw_lineage = raw_lineage.rename(columns={'division': 'division_flag'})[['time', 'division_flag', 'length']]
-            elif 'index' in raw_lineage.columns:
-                raw_lineage = raw_lineage.rename(columns={'index': 'time', 'division': 'division_flag'})[['time', 'division_flag', 'length']]
+            # Sometimes the time index is called time and sometimes its called index
+            if 'time' in lineage.columns:
+                lineage = lineage.rename(columns={'division': 'division_flag'})[['time', 'division_flag', 'length']]
+            elif 'index' in lineage.columns:
+                lineage = lineage.rename(columns={'index': 'time', 'division': 'division_flag'})[['time', 'division_flag', 'length']]
             
-            # So that we can correctly put in the time
-            if len(np.unique(np.diff(raw_lineage['time']))) != 1 or np.unique(np.diff(raw_lineage['time']))[0] != 1:
-                # print(np.unique(np.diff(raw_lineage['time'])))
+            # We have to make sure that the indices are monotonically increasing by 1 in order to trust the time axis
+            if len(np.unique(np.diff(lineage['time']))) != 1 or np.unique(np.diff(lineage['time']))[0] != 1:
+                # print(np.unique(np.diff(lineage['time'])))
                 # raise IOError('time given in Wang data is not monotonous and increasing.')
                 print('the time given in the data file is not increasing always by 1 so we do not know how to measure time for this lineage we will not use it.')
                 continue
             
-            raw_lineage['time'] = (raw_lineage['time']) / 60  # Because we map the index to the correct time-step-size which is 1 minute
+            lineage['time'] = (lineage['time']) / 60  # Because we map the index to the correct time-step-size which is 1 minute
             
-            raw_lineage['length'] = (raw_lineage['length']) * 0.0645  # Convert it from pixel length to micrometers
+            lineage['length'] = (lineage['length']) * 0.0645  # Convert it from pixel length to micrometers
             
             step_size = 1 / 60  # one-minute measurements!
         else:
             raise IOError('This code is not meant to run the data inputted. Please label the data and put it in as an if-statement.')
         
-        raw_raw_lineage = raw_lineage.copy()
-        
-        # Make the time-steps accurate to two decimal points
-        raw_lineage['time'] = raw_lineage['time']  # .round(2)
-        raw_lineage['filename'] = filename
-        raw_lineage = raw_lineage.reset_index(drop=True)
-        # print(len(raw_lineage))
-        raw_lineage = raw_lineage[raw_lineage['length'] > 0]  # Goes without saying but there was an instance of this in the Wang Data
-        # print(len(raw_lineage))
-        # exit()
-        
-        # Add the trap ID
-        raw_lineage['lineage_ID'] = count + 1 - offset
-        
-        # raw_lineage['length'] = raw_lineage['length'].where(np.abs(raw_lineage['length'] - raw_lineage['length'].mean()) < (3 * raw_lineage['length'].std()), other=np.nan).values
-        
-        if not all(x < y for x, y in zip(raw_lineage['time'].values[:-1], raw_lineage['time'].values[1:])):
+        # Check if time is going backwards and discard if true
+        if not all(x < y for x, y in zip(lineage['time'].values[:-1], lineage['time'].values[1:])):
             print(filename, ': Time is going backwards. We cannot use this data.')
             
             # reset the lineage_ID
             offset += 1
             continue
         
-        # if len(raw_lineage[raw_lineage['length'] <= 0]) > 0:
-        #     print('This lineage has a length lower than or equal to 0, so we will not use it.')
-        #     continue
-        
+        # elif args['data_origin'] == 'lambda_LB':
+        #     # There are quite a lot of files with an extra column at the beginning
+        #     if filename in extra_column:
+        #         raw_lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+        #     elif filename == 'pos15':
+        #         print('This one is special.')
+        #         raw_lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein', '__', '___', '___1'])[
+        #             ['time', 'length']]
+        #     else:
+        #         raw_lineage = pd.read_csv(file, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+        # elif args['data_origin'] == 'LAC_M9':
+        #     # Simple :)
+        #     raw_lineage = pd.read_csv(filename, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
         # Make sure we have the measurement time step-size in hours and that it is the same across all rows
         # If not, do not use the trace (Too much of a headache for the phenotypic variable linear regression).
-        step_sizes = (raw_lineage['time'].iloc[1:].values - raw_lineage['time'].iloc[:-1].values).round(2)
+        # step_sizes = (raw_lineage['time'].iloc[1:].values - raw_lineage['time'].iloc[:-1].values).round(2)
         # if not np.all(step_sizes == step_sizes[0]):
         #     print(filename, ' has steps that are not the same size ', np.unique(step_sizes), ' and we are not using this data then')  # , are we are not gonna use these...')
         #     continue
         #     # exit()
-        
-        # This is due to data singularities
-        if args['data_origin'] == '8-31-16 Continue' and .05 == step_sizes[0]:
-            raw_lineage['time'] = raw_lineage['time'] * 2
-            step_size = .1
-        if args['data_origin'] == 'lambda_LB' and .05 == step_sizes[0]:
-            pass
-            step_size = .05
-        elif args['data_origin'] == 'lambda_LB' and .1 == step_sizes[0]:
-            print('step size == .1', filename, np.unique(step_sizes))
-            raw_lineage['time'] = raw_lineage['time'] / 2
-            step_size = .05
-        elif args['data_origin'] == 'lambda_LB':
-            print('step size == .06 repeating', filename, np.unique(step_sizes))
-            raw_lineage['time'] = (raw_lineage['time'] * 15) / 20
-            step_size = .05
-        
-        # # Make sure there are no NaNs. If so, stop the program, something is wrong.
-        # if raw_lineage.isna().values.any():
-        #     print(raw_lineage.isna().values.any())
-        #     print(raw_lineage.isna().sum())
-        #     print(raw_lineage)
-        #     print(raw_lineage[raw_lineage.isnull()])
-        #     raise IOError('there are NaNs!')
-        
-        print(len(raw_lineage))
-        # raw_lineage = raw_lineage[(np.abs(raw_lineage['length'] - raw_lineage['length'].mean()) < (5 * raw_lineage['length'].std()))]
+        # if args['data_origin'] == 'lambda_LB' and .05 == step_sizes[0]:
+        #     pass
+        #     step_size = .05
+        # elif args['data_origin'] == 'lambda_LB' and .1 == step_sizes[0]:
+        #     print('step size == .1', filename, np.unique(step_sizes))
+        #     raw_lineage['time'] = raw_lineage['time'] / 2
+        #     step_size = .05
+        # elif args['data_origin'] == 'lambda_LB':
+        #     print('step size == .06 repeating', filename, np.unique(step_sizes))
+        #     raw_lineage['time'] = (raw_lineage['time'] * 15) / 20
+        #     step_size = .05
 
-        diff1 = np.log(raw_lineage['length'].values[:-1]) - np.log(raw_lineage['length'].values[1:])
-        diff2 = np.log(raw_lineage['length'].values[1:]) - np.log(raw_lineage['length'].values[:-1])
+        lineage['filename'] = filename  # for reference
+        lineage['lineage_ID'] = count + 1 - offset  # Add the lineage ID
         
-        nan_inds = np.where(diff1 <= -.4)
-        
-        to_plot = (raw_lineage['length'].values - raw_lineage['length'].mean()) / raw_lineage['length'].std()
-        
-        plt.plot(to_plot)
-        plt.plot(diff1)
-        plt.scatter(nan_inds, diff1[nan_inds], color='gray')
-        # plt.plot(diff2)
-        
-        # plt.plot(np.arange(1, len(diff1) - 2), [np.mean(diff1[ind-1:ind+1]) for ind in np.arange(1, len(diff1) - 2)])
-        plt.scatter(nan_inds, to_plot[nan_inds], color='red')
-        plt.show()
-        plt.close()
-        continue
+        raw_lineage = lineage.copy()  # We will later correct the lineage so we want a copy in its unedited form
 
-        # peaks1, _ = find_peaks(diff1, height=(-np.log(1.3), np.log(1.3)))
-        # peaks2, _ = find_peaks(diff2, threshold=np.log(1.3))
-        
-        nan_inds = [p for p in peaks1 if p in peaks2]
-        print('%'*10, len(nan_inds), '%'*10)
-        
-        raw_lineage['length'] = [raw_lineage['length'].iloc[ind] if ind not in nan_inds else np.nan for ind in raw_lineage.index]
-        
-        print(len(raw_lineage))
+        # plt.plot(raw_lineage['length'])
+        # plt.legend()
+        # plt.tight_layout()
+        # plt.show()
+        # plt.close()
+
+        lineage, total_nans, rises, singularities, non_positives = clean_up(lineage)
         
         # add it to the total data
-        raw_data = raw_data.append(raw_lineage, ignore_index=True)
+        raw_data = raw_data.append(lineage, ignore_index=True)
         
         # These datasets have a division flag
         # if args['data_origin'] in tanouchi_datasets:  # + wang_datasets
@@ -580,7 +637,7 @@ def main_mm(args):
         #     start_indices, end_indices = get_division_indices(raw_lineage['length'].values)
         
         # Figure out the indices for the division events
-        start_indices, end_indices = get_division_indices(raw_lineage['length'].values)
+        start_indices, end_indices = get_division_indices(lineage['length'].values)
         
         # Each cycle must be longer than 10 minutes as a physical constraint to help us with the division events
         # at_least_number = np.where(cycle_durations > .1)[0]
@@ -606,49 +663,54 @@ def main_mm(args):
         # plt.close()
         
         # add the cycle variables to the overall dataframe
-        cycle_variables_lineage, with_outliers, start_indices, end_indices = linear_regression(raw_lineage, step_size, start_indices, end_indices, int(count + 1 - offset),
+        cycle_variables_lineage, with_outliers, start_indices, end_indices = linear_regression(lineage, step_size, start_indices, end_indices, int(count + 1 - offset),
                                                                                                fit_the_lengths=True)
-
-        # nan_inds = raw_raw_lineage[(np.abs(raw_raw_lineage['length'] - raw_raw_lineage['length'].mean()) >= (5 * raw_raw_lineage['length'].std()))].index
-
-        # for start in start_indices:
-        #     print([start >= l for l in nan_inds])
-        #     print(np.sum([start >= l for l in nan_inds]))
-
-        raw_start = [start + np.sum([start >= l for l in nan_inds]) for start in start_indices]
-        raw_end = [end + np.sum([end >= l for l in nan_inds]) for end in end_indices]
         
-        # raw_start_indices = [l if l == k else for l, k in
-        #                      zip(start_indices, raw_raw_lineage[(np.abs(raw_raw_lineage['length'] - raw_raw_lineage['length'].mean()) < (8 * raw_raw_lineage['length'].std()))])]
-        
-        # Check division times
-        # interpolation = np.array(
-        #     [lb * np.exp(np.linspace(0, gt, int(np.round(gt * 60, 0)) + 1) * gr) for gt, gr, lb in zip(with_outliers['generationtime'], with_outliers['growth_rate'], with_outliers['length_birth'])])
-        # interpolation = np.concatenate(interpolation, axis=0)
-        
-        plt.plot(np.arange(len(raw_raw_lineage['length']), dtype=int), raw_raw_lineage['length'], color='blue', label='raw_lineage')
-        for start, end, count in zip(raw_start, raw_end, with_outliers.generation.unique()):
-            gt = with_outliers[with_outliers['generation'] == count]['generationtime'].values[0]
-            lb = with_outliers[with_outliers['generation'] == count]['length_birth'].values[0]
-            gr = with_outliers[with_outliers['generation'] == count]['growth_rate'].values[0]
-            # print(int(np.round(gt * 60, 0)))
-            # print(np.linspace(0, gt, int(np.round(gt * 60, 0)) + 1))
-            # print(np.linspace(0, gt, int(np.round(gt * 60, 0)) + 1) * gr)
-            # exit()
-            
-            line = lb * np.exp(np.linspace(0, gt, int(np.round(gt * 60, 0)) + 1) * gr)
-            plt.plot(np.arange(start, start+len(line)), line, color='orange', ls='--') #, label='cycle variable fit'
-        # plt.plot(np.arange(start_indices[0], len(interpolation) + start_indices[0]), interpolation, color='orange', label='cycle variable fit', ls='--')
-        plt.scatter(raw_start, raw_raw_lineage['length'].iloc[raw_start], color='green', label='start indices')
-        plt.scatter(raw_end, raw_raw_lineage['length'].iloc[raw_end], color='red', label='end indices')
-        plt.scatter(nan_inds, raw_raw_lineage['length'].iloc[nan_inds], color='gray')
-        plt.title(filename)
-        plt.xlabel('index')
-        plt.ylabel(r'length ($\mu$m)')
-        plt.yscale('log')
-        plt.tight_layout()
-        plt.show()
-        plt.close()
+        raw_start = [int(start + np.sum([start >= l for l in total_nans])) for start in start_indices]
+        raw_end = [int(end + np.sum([end >= l for l in total_nans])) for end in end_indices]
+
+        print('{} number of ignored points\n{} number of non-positives\n{} number of singularities\n{} number of long-failures'.format(len(total_nans), len(non_positives), len(singularities), len(rises)))
+        print('-' * 200)
+
+        # plt.plot(lineage['time'].values, lineage['length'].values)
+        # for start, end, count in zip(start_indices, end_indices, cycle_variables_lineage.generation.unique()):
+        #     gt = cycle_variables_lineage[cycle_variables_lineage['generation'] == count]['generationtime'].values[0]
+        #     lb = cycle_variables_lineage[cycle_variables_lineage['generation'] == count]['length_birth'].values[0]
+        #     gr = cycle_variables_lineage[cycle_variables_lineage['generation'] == count]['growth_rate'].values[0]
+        #
+        #     if np.isnan([gt, lb, gr]).any():
+        #         continue
+        #
+        #     line = lb * np.exp(np.linspace(0, gt, int(np.round(gt * (1/step_size), 0)) + 1) * gr)
+        #     # plt.plot(lineage['time'].iloc[start:end+1].values, lineage['length'].iloc[start:end+1], color='blue', ls='-')  # , label='cycle variable fit'
+        #     plt.plot(lineage['time'].iloc[start:end+1].values, line[:(end-start+1)], color='orange', ls='--')  # , label='cycle variable fit'
+        #     plt.scatter(lineage['time'].iloc[start], lineage['length'].iloc[start], label='starts', color='green')
+        #     plt.scatter(lineage['time'].iloc[end], lineage['length'].iloc[end], label='ends', color='red')
+        # plt.show()
+        # plt.close()
+        #
+        # plt.plot(raw_lineage['length'].values)
+        # plt.scatter(non_positives, raw_lineage['length'].iloc[non_positives], label='non_positives', marker='o')
+        # plt.scatter(singularities, raw_lineage['length'].iloc[singularities], label='singularities', marker='v')
+        # plt.scatter(rises, raw_lineage['length'].iloc[rises], label='failures', marker='^')
+        #
+        # for start, end, count in zip(raw_start, raw_end, cycle_variables_lineage.generation.unique()):
+        #     gt = cycle_variables_lineage[cycle_variables_lineage['generation'] == count]['generationtime'].values[0]
+        #     lb = cycle_variables_lineage[cycle_variables_lineage['generation'] == count]['length_birth'].values[0]
+        #     gr = cycle_variables_lineage[cycle_variables_lineage['generation'] == count]['growth_rate'].values[0]
+        #
+        #     if np.isnan([gt, lb, gr]).any():
+        #         continue
+        #
+        #     line = lb * np.exp(np.linspace(0, gt, int(np.round(gt * (1/step_size), 0)) + 1) * gr)
+        #     plt.plot(np.arange(start, start + len(line)), line, color='orange', ls='--')  # , label='cycle variable fit'
+        #
+        # plt.scatter(raw_start, raw_lineage['length'].iloc[raw_start], color='green', label='start indices')
+        # plt.scatter(raw_end, raw_lineage['length'].iloc[raw_end], color='red', label='end indices')
+        # plt.legend()
+        # plt.tight_layout()
+        # plt.show()
+        # plt.close()
         
         # append the cycle variables to the
         cycle_variables = cycle_variables.append(cycle_variables_lineage, ignore_index=True)
@@ -950,7 +1012,7 @@ def main():
     input_args = parser.parse_args()
     
     # Do all the Mother and Sister Machine data
-    for data_origin in wang_datasets:  # input_args.dataset_names:
+    for data_origin in ['MG1655_inLB_LongTraces']:  # input_args.dataset_names:
         print(data_origin)
         
         """
