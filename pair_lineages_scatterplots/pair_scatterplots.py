@@ -2,7 +2,7 @@
 
 from AnalysisCode.global_variables import (
     symbols, units, dataset_names, create_folder, phenotypic_variables, shuffle_lineage_generations, cmap, seaborn_preamble, sm_datasets,
-    wang_datasets, cut_uneven_pairs, add_control, add_control_and_cut_extra_intervals
+    wang_datasets, cut_uneven_pairs, add_control, add_control_and_cut_extra_intervals, get_time_averages_df
 )
 import pandas as pd
 import matplotlib.pyplot as plt

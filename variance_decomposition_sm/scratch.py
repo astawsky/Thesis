@@ -166,10 +166,6 @@ def vd_with_trap_and_experiments(sm_datasets, save_fig, variables):
         pu['experiment'] = data_origin
         
         total_df = total_df.append(pu, ignore_index=True)
-        
-        # print(pu)
-        # print(total_df)
-        # exit()
     
     # for data_origin in sm_datasets:
     #     pu = os.path.dirname(current_dir) + '/Datasets/' + data_origin + '/ProcessedData/physical_units.csv'
@@ -178,7 +174,7 @@ def vd_with_trap_and_experiments(sm_datasets, save_fig, variables):
     
     for type_of_lineages, lin_type in zip([['NL'], ['SL'], ['SL', 'NL']], ['NL', 'SL', 'SL and NL']):
         print('type_of_lineages:', type_of_lineages)
-        output_df = pd.DataFrame(columns=['variable', 'intrinsic', 'environment', 'lineage', 'kind'])
+        output_df = pd.DataFrame()
         
         output_df = output_df.append({
             'variable': 'before',
@@ -186,7 +182,10 @@ def vd_with_trap_and_experiments(sm_datasets, save_fig, variables):
             'Exp+Env+Lin': 0,
             # This is so we can graph it nicely
             'Exp': 0,
-            'kind': 'Trace'
+            'kind': 'Trace',
+            'Lin+Env+Exp_CV': np.nan,
+            'Lin+Env_CV': np.nan,
+            'Exp_CV': np.nan
         }, ignore_index=True)
         
         # Show what datasets it does not have
@@ -253,7 +252,10 @@ def vd_with_trap_and_experiments(sm_datasets, save_fig, variables):
                     'Exp+Env+Lin': (exp_var[variable] + tmean_var[variable] + diff_var[variable]) / pu[variable].var(),
                     # This is so we can graph it nicely
                     'Exp': (exp_var[variable]) / pu[variable].var() if kind == 'Trace' else (exp_var[variable] + tmean_var[variable] + diff_var[variable]) / pu[variable].var(),
-                    'kind': kind
+                    'kind': kind,
+                    'Lin+Env+Exp_CV': np.sqrt(exp_var[variable] + tmean_var[variable] + diff_var[variable]) / pu[variable].mean(),
+                    'Lin+Env_CV': np.sqrt(diff_var[variable] + tmean_var[variable]) / pu[variable].mean(),
+                    'Lin_CV': np.sqrt(diff_var[variable]) / pu[variable].mean() if kind == 'Trace' else (exp_var[variable] + tmean_var[variable] + diff_var[variable]) / pu[variable].var()
                 }, ignore_index=True)
                 
                 # So we have the spaces in the graph
@@ -264,7 +266,10 @@ def vd_with_trap_and_experiments(sm_datasets, save_fig, variables):
                         'Exp+Env+Lin': 0,
                         # This is so we can graph it nicely
                         'Exp': 0,
-                        'kind': kind
+                        'kind': kind,
+                        'Lin+Env+Exp_CV': np.nan,
+                        'Lin+Env_CV': np.nan,
+                        'Lin_CV': np.nan
                     }, ignore_index=True)
                 elif variable == 'length_birth':
                     output_df = output_df.append({
@@ -273,11 +278,11 @@ def vd_with_trap_and_experiments(sm_datasets, save_fig, variables):
                         'Exp+Env+Lin': 0,
                         # This is so we can graph it nicely
                         'Exp': 0,
-                        'kind': kind
+                        'kind': kind,
+                        'Lin+Env+Exp_CV': np.nan,
+                        'Lin+Env_CV': np.nan,
+                        'Lin_CV': np.nan
                     }, ignore_index=True)
-        
-        seaborn_preamble()
-        fig, ax = plt.subplots()
         
         output_df = output_df.append({
             'variable': 'after',
@@ -285,13 +290,45 @@ def vd_with_trap_and_experiments(sm_datasets, save_fig, variables):
             'Exp+Env+Lin': 0,
             # This is so we can graph it nicely
             'Exp': 0,
-            'kind': 'Artificial'
+            'kind': 'Artificial',
+            'Lin+Env+Exp_CV': np.nan,
+            'Lin+Env_CV': np.nan,
+            'Lin_CV': np.nan
         }, ignore_index=True)
+
+        sns.set_context('paper', font_scale=1.2)
+        sns.set_style("ticks", {'axes.grid': True})
+        fig, ax = plt.subplots(figsize=[6, 6])
+
+        # relevant = (output_df['kind'] == 'Trace')
+        #
+        # to_plot = pd.DataFrame()
+        #
+        # for variable in output_df.variable.unique():#list(symbols['physical_units'].values()):
+        #     if variable in ['before', '', 'between', 'after']:
+        #         continue
+        #     df = output_df[relevant & (output_df['variable'] == variable)].copy()
+        #
+        #     for t, l in zip(['Lin', 'Env', 'Exp'], [df['Lin_CV'].values[0], df['Lin+Env_CV'].values[0], df['Lin+Env+Exp_CV'].values[0]]):
+        #         to_plot = to_plot.append({
+        #             'type': t,
+        #             'CV': l,
+        #             'variable': variable
+        #         }, ignore_index=True)
+        #
+        #
+        # sns.pointplot(data=to_plot, x='type', y='CV', hue='variable')
+        # plt.legend(title='')
+        # plt.xlabel('')
+        # # plt.show()
+        # plt.savefig('blah std.png', dpi=300)
+        # plt.close()
+        # exit()
         
         plt.fill_between(output_df.variable.unique(),
                          [output_df[output_df['kind'] == 'Artificial']['Exp+Env+Lin'].mean() for _ in range(len(output_df.variable.unique()))],
                          [0 for _ in range(len(output_df.variable.unique()))], color='lightgrey')
-        
+
         for color, y, label in zip([cmap[0], cmap[1], cmap[2]], ['Exp+Env+Lin', 'Exp+Env', 'Exp'], ['Lineage', 'Environment', 'Experiment']):
             # palette = {"Trace": color, "Artificial": 'red'}
             sns.barplot(x='variable', y=y, data=output_df[output_df['kind'] == 'Trace'], color=color, edgecolor='black', label=label)
@@ -299,9 +336,10 @@ def vd_with_trap_and_experiments(sm_datasets, save_fig, variables):
         handles, labels = ax.get_legend_handles_labels()
         plt.legend(handles, labels, title='')
         
-        plt.title(lin_type)
+        # plt.title(lin_type)
         plt.xlabel('')
         plt.ylabel('Variance Decomposition')
+        # plt.ylabel('CV Decomposition')
         plt.ylim([0, .45])
         plt.tight_layout()
         # plt.savefig(save_fig+'/'+lin_type, dpi=300)
@@ -314,12 +352,16 @@ def vd_with_trap_and_experiments(sm_datasets, save_fig, variables):
 
 def vd_with_lineage_and_experiments(chosen_datasets, save_fig, lin_type):
     total_df = pd.DataFrame()
-    count = 0
     for data_origin in chosen_datasets:
         print(data_origin)
         pu = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Datasets/' + data_origin + '/ProcessedData/z_score_under_3/physical_units_without_outliers.csv'
         
         pu = pd.read_csv(pu)
+        if 'NL' not in pu['dataset'].unique():
+            print('NL not in')
+            continue
+        else:
+            pu = pu[pu['dataset'] == 'NL'].reset_index(drop=True)
         pu['experiment'] = data_origin
         
         total_df = total_df.append(pu, ignore_index=True)
@@ -399,9 +441,10 @@ def vd_with_lineage_and_experiments(chosen_datasets, save_fig, lin_type):
                 'Exp': (exp_var[variable]) / pu[variable].var() if kind == 'Trace' else (exp_var[variable] + lin_var[variable]) / pu[variable].var(),
                 'kind': kind
             }, ignore_index=True)
-    
-    seaborn_preamble()
-    fig, ax = plt.subplots()
+
+    sns.set_context('paper', font_scale=1.2)
+    sns.set_style("ticks", {'axes.grid': True})
+    fig, ax = plt.subplots(figsize=[6, 6])
     
     for kind in ['Trace', 'Artificial']:
         output_df = output_df.append({
@@ -438,7 +481,7 @@ def vd_with_lineage_and_experiments(chosen_datasets, save_fig, lin_type):
                      [output_df[output_df['kind'] == 'Artificial']['Exp+Lin'].mean() for _ in range(len(real_order))],
                      [0 for _ in range(len(real_order))], color='lightgrey')
     
-    for color, y, label in zip([cmap[0], cmap[1]], ['Exp+Lin', 'Exp'], ['Lineage', 'Experiment']):
+    for color, y, label in zip([cmap[0], cmap[2]], ['Exp+Lin', 'Exp'], ['Lineage', 'Experiment']):
         # palette = {"Trace": color, "Artificial": 'red'}
         sns.barplot(x='variable', y=y, data=output_df[output_df['kind'] == 'Trace'], color=color, edgecolor='black', label=label, order=real_order)
     
@@ -451,7 +494,7 @@ def vd_with_lineage_and_experiments(chosen_datasets, save_fig, lin_type):
     # labels[5] = labels[5] + ': Exp'
     plt.legend(handles, labels, title='')
     
-    plt.title(lin_type)
+    # plt.title(lin_type)
     plt.xlabel('')
     plt.ylabel('Variance Decomposition')
     # plt.ylim([0, .45])
@@ -482,15 +525,17 @@ if __name__ == '__main__':
     input_args = parser.parse_args()
     
     kind_of_vd = ['total_length', 'per_gen', 'trap_controlled']
-    
-    vd_with_lineage_and_experiments(mm_datasets + sm_datasets[:-1], os.path.dirname(os.path.abspath(__file__)), lin_type='mm_datasets')
+
+    vd_with_lineage_and_experiments(sm_datasets[:-1], os.path.dirname(os.path.abspath(__file__)), lin_type='sm_datasets')
+    # vd_with_lineage_and_experiments(cgsc_6300_wang_exps, os.path.dirname(os.path.abspath(__file__)), lin_type='wang_MG1655')  #  + sm_datasets[:-1]
+    # vd_with_lineage_and_experiments(mm_datasets, os.path.dirname(os.path.abspath(__file__)), lin_type='mm_datasets')  #  + sm_datasets[:-1]
     exit()
     #
     # vd_with_lineage_and_experiments(cgsc_6300_wang_exps, os.path.dirname(os.path.abspath(__file__)), lin_type='cgsc_6300_wang_exps')
     # exit()
-    
-    create_folder(os.path.dirname(os.path.abspath(__file__)) + '/Updated')
-    
+    #
+    # create_folder(os.path.dirname(os.path.abspath(__file__)) + '/Updated')
+    #
     # vd_with_trap_and_experiments(sm_datasets, os.path.dirname(os.path.abspath(__file__)) + '/Updated',
     #                              variables=['div_and_fold', 'division_ratio', 'fold_growth', 'added_length', 'length_birth', 'generationtime', 'growth_rate'])
     # exit()

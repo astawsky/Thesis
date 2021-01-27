@@ -718,9 +718,6 @@ if __name__ == '__main__':
         # print(pairs)
         # ergodicity_per_variable(total_length_vd, pairs)
         
-        print(total_length_vd)
-        print(total_length_vd.columns)
-        
         total_length_vd = total_length_vd.append({
             'param1': '',
             'param2': '',
@@ -760,7 +757,7 @@ if __name__ == '__main__':
         ax.set_xlabel('')
         ax.set_ylabel(r'$\Gamma$')
         plt.title(data_origin)
-        ax.get_legend().remove()
+        # ax.get_legend().remove()
         # save the figure
         # plt.savefig('{}variance_decompositions.png'.format(args['total_length_figs']), dpi=300)
         plt.show()

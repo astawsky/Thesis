@@ -161,14 +161,14 @@ def main(args):
         plt.tight_layout(pad=.5)
         # In case we just want to see one scatterplot
         if len(variables) == 2:
-            plt.savefig(args['Figures'] + '/{}/separate/{}/'.format(label, args['data_origin']) + '{}_{}{}.png'.format(variables[0], variables[1], suffix), dpi=300)
-            # plt.show()
+            # plt.savefig(args['Figures'] + '/{}/separate/{}/'.format(label, args['data_origin']) + '{}_{}{}.png'.format(variables[0], variables[1], suffix), dpi=300)
+            plt.show()
             plt.close()
             
             return reg_dict
         else:
-            plt.savefig(args['Figures'] + '/{}/together/'.format(label) + '{}{}.png'.format(args['data_origin'], suffix), dpi=300)
-            # plt.show()
+            # plt.savefig(args['Figures'] + '/{}/together/'.format(label) + '{}{}.png'.format(args['data_origin'], suffix), dpi=300)
+            plt.show()
             plt.close()
         
     # for the regression parameters
@@ -224,6 +224,8 @@ def main(args):
             for var2 in phenotypic_variables:
                 if var2 in repeats or var2 == var1:
                     continue
+                    
+                var1, var2 = 'generationtime', 'growth_rate'
 
                 # the separate figures
                 regression = put_all_graphs_into_a_big_grid(dataframe, kind, variables=[var1, var2], suffix='', reg_dict=regression)

@@ -494,7 +494,8 @@ bounds = {
 symbols_bounds = {symbols['physical_units'][key]: val for key, val in bounds.items()}
 wang_datasets = ['20090529_E_coli_Br_SJ119_Wang2010', '20090930_E_coli_MG1655_lexA3_Wang2010', '20090923_E_coli_MG1655_lexA3_Wang2010', '20090922_E_coli_MG1655_lexA3_Wang2010',
                  '20090210_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090129_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090702_E_coli_MG1655_(CGSC_6300)_Wang2010',
-                 '20090131_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090525_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090512_E_coli_MG1655_(CGSC_6300)_Wang2010']  # '20090412_E_coli_Br_SJ108_Wang2010',
+                 '20090131_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090525_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090512_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090412_E_coli_Br_SJ108_Wang2010']
+br_wang_exps = ['20090529_E_coli_Br_SJ119_Wang2010', '20090412_E_coli_Br_SJ108_Wang2010']
 cgsc_6300_wang_exps = ['20090210_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090129_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090702_E_coli_MG1655_(CGSC_6300)_Wang2010',
                        '20090131_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090525_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090512_E_coli_MG1655_(CGSC_6300)_Wang2010']
 lexA3_wang_exps = ['20090930_E_coli_MG1655_lexA3_Wang2010', '20090923_E_coli_MG1655_lexA3_Wang2010', '20090922_E_coli_MG1655_lexA3_Wang2010']
