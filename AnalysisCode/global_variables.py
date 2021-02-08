@@ -313,14 +313,21 @@ def cut_uneven_pairs(info):
     
     for dataset in np.unique(old_info['dataset']):
         for trap_id in np.unique(old_info[(old_info['dataset'] == dataset)]['trap_ID']):
-            
-            min_gen = min(max(old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'A') & (old_info['dataset'] == dataset)]['generation'].values),
-                          max(old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'B') & (old_info['dataset'] == dataset)]['generation'].values))
-            
+    
+            min_gen = min(len(old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'A') & (old_info['dataset'] == dataset)]['generation'].values),
+                          len(old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'B') & (old_info['dataset'] == dataset)]['generation'].values))
+
+            # min_gen = min(max(old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'A') & (old_info['dataset'] == dataset)]['generation'].values),
+            #               max(old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'B') & (old_info['dataset'] == dataset)]['generation'].values))
+
+            # # What we will add
+            # a_to_add = old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'A') & (old_info['dataset'] == dataset) & (old_info['generation'] <= min_gen)].copy()
+            # b_to_add = old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'B') & (old_info['dataset'] == dataset) & (old_info['generation'] <= min_gen)].copy()
+
             # What we will add
-            a_to_add = old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'A') & (old_info['dataset'] == dataset) & (old_info['generation'] <= min_gen)].copy()
-            b_to_add = old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'B') & (old_info['dataset'] == dataset) & (old_info['generation'] <= min_gen)].copy()
-            
+            a_to_add = old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'A') & (old_info['dataset'] == dataset)].copy().sort_values('generation').iloc[:min_gen]
+            b_to_add = old_info[(old_info['trap_ID'] == trap_id) & (old_info['trace'] == 'B') & (old_info['dataset'] == dataset)].copy().sort_values('generation').iloc[:min_gen]
+
             # Check that they are the same size
             if len(a_to_add) != len(b_to_add):
                 print(a_to_add)
@@ -463,13 +470,13 @@ def add_control_and_cut_extra_intervals(info):
 phenotypic_variables = ['div_then_fold', 'div_and_fold', 'fold_then_div', 'fold_growth', 'division_ratio', 'added_length', 'generationtime', 'length_birth', 'length_final', 'growth_rate']
 symbols = {
     'physical_units': dict(
-        zip(phenotypic_variables, [r'$f_n e^{\phi_{n+1}}$', r'$f_n e^{\phi_{n}}$', r'$f_{n+1} e^{\phi_n}$', r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'])),
+        zip(phenotypic_variables, [r'$f_n e^{\phi_{n+1}}$', r'$r$', r'$f_{n+1} e^{\phi_n}$', r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'])),
     'trace_centered': dict(zip(phenotypic_variables,
-                               [r'$\delta (f_n e^{\phi_{n+1}})$', r'$\delta (f_n e^{\phi_{n}})$', r'$\delta (f_{n+1} e^{\phi_n})$', r'$\delta \phi$', r'$\delta f$', r'$\delta \Delta$',
+                               [r'$\delta (f_n e^{\phi_{n+1}})$', r'$\delta r$', r'$\delta (f_{n+1} e^{\phi_n})$', r'$\delta \phi$', r'$\delta f$', r'$\delta \Delta$',
                                 r'$\delta \tau$', r'$\delta x_0$', r'$\delta x_\tau$', r'$\delta \alpha$'])),
     'time_averages': dict(
         zip(phenotypic_variables,
-            [r'$\overline{f_n e^{\phi_{n+1}}}$', r'$\overline{f_n e^{\phi_{n}}}$', r'$\overline{f_{n+1} e^{\phi_n}}$', r'$\overline{\phi}$', r'$\overline{f}$', r'$\overline{\Delta}$',
+            [r'$\overline{f_n e^{\phi_{n+1}}}$', r'$\overline{r}$', r'$\overline{f_{n+1} e^{\phi_n}}$', r'$\overline{\phi}$', r'$\overline{f}$', r'$\overline{\Delta}$',
              r'$\overline{\tau}$', r'$\overline{x_0}$', r'$\overline{x_\tau}$', r'$\overline{\alpha}$'])),
     'model': dict(zip(phenotypic_variables, [r'$\phi$', r'$f$', r'$\Delta$', r'$\tau$', r'$x_0$', r'$x_\tau$', r'$\alpha$'])),
     'old_var': dict(zip(phenotypic_variables, [r'$\phi_{old}$', r'$f_{old}$', r'$\Delta_{old}$', r'$\tau_{old}$', r'$x_{0, old}$', r'$x_{\tau, old}$', r'$\alpha_{old}$'])),
@@ -478,7 +485,7 @@ symbols = {
                                                  r'$\overline{x_{\tau, n}}$', r'$\overline{\alpha_{n}}$'])),
     'unique_ta': dict(
         zip(phenotypic_variables,
-            [r'$\overline{f_n e^{\phi_{n+1}}}$', r'$\overline{f_n e^{\phi_{n}}}$', r'$\overline{f_{n+1} e^{\phi_n}}$', r'$\overline{\phi}$', r'$\overline{f}$', r'$\overline{\Delta}$',
+            [r'$\overline{f_n e^{\phi_{n+1}}}$', r'$\overline{r}}$', r'$\overline{f_{n+1} e^{\phi_n}}$', r'$\overline{\phi}$', r'$\overline{f}$', r'$\overline{\Delta}$',
              r'$\overline{\tau}$', r'$\overline{x_0}$', r'$\overline{x_\tau}$', r'$\overline{\alpha}$'])),
     # 'new_pu': dict(zip(phenotypic_variables,
     #                    [r'$\overline{\phi}$', r'$\overline{f}$', r'$\overline{\Delta}$', r'$\overline{\tau}$', r'$\overline{x_0}$', r'$\overline{x_\tau}$', r'$\overline{\alpha}$',
@@ -501,7 +508,7 @@ cgsc_6300_wang_exps = ['20090210_E_coli_MG1655_(CGSC_6300)_Wang2010', '20090129_
 lexA3_wang_exps = ['20090930_E_coli_MG1655_lexA3_Wang2010', '20090923_E_coli_MG1655_lexA3_Wang2010', '20090922_E_coli_MG1655_lexA3_Wang2010']
 tanouchi_datasets = ['MC4100_25C (Tanouchi 2015)', 'MC4100_27C (Tanouchi 2015)', 'MC4100_37C (Tanouchi 2015)']
 sm_datasets = ['1015_NL', '062718_SL', '071318_SL', '072818_SL_NL', '101218_SL_NL', 'Pooled_SM']
-mm_datasets = ['8-31-16 Continue', 'Maryam_LongTraces', 'MG1655_inLB_LongTraces']
+mm_datasets = ['Lambda_LB', 'Maryam_LongTraces', 'MG1655_inLB_LongTraces']  # 8-31-16 Continue
 dataset_names = sm_datasets + mm_datasets + tanouchi_datasets + wang_datasets
 cmap = sns.color_palette('tab10')
 

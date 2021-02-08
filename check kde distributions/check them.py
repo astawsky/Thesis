@@ -21,8 +21,29 @@ def check(chosen_datasets, save_fig, lin_type):
     for data_origin in chosen_datasets:
         print(data_origin)
         pu = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Datasets/' + data_origin + '/ProcessedData/z_score_under_3/physical_units_without_outliers.csv'
+        # rd = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Datasets/' + data_origin + '/raw_data_all_in_one.csv'
         
         pu = pd.read_csv(pu)
+        # rd = pd.read_csv(rd)
+        
+        ta = get_time_averages_df(pu, phenotypic_variables).drop_duplicates()
+        
+        # for lin_id in ta[ta['growth_rate'] >= 2]['lineage_ID'].unique():
+        #
+        #     pass
+
+        # print(ta[ta['growth_rate'] >= 2]['lineage_ID'].unique())
+        # m = [int(l) for l in ta[ta['growth_rate'] >= 2]['lineage_ID'].unique()]
+        # print(rd.lineage_ID.isin(m))
+        # print(rd[rd['lineage_ID'].isin(ta[ta['growth_rate'] >= 2]['lineage_ID'].unique())]['filename'].unique())
+        # print(rd[rd['lineage_ID'].isin(ta[ta['growth_rate'] >= 2]['lineage_ID'].unique())]['step_size'].unique())
+        # print(ta[ta['growth_rate'] < 2]['lineage_ID'].unique())
+        # print()
+        
+        # exit()
+
+        # exit()
+        
         pu['experiment'] = data_origin
         
         total_df = total_df.append(pu, ignore_index=True)
@@ -30,6 +51,11 @@ def check(chosen_datasets, save_fig, lin_type):
         sns.kdeplot(data=pu, x='growth_rate', y='generationtime', label=data_origin, color=cmap[count], alpha=.5)
         count += 1
         plt.scatter(pu['growth_rate'].mean(), pu['generationtime'].mean(), color=cmap[count], alpha=.8)
+
+        sns.scatterplot(data=ta, x='growth_rate', y='generationtime', color=cmap[count])
+        # plt.show()
+        # plt.close()
+        # exit()
     
     plt.plot(np.linspace(.5, 2), np.log(2) / np.linspace(.5, 2), ls='--', c='k', alpha=.7)
     # plt.ylim([0, 1.4])
@@ -61,4 +87,4 @@ if __name__ == '__main__':
     # Finalize the arguments
     input_args = parser.parse_args()
     
-    check(sm_datasets[:-1], os.path.dirname(os.path.abspath(__file__)), lin_type='datasets')  # mm_datasets +
+    check(mm_datasets, os.path.dirname(os.path.abspath(__file__)), lin_type='datasets')  # mm_datasets +

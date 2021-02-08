@@ -95,7 +95,7 @@ def linear_regression(clean_lin, raw_lineage, start_indices, end_indices, lin_id
             exit()
             end_indices = np.where(end_indices == end, len(rl) - 1, end_indices)
             end = len(rl) - 1
-        domain = (clean_lin['time'].iloc[start: end+1].copy().values - clean_lin['time'].iloc[start]).reshape(-1, 1)
+        domain = (clean_lin['time'].iloc[start: end + 1].copy().values - clean_lin['time'].iloc[start]).reshape(-1, 1)
         
         if len(domain) == 0:
             print('Only NaNs')
@@ -115,7 +115,7 @@ def linear_regression(clean_lin, raw_lineage, start_indices, end_indices, lin_id
         #     raise IOError('points per cycle and length of domain are not the same! {} != {}'.format(ppc, len(domain)))
         
         # domain = np.linspace(clean_lin['time'].iloc[start], clean_lin['time'].iloc[end], num=end - start + 1).reshape(-1, 1)
-        range = np.log(rl['length'].iloc[start:end+1].values).reshape(-1, 1)  # the end+1 is due to indexing
+        range = np.log(rl['length'].iloc[start:end + 1].values).reshape(-1, 1)  # the end+1 is due to indexing
         
         # Make sure they are the same size for the regression!
         if len(domain) != len(range):
@@ -151,7 +151,7 @@ def linear_regression(clean_lin, raw_lineage, start_indices, end_indices, lin_id
             # plt.show()
             # plt.close()
             continue
-        if (clean_lin.iloc[start:end+1].count()['length'] <= ((2 / 3) * len(clean_lin.iloc[start:end+1]))):
+        if (clean_lin.iloc[start:end + 1].count()['length'] <= ((2 / 3) * len(clean_lin.iloc[start:end + 1]))):
             print('A lot of NaNs! Not counted!')
             # Take this out
             start_indices = start_indices[np.where(start_indices != start)]
@@ -162,7 +162,7 @@ def linear_regression(clean_lin, raw_lineage, start_indices, end_indices, lin_id
         cycle = pd.Series()
         
         # Define the cycle phenotypic variables
-        cycle['generationtime'] = rl['time'].iloc[end+1] - rl['time'].iloc[start]
+        cycle['generationtime'] = rl['time'].iloc[end + 1] - rl['time'].iloc[start]
         cycle['growth_rate'] = reg.coef_[0][0]
         cycle['fold_growth'] = cycle['growth_rate'] * cycle['generationtime']
         
@@ -230,7 +230,7 @@ def linear_regression(clean_lin, raw_lineage, start_indices, end_indices, lin_id
         
         # raw_start = raw_start[0] if len(raw_start) == 1 else raw_start[np.intersect1d(raw_start, new_starting, return_indices=True)[1]][0]
         # raw_end = raw_end[0] if len(raw_end) > 1 else raw_end[np.intersect1d(raw_end, new_ending, return_indices=True)[1]][0]
-
+        
         # np.setdiff1d(raw_start, new_starting)[0]
         
         # new_starting.append(raw_start)
@@ -316,7 +316,7 @@ def clean_up(lineage, window_size_of_interest=200):
                 woi = [len(lin) - window_size_of_interest, len(lin)]
             else:  # No complications with window size
                 woi = [rise - window_size_of_interest, rise + window_size_of_interest]
-                
+            
             if lin['length'].iloc[rise + 1] > (lin['length'].iloc[woi[0]:woi[1]].mean() + 2.5 * lin['length'].std()):  # If the next point is abnormally large
                 new_new.append(rise + 1)  # replace that point with the one after it, ie. the outlier
             else:
@@ -490,7 +490,7 @@ def main_mm(args):
     # We have to specify the data type, which is different for each experiment.
     file_paths = glob.glob(args['raw_data'] + '/*')
     print(file_paths)
-        
+    
     if args['data_origin'] == '20090529_E_coli_Br_SJ119_Wang2010':  # Take out the trajectories that cannot be used
         
         wang_br_sj119_200090529_reject = np.array([
@@ -500,70 +500,70 @@ def main_mm(args):
         # wang_br_sj119_200090529_cut = {104: 190}
         
         file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_br_sj119_200090529_reject)]]
-        
+    
     if args['data_origin'] == '20090930_E_coli_MG1655_lexA3_Wang2010':
         wang_MG1655_lexA3_20090930_reject = np.array([
             34, 40, 42, 116
         ]) - 1
-
-        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_lexA3_20090930_reject)]]
         
+        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_lexA3_20090930_reject)]]
+    
     if args['data_origin'] == '20090923_E_coli_MG1655_lexA3_Wang2010':
         wang_MG1655_lexA3_20090923_reject = np.array([
             40, 133, 138
         ]) - 1
-
-        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_lexA3_20090923_reject)]]
         
+        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_lexA3_20090923_reject)]]
+    
     if args['data_origin'] == '20090922_E_coli_MG1655_lexA3_Wang2010':
         wang_MG1655_lexA3_20090922_reject = np.array([
             4, 40, 133, 138
         ]) - 1
-
-        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_lexA3_20090922_reject)]]
         
+        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_lexA3_20090922_reject)]]
+    
     if args['data_origin'] == '20090210_E_coli_MG1655_(CGSC_6300)_Wang2010':
         wang_MG1655_CGSC_6300_20090210_reject = np.array([
             6, 10
         ]) - 1
-
-        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_CGSC_6300_20090210_reject)]]
         
+        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_CGSC_6300_20090210_reject)]]
+    
     if args['data_origin'] == '20090129_E_coli_MG1655_(CGSC_6300)_Wang2010':
         wang_MG1655_CGSC_6300_20090129_reject = np.array([
             6, 10
         ]) - 1
-
-        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_CGSC_6300_20090129_reject)]]
         
+        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_CGSC_6300_20090129_reject)]]
+    
     if args['data_origin'] == '20090702_E_coli_MG1655_(CGSC_6300)_Wang2010':
         wang_MG1655_CGSC_6300_20090702_reject = np.array([
             43, 75, 86
         ]) - 1
-
-        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_CGSC_6300_20090702_reject)]]
         
+        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_CGSC_6300_20090702_reject)]]
+    
     if args['data_origin'] == '20090131_E_coli_MG1655_(CGSC_6300)_Wang2010':
         wang_MG1655_CGSC_6300_20090131_reject = np.array([
             1, 20, 23, 41, 47, 52, 57
         ]) - 1
-
-        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_CGSC_6300_20090131_reject)]]
         
+        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_CGSC_6300_20090131_reject)]]
+    
     if args['data_origin'] == '20090525_E_coli_MG1655_(CGSC_6300)_Wang2010':
         wang_MG1655_CGSC_6300_20090131_reject = np.array([
             89, 105, 112, 127, 233, 250, 318
         ]) - 1
-
-        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_CGSC_6300_20090131_reject)]]
         
+        file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_CGSC_6300_20090131_reject)]]
+    
     if args['data_origin'] == '20090512_E_coli_MG1655_(CGSC_6300)_Wang2010':
         wang_MG1655_CGSC_6300_20090512_reject = np.array([
             54, 64, 135, 146
         ]) - 1
-
+        
         file_paths = np.array(file_paths)[[r for r in np.arange(len(file_paths), dtype=int) if (r not in wang_MG1655_CGSC_6300_20090512_reject)]]
-
+    
     # Create the dataframe for our variables
     cycle_variables = pd.DataFrame(columns=phenotypic_variables + ['lineage_ID', 'generation'])
     with_outliers_cycle_variables = pd.DataFrame(columns=phenotypic_variables + ['lineage_ID', 'generation'])
@@ -572,35 +572,39 @@ def main_mm(args):
     raw_data = pd.DataFrame(columns=['time', 'length', 'lineage_ID', 'filename'])
     raw_indices = pd.DataFrame(columns=['value', 'type', 'lineage_ID'])
     
-    # extra_column = [
-    #     'pos0-1',
-    #     'pos0-1-daughter',
-    #     'pos1',
-    #     'pos4',
-    #     'pos5-lower cell',
-    #     'pos5-upper cell',
-    #     'pos6-1-1',
-    #     'pos6-1',
-    #     'pos6-2',
-    #     'pos7-1-1',
-    #     'pos7-1-2',
-    #     'pos7-2-1',
-    #     'pos7-2-2',
-    #     'pos7-3',
-    #     'pos8',
-    #     'pos10-1',
-    #     'pos16-1',
-    #     'pos16-2',
-    #     'pos16-3',
-    #     'pos17-1',
-    #     'pos17-2',
-    #     'pos17-3',
-    #     'pos18-2',
-    #     'pos18-3',
-    #     'pos19-2',
-    #     'pos19-3',
-    #     'pos20'
-    # ]
+    extra_column = [
+        'pos0-1',
+        'pos0-1-daughter',
+        'pos1',
+        'pos4',
+        'pos5-lower cell',
+        'pos5-upper cell',
+        'pos6-1-1',
+        'pos6-1',
+        'pos6-2',
+        'pos7-1-1',
+        'pos7-1-2',
+        'pos7-2-1',
+        'pos7-2-2',
+        'pos7-3',
+        'pos8',
+        'pos10-1',
+        'pos16-1',
+        'pos16-2',
+        'pos16-3',
+        'pos17-1',
+        'pos17-2',
+        'pos17-3',
+        'pos18-2',
+        'pos18-3',
+        'pos19-2',
+        'pos19-3',
+        'pos20'
+    ]
+    
+    correct_timestamp = ['pos1-1-daughter', 'pos17-1', 'pos17-3', 'pos20', 'pos17-2', 'pos0-1',
+                         'pos16-3', 'pos16-2', 'pos16-1', 'pos18-3', 'pos18-2', 'Pos9-1', 'Pos10',
+                         'pos19-3', 'Pos9-2', 'pos19-2', 'pos15']
     
     offset = 0  # In case we can't use some files we want the lineage IDs to be in integer order
     
@@ -643,17 +647,34 @@ def main_mm(args):
             lineage = pd.read_csv(file, delimiter=',', names=['time', 'division_flag', 'length', 'fluor', 'avg_fluor'])
             lineage['time'] = (lineage['time'] - 1) / 60  # Because we map the index to the correct time-step-size which is 1 minute
             step_size = 1 / 60  # one-minute measurements!
-        elif args['data_origin'] == '8-31-16 Continue':
-            lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+        # elif args['data_origin'] == '8-31-16 Continue':
+        #     lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+        #
+        #     # print(lineage['time'])
+        #     # print(lineage['time'].iloc[0])
+        #     # print('_'*100)
+        #
+        #     if .05 == lineage['time'].iloc[1]:
+        #         # Wrong labeling of time
+        #         lineage['time'] = lineage['time'] * 2
+        #     step_size = 6 / 60
+        elif args['data_origin'] == 'lambda_LB':
+            # There are quite a lot of files with an extra column at the beginning
+            if filename in extra_column:
+                lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
+            elif filename == 'pos15':
+                print('This one is special.')
+                lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein', '__', '___', '___1'])[
+                    ['time', 'length']]
+            else:
+                lineage = pd.read_csv(file, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
             
-            # print(lineage['time'])
-            # print(lineage['time'].iloc[0])
-            # print('_'*100)
-
-            if .05 == lineage['time'].iloc[1]:
-                # Wrong labeling of time
+            if filename in correct_timestamp:
                 lineage['time'] = lineage['time'] * 2
-            step_size = 6 / 60
+            
+            step_size = max(np.unique(np.diff(lineage['time'])), key=list(np.diff(lineage['time'])).count)
+            
+            print('step size', step_size)
         elif args['data_origin'] in wang_datasets:
             lineage = pd.read_csv(file, delimiter=' ')  # names=['time', 'division_flag', 'length', 'width', 'area', 'yfp_intensity', 'CMx', 'CMy']
             
@@ -668,7 +689,7 @@ def main_mm(args):
                 # print(np.unique(np.diff(lineage['time'])))
                 # raise IOError('time given in Wang data is not monotonous and increasing.')
                 print('the time given in the data file is not increasing always by 1')  # so we do not know how to measure time for this lineage we will not use it.')
-                check=True
+                check = True
                 # continue
             
             lineage['time'] = (lineage['time']) / 60  # Because we map the index to the correct time-step-size which is 1 minute
@@ -676,7 +697,7 @@ def main_mm(args):
             lineage['length'] = (lineage['length']) * 0.0645  # Convert it from pixel length to micrometers
             
             step_size = 1 / 60  # one-minute measurements!
-
+            
             # plt.plot(lineage['length'].values)
             # plt.show()
             # plt.close()
@@ -796,7 +817,7 @@ def main_mm(args):
                     lineage = lineage.drop(np.arange(1515, 1520), axis=0)
                 if (filename == 'xy05_ch12_cell0'):
                     lineage = lineage.drop(np.arange(1322, 1325), axis=0)
-            
+        
         else:
             raise IOError('This code is not meant to run the data inputted. Please label the data and put it in as an if-statement.')
         
@@ -808,16 +829,6 @@ def main_mm(args):
             offset += 1
             continue
         
-        # elif args['data_origin'] == 'lambda_LB':
-        #     # There are quite a lot of files with an extra column at the beginning
-        #     if filename in extra_column:
-        #         raw_lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
-        #     elif filename == 'pos15':
-        #         print('This one is special.')
-        #         raw_lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein', '__', '___', '___1'])[
-        #             ['time', 'length']]
-        #     else:
-        #         raw_lineage = pd.read_csv(file, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
         # elif args['data_origin'] == 'LAC_M9':
         #     # Simple :)
         #     raw_lineage = pd.read_csv(filename, delimiter='\t', names=['time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
@@ -842,6 +853,7 @@ def main_mm(args):
         
         lineage['filename'] = filename  # for reference
         lineage['lineage_ID'] = count + 1 - offset  # Add the lineage ID
+        lineage['step_size'] = step_size
         
         raw_lineage = lineage.copy()  # Copy the lineage before we edit it
         
@@ -922,7 +934,7 @@ def main_mm(args):
         # if check:
         #     check_the_division(args, lineages=[count + 1 - offset], raw_lineages=raw_lineage, raw_indices=pd.DataFrame.from_dict(to_append, "index"), pu=cycle_variables_lineage)
         # check_the_division(args, lineages=[count + 1 - offset], raw_lineages=raw_lineage, raw_indices=pd.DataFrame.from_dict(to_append, "index"), pu=cycle_variables_lineage)
-
+        
         # append the cycle variables to the
         cycle_variables = cycle_variables.append(cycle_variables_lineage, ignore_index=True)
         with_outliers_cycle_variables = with_outliers_cycle_variables.append(with_outliers, ignore_index=True)
@@ -1130,7 +1142,7 @@ def main_sm(args):
         
         # Get the lineage
         lineage = raw_data[raw_data['lineage_ID'] == lineage_id].copy()
-
+        
         raw_lineage = lineage.copy()  # Copy the lineage before we edit it
         
         lineage, total_nans, rises, singularities, non_positives = clean_up(lineage)
@@ -1240,7 +1252,7 @@ def main():
     input_args = parser.parse_args()
     
     # Do all the Mother and Sister Machine data
-    for data_origin in sm_datasets:  # input_args.dataset_names[21:]:
+    for data_origin in ['Maryam_LongTraces']:  # input_args.dataset_names[21:]:
         print(data_origin)
         
         """

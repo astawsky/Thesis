@@ -166,34 +166,43 @@ def main(args):
         other=np.nan
     )
 
-    regression_plots(tas)
-    scatter_plots_one_dataset(tas)
+    # regression_plots(tas)
+    # scatter_plots_one_dataset(tas)
     
-    var1, var2 = 'generationtime', 'growth_rate'
+    # var1, var2 = 'generationtime', 'growth_rate'
     
-    # Discard the pairs that have an outlier
-    relevant = tas.sort_values('trap_ID')[[var1 + '_A', var2 + '_B']].dropna()
-
-    x, y = relevant[var1 + '_A'].values, relevant[var2 + '_B'].values
-
-    # Calculate the two types of correlations
-    corr = pearsonr(x, y)[0]
-    spear = spearmanr(x, y)[0]
+    for var1 in ['generationtime', 'growth_rate', 'fold_growth', 'division_ratio']:
+        
+        var2 = var1
+        
+        # Discard the pairs that have an outlier
+        relevant = tas.sort_values('trap_ID')[[var1 + '_A', var2 + '_B']].dropna()
     
-    fake_x = np.linspace(np.min(x), np.max(x))
-
-    seaborn_preamble()
-    fig, ax = plt.subplots(tight_layout=True, figsize=[5, 5])
-    # sns.regplot(data=tas, x=var1 + '_A', y=var2 + '_B', line_kws={'color': 'black', 'ls': '--'})
-    sns.scatterplot(data=tas, x=var1 + '_A', y=var2 + '_B')
-    plt.plot(fake_x, np.log(2) / fake_x, color='black', ls='--', label='log(2)')
-    ax.annotate(r'$\rho=${:.2}, {:.2}, n={}'.format(corr, spear, len(relevant)), xy=(.5, .92), xycoords=ax.transAxes, fontsize=13, ha='center', va='bottom', color='red',
-                bbox=dict(boxstyle='round,pad=0.2', fc='yellow', alpha=0.7))
-    plt.xlabel(symbols['time_averages'][var1] + r'$^A$')
-    plt.ylabel(symbols['time_averages'][var2] + r'$^B$')
-    plt.savefig('{}/tau alpha ln2'.format(args['data_origin'], var1, var2), dpi=300)
-    # plt.show()
-    plt.close()
+        x, y = relevant[var1 + '_A'].values, relevant[var2 + '_B'].values
+    
+        # Calculate the two types of correlations
+        corr = pearsonr(x, y)[0]
+        spear = spearmanr(x, y)[0]
+        
+        fake_x = np.linspace(np.min(x), np.max(x))
+    
+        # stylistic reasons
+        sns.set_context('paper', font_scale=1.2)
+        sns.set_style("ticks", {'axes.grid': False})
+    
+        fig, ax = plt.subplots(figsize=[5, 5], tight_layout=True)
+        
+        # sns.regplot(data=tas, x=var1 + '_A', y=var2 + '_B', line_kws={'color': 'black', 'ls': '--'})
+        sns.scatterplot(data=tas, x=var1 + '_A', y=var2 + '_B')
+        # plt.plot(fake_x, np.log(2) / fake_x, color='black', ls='--', label='log(2)')
+        # ax.annotate(r'$\rho=${:.2}, {:.2}, n={}'.format(corr, spear, len(relevant)), xy=(.5, .92), xycoords=ax.transAxes, fontsize=13, ha='center', va='bottom', color='red',
+        #             bbox=dict(boxstyle='round,pad=0.2', fc='yellow', alpha=0.7))
+        print(var1, corr)
+        plt.xlabel(symbols['time_averages'][var1] + r'$^A$')
+        plt.ylabel(symbols['time_averages'][var2] + r'$^B$')
+        plt.savefig('{}/{} {}.png'.format(args['data_origin'], var1, var2), dpi=300)
+        # plt.show()
+        plt.close()
 
 
 if __name__ == '__main__':
