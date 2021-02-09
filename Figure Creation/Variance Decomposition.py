@@ -50,6 +50,9 @@ def shuffle_info_sm(info):
     return new_info
 
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
 """ vd conditioning on trap and lineage """
 
 
@@ -290,7 +293,7 @@ def mm_lineage_experiment(chosen_datasets, ax):
     #                  [output_df[output_df['kind'] == 'Artificial']['Exp+Lin'].mean() for _ in range(len(real_order))],
     #                  [0 for _ in range(len(real_order))], color='lightgrey')
     
-    for color, y, label in zip([cmap[0], cmap[2]], ['Exp+Lin'], ['Lineage']):  # , 'Exp' , 'Experiment'
+    for color, y, label in zip([cmap[0], cmap[2]], ['Exp+Lin', 'Exp'], ['Lineage', 'Experiment']):  # , 'Exp' , 'Experiment'
         # palette = {"Trace": color, "Artificial": 'red'}
         sns.barplot(x='variable', y=y, data=output_df[output_df['kind'] == 'Trace'], color=color, edgecolor='black', label=label, order=real_order, ax=ax)
     
@@ -299,6 +302,9 @@ def mm_lineage_experiment(chosen_datasets, ax):
     ax.set_xlabel('')
     ax.set_ylabel('Variance Decomposition')
     ax.set_ylim([0, .45])
+    
+    
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
 """ vd conditioning on experiments and lineage """
@@ -416,27 +422,235 @@ def mm_lineage(chosen_datasets, ax):
     ax.set_ylim([0, .45])
 
 
-sns.set_context('paper', font_scale=1.5)
+""" vd conditioning on experiment, trap, and lineage """
+
+
+def vd_with_trap_and_experiments(sm_datasets, variables, lin_type, ax):
+    total_df = pd.DataFrame()
+    for data_origin in sm_datasets[:-1]:
+        print(data_origin)
+        pu = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Datasets/' + data_origin + '/ProcessedData/physical_units.csv'
+        # pu = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Datasets/' + data_origin + '/ProcessedData/z_score_under_3/physical_units_without_outliers.csv'
+        
+        pu = pd.read_csv(pu)
+        pu['experiment'] = data_origin
+        
+        total_df = total_df.append(pu, ignore_index=True)
+        
+    if lin_type == 'NL':
+        type_of_lineages = ['NL']
+    elif lin_type == 'SL':
+        type_of_lineages = ['SL']
+    else:
+        type_of_lineages = ['SL', 'NL']
+    
+    print('type_of_lineages:', type_of_lineages)
+    output_df = pd.DataFrame()
+    
+    output_df = output_df.append({
+        'variable': '',
+        'Exp+Env': 0,
+        'Exp+Env+Lin': 0,
+        # This is so we can graph it nicely
+        'Exp': 0,
+        'kind': 'Trace',
+        'Lin+Env+Exp_CV': np.nan,
+        'Lin+Env_CV': np.nan,
+        'Exp_CV': np.nan
+    }, ignore_index=True)
+    
+    for kind in ['Trace', 'Artificial']:
+        if kind == 'Trace':
+            # pu = pd.read_csv(args['pu']).sort_values(['lineage_ID', 'generation']).reset_index(drop=True)
+            pu = total_df[total_df['dataset'].isin(type_of_lineages)].copy()
+            
+            # The pooled mean
+            pooled_pu_mean = pu[variables].mean()
+        else:
+            # pu = pd.read_csv(args['pu']).sort_values(['lineage_ID', 'generation']).reset_index(drop=True)
+            pu = shuffle_info_sm(total_df)
+            pu['experiment'] = total_df['experiment'].copy().sort_values().values
+            pu = pu[pu['dataset'].isin(type_of_lineages)].copy()
+            
+            # The pooled mean
+            pooled_pu_mean = pu[variables].mean()
+        
+        #
+        delta = pd.DataFrame(columns=variables)
+        diff = pd.DataFrame(columns=variables)
+        trap = pd.DataFrame(columns=variables)
+        expert = pd.DataFrame(columns=variables)
+        
+        for exp in pu.experiment.unique():
+            print('experiment', exp)
+            e_cond = (pu['experiment'] == exp)
+            exp_lins = pu[e_cond].copy()
+            exp_mean = exp_lins[variables].mean()
+            for trap_id in pu[pu['experiment'] == exp].trap_ID.unique():
+                t_cond = (pu['trap_ID'] == trap_id) & e_cond
+                trap_lins = pu[t_cond].copy()
+                trap_means = trap_lins[variables].mean()
+                
+                for trace in ['A', 'B']:
+                    lin_cond = (trap_lins['trace'] == trace)
+                    lin = trap_lins[lin_cond].copy()
+                    
+                    expert = expert.append(lin[variables].count() * ((exp_mean - pooled_pu_mean) ** 2), ignore_index=True)
+                    trap = trap.append(lin[variables].count() * ((trap_means - exp_mean) ** 2), ignore_index=True)
+                    diff = diff.append(lin[variables].count() * ((lin[variables].mean() - trap_means) ** 2), ignore_index=True)
+                    delta = delta.append(((lin[variables] - lin[variables].mean()) ** 2).sum(), ignore_index=True)
+        
+        #
+        exp_var = expert.sum() / (pu[variables].count() - 1)
+        delta_var = delta.sum() / (pu[variables].count() - 1)
+        diff_var = diff.sum() / (pu[variables].count() - 1)
+        tmean_var = trap.sum() / (pu[variables].count() - 1)
+        
+        # Make sure it is a true decomposition
+        assert (np.abs(pu[variables].var() - (exp_var[variables] + delta_var[variables] + diff_var[variables] + tmean_var[variables])) < .0000001).all()
+        
+        # Add it to the thing
+        for variable in variables:
+            
+            output_df = output_df.append({
+                'variable': symbols['physical_units'][variable],
+                'Exp+Env': (exp_var[variable] + tmean_var[variable]) / pu[variable].var(),
+                'Exp+Env+Lin': (exp_var[variable] + tmean_var[variable] + diff_var[variable]) / pu[variable].var(),
+                # This is so we can graph it nicely
+                'Exp': (exp_var[variable]) / pu[variable].var() if kind == 'Trace' else (exp_var[variable] + tmean_var[variable] + diff_var[variable]) / pu[variable].var(),
+                'kind': kind,
+                'Lin+Env+Exp_CV': np.sqrt(exp_var[variable] + tmean_var[variable] + diff_var[variable]) / pu[variable].mean(),
+                'Lin+Env_CV': np.sqrt(diff_var[variable] + tmean_var[variable]) / pu[variable].mean(),
+                'Lin_CV': np.sqrt(diff_var[variable]) / pu[variable].mean() if kind == 'Trace' else (exp_var[variable] + tmean_var[variable] + diff_var[variable]) / pu[variable].var()
+            }, ignore_index=True)
+            
+            # So we have the spaces in the graph
+            if variable == 'fold_growth':
+                output_df = output_df.append({
+                    'variable': ' ',
+                    'Exp+Env': 0,
+                    'Exp+Env+Lin': 0,
+                    # This is so we can graph it nicely
+                    'Exp': 0,
+                    'kind': kind,
+                    'Lin+Env+Exp_CV': np.nan,
+                    'Lin+Env_CV': np.nan,
+                    'Lin_CV': np.nan
+                }, ignore_index=True)
+            elif variable == 'length_birth':
+                output_df = output_df.append({
+                    'variable': '  ',
+                    'Exp+Env': 0,
+                    'Exp+Env+Lin': 0,
+                    # This is so we can graph it nicely
+                    'Exp': 0,
+                    'kind': kind,
+                    'Lin+Env+Exp_CV': np.nan,
+                    'Lin+Env_CV': np.nan,
+                    'Lin_CV': np.nan
+                }, ignore_index=True)
+
+    output_df = output_df.append({
+        'variable': '   ',
+        'Exp+Env': 0,
+        'Exp+Env+Lin': 0,
+        # This is so we can graph it nicely
+        'Exp': 0,
+        'kind': 'Artificial',
+        'Lin+Env+Exp_CV': np.nan,
+        'Lin+Env_CV': np.nan,
+        'Lin_CV': np.nan
+    }, ignore_index=True)
+
+    output_df = output_df.append({
+        'variable': '    ',
+        'Exp+Env': 0,
+        'Exp+Env+Lin': 0,
+        # This is so we can graph it nicely
+        'Exp': 0,
+        'kind': 'Artificial',
+        'Lin+Env+Exp_CV': np.nan,
+        'Lin+Env_CV': np.nan,
+        'Lin_CV': np.nan
+    }, ignore_index=True)
+
+    real_order = ['', symbols['physical_units']['div_and_fold'], symbols['physical_units']['division_ratio'], symbols['physical_units']['fold_growth'], ' ',
+                  symbols['physical_units']['added_length'], symbols['physical_units']['length_birth'], '  ', symbols['physical_units']['generationtime'],
+                  symbols['physical_units']['growth_rate'], '   ']
+    
+    # relevant = (output_df['kind'] == 'Trace')
+    #
+    # to_plot = pd.DataFrame()
+    #
+    # for variable in output_df.variable.unique():#list(symbols['physical_units'].values()):
+    #     if variable in ['before', '', '  ', 'after']:
+    #         continue
+    #     df = output_df[relevant & (output_df['variable'] == variable)].copy()
+    #
+    #     for t, l in zip(['Lin', 'Env', 'Exp'], [df['Lin_CV'].values[0], df['Lin+Env_CV'].values[0], df['Lin+Env+Exp_CV'].values[0]]):
+    #         to_plot = to_plot.append({
+    #             'type': t,
+    #             'CV': l,
+    #             'variable': variable
+    #         }, ignore_index=True)
+    #
+    #
+    # sns.pointplot(data=to_plot, x='type', y='CV', hue='variable')
+    # plt.legend(title='')
+    # plt.xlabel('')
+    # # plt.show()
+    # plt.savefig('blah std.png', dpi=300)
+    # plt.close()
+    # exit()
+    
+    plt.fill_between(output_df.variable.unique(),
+                     [output_df[output_df['kind'] == 'Artificial']['Exp+Env+Lin'].mean() for _ in range(len(output_df.variable.unique()))],
+                     [0 for _ in range(len(output_df.variable.unique()))], color='lightgrey')
+    
+    for color, y, label in zip([cmap[0], cmap[1], cmap[2]], ['Exp+Env+Lin', 'Exp+Env', 'Exp'], ['Lineage', 'Trap', 'Experiment']):
+        # palette = {"Trace": color, "Artificial": 'red'}
+        sns.barplot(x='variable', y=y, data=output_df[output_df['kind'] == 'Trace'], color=color, edgecolor='black', label=label, order=real_order)
+    
+    handles, labels = ax.get_legend_handles_labels()
+    plt.legend(handles, labels, title='')
+    
+    # plt.title(lin_type)
+    ax.set_xlabel('')
+    ax.set_ylabel('')
+    # plt.ylabel('CV Decomposition')
+    plt.ylim([0, .45])
+        
+        
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
+sns.set_context('paper', font_scale=1)
 sns.set_style("ticks", {'axes.grid': True})
 
-fig, axes = plt.subplots(1, 3, figsize=[13, 6], tight_layout=True)
-
-axes[0].set_title('A', x=0, fontsize='xx-large')
-axes[1].set_title('B', x=-.2, fontsize='xx-large')
-axes[2].set_title('C', x=-.1, fontsize='xx-large')
-
-axes[0].set_frame_on(False)
-axes[0].set_xticks([])
-axes[0].set_yticks([])
-
-mm_lineage(['Lambda_LB', 'Maryam_LongTraces'], ax=axes[1])  # + sm_datasets[:-1], 'MG1655_inLB_LongTraces'
-sm_lineage_trap(variables=['div_and_fold', 'division_ratio', 'fold_growth', 'added_length', 'length_birth', 'generationtime', 'growth_rate'], ax=axes[2])
-plt.tight_layout()
-plt.show()
-plt.close()
-
-# fig, ax = plt.subplots(tight_layout=True)
-# mm_lineage_experiment(['Lambda_LB', 'Maryam_LongTraces'], ax=ax)
-# plt.legend()
+# fig, axes = plt.subplots(1, 3, figsize=[13, 6], tight_layout=True)
+#
+# axes[0].set_title('A', x=0, fontsize='xx-large')
+# axes[1].set_title('B', x=-.2, fontsize='xx-large')
+# axes[2].set_title('C', x=-.1, fontsize='xx-large')
+#
+# axes[0].set_frame_on(False)
+# axes[0].set_xticks([])
+# axes[0].set_yticks([])
+#
+# mm_lineage(['Lambda_LB', 'Maryam_LongTraces'], ax=axes[1])  # + sm_datasets[:-1], 'MG1655_inLB_LongTraces'
+# sm_lineage_trap(variables=['div_and_fold', 'division_ratio', 'fold_growth', 'added_length', 'length_birth', 'generationtime', 'growth_rate'], ax=axes[2])
+# plt.tight_layout()
 # plt.show()
 # plt.close()
+
+fig, axes = plt.subplots(1, 2, figsize=[6.5, 3.5], tight_layout=True)
+
+axes[0].set_title('A', x=-.2, fontsize='xx-large')
+axes[1].set_title('B', x=-.05, fontsize='xx-large')
+
+mm_lineage_experiment(['Lambda_LB', 'Maryam_LongTraces'], ax=axes[0])
+vd_with_trap_and_experiments(sm_datasets, phenotypic_variables, lin_type='NL', ax=axes[1])
+axes[1].set_yticklabels('')
+plt.legend()
+plt.show()
+plt.close()

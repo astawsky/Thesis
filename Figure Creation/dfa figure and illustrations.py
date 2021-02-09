@@ -118,9 +118,9 @@ def recreate_loglog_plots(loglog_plot_recreation, variable, ax):
             
             # Include it in the legend but not more than once
             if set_trace_legend:
-                ax.plot(wss, ytr, color=color, marker='x')
+                ax.plot(wss, ytr, color=color, marker='')
             else:
-                ax.plot(wss, ytr, color=color, marker='x')  # , label='Trace'
+                ax.plot(wss, ytr, color=color, marker='')  # , label='Trace'
                 set_trace_legend = True
         # If it is a shuffled lineage plot it and include it in the legend
         elif relevant.loc[ind]['dataset'] == 'Shuffled':
@@ -133,9 +133,9 @@ def recreate_loglog_plots(loglog_plot_recreation, variable, ax):
             
             # Include it in the legend but not more than once
             if set_shuffled_legend:
-                ax.plot(wss, ytr, color=color, marker='x')
+                ax.plot(wss, ytr, color=color, marker='')
             else:
-                ax.plot(wss, ytr, color=color, marker='x')  # , label='Shuffled'
+                ax.plot(wss, ytr, color=color, marker='')  # , label='Shuffled'
                 set_shuffled_legend = True
         # We do not want to see the white noise
         else:
@@ -147,16 +147,16 @@ def recreate_loglog_plots(loglog_plot_recreation, variable, ax):
     
     # Plot the best fit line and its parameters
     ax.plot(np.unique(wss_array['Trace']), [np.exp(intercept_trace) * (l ** slope_trace) for l in np.unique(wss_array['Trace'])], ls='--', color='blue', linewidth=3,
-             label=r'$' + str(np.round(intercept_trace, 2)) + r'n^{' + str(np.round(slope_trace, 2)) + r'\pm' + str(np.round(std_err_trace, 3)) + r'}$', zorder=100)
+             label='Trace', zorder=100)  # label=r'$' + str(np.round(intercept_trace, 2)) + r'\, k^{' + str(np.round(slope_trace, 2)) + r'\pm' + str(np.round(std_err_trace, 3)) + r'}$'
     ax.plot(np.unique(wss_array['Shuffled']), [np.exp(intercept_art) * (l ** slope_art) for l in np.unique(wss_array['Shuffled'])], ls='--', color='red', linewidth=3,
-             label=r'$' + str(np.round(intercept_art, 2)) + r'n^{' + str(np.round(slope_art, 2)) + r'\pm' + str(np.round(std_err_art, 3)) + r'}$', zorder=100)
+             label='Shuffled', zorder=100)  # label=r'$' + str(np.round(intercept_art, 2)) + r'\, k^{' + str(np.round(slope_art, 2)) + r'\pm' + str(np.round(std_err_art, 3)) + r'}$'
     
     # ax.title(variable)
     ax.set_ylabel(r'$F(k)$')
     ax.set_xlabel('k (window size)')
     ax.set_yscale('log')
     ax.set_xscale('log')
-    ax.legend(title='')
+    ax.legend(title='', loc='upper left')
 
 
 def plot_dfa_slopes(ax):
@@ -179,7 +179,15 @@ def plot_dfa_slopes(ax):
     plt.axhline(0.5, ls='-', c='k')
     # sns.pointplot(data=se[condition], x='variable', y='slope', hue='experiment', join=False, dodge=True, palette=cmap, ci="sd")
     # sns.boxplot(data=se, x='variable', y='slope', hue='dataset', showfliers=False, palette=cmap)
-    sns.pointplot(data=se, x='variable', y='slope', hue='dataset', join=False, dodge=True, palette=cmap, ci="sd", capsize=.1, ax=ax)
+    
+    sns.pointplot(data=se, x='variable', y='slope', hue='dataset', join=False, dodge=True, palette=cmap, capsize=.1, ax=ax, ci="sd", zorder=100)
+    
+    # for count, datas in enumerate(se.dataset.unique()):
+    #     c = cmap[count]
+    #     y = [se[(se['dataset'] == datas) & (se['variable'] == v)]['slope'].mean() for v in se.variable.unique()]
+    #     yerr = [se[(se['dataset'] == datas) & (se['variable'] == v)]['slope'].std() for v in se.variable.unique()]
+    #     ax.errorbar(x=se.variable.unique(), y=y, yerr=yerr, capsize=.1, c=c, label=datas)
+    
     # sns.violinplot(data=se, x='variable', y='slope', hue='dataset', join=False, dodge=True, color=cmap[0])
     # plt.legend(title='')
     ax.set_ylabel(r'$\gamma$')
@@ -193,9 +201,9 @@ def plot_dfa_slopes(ax):
 
 recreation = pd.read_csv(r'/Users/alestawsky/PycharmProjects/Thesis/DFA/LogLog Recreation/MG1655_inLB_LongTraces/loglog_scaling_recreation.csv')
 
-sns.set_context('paper', font_scale=1.5)
+sns.set_context('paper', font_scale=1)
 sns.set_style("ticks", {'axes.grid': True})
-fig, axes = plt.subplots(1, 3, figsize=[13, 6], tight_layout=True)
+fig, axes = plt.subplots(1, 3, figsize=[6.5, 3.5], tight_layout=True)
 
 axes[0].set_title('A', x=-.1, fontsize='xx-large')
 axes[1].set_title('B', x=-.12, fontsize='xx-large')
@@ -204,62 +212,6 @@ axes[2].set_title('C', x=-.18, fontsize='xx-large')
 plot_dfa_cumsum_illustration(axes[0])
 recreate_loglog_plots(recreation[recreation['kind'] == 'dfa (short)'], '$x_0$', axes[1])
 plot_dfa_slopes(axes[2])
-plt.savefig('Figures/dfa figure.png', dpi=300)
-plt.show()
+plt.savefig('Figures/dfa figure.png', dpi=500)
+# plt.show()
 plt.close()
-
-
-
-
-
-exit()
-
-
-# variable = 'length_birth'  # generationtime
-
-
-for ds in dataset_names:
-    if ds in sm_datasets[:-1]:
-        continue
-    print(ds)
-    pu = pd.read_csv(f'/Users/alestawsky/PycharmProjects/Thesis/Datasets/{ds}/ProcessedData/z_score_under_3/physical_units_without_outliers.csv')
-
-    for variable in ['added_length']:
-        spec_lin = [pu[pu['lineage_ID'] == lin][variable].std() / pu[pu['lineage_ID'] == lin][variable].mean() for lin in pu.lineage_ID.unique()]
-        print(variable)
-        print(f'{np.mean(spec_lin)} +- {np.std(spec_lin)}')
-        print(f'{pu[variable].std() / pu[variable].mean()}')
-        print('-'*200)
-    
-    # md = pd.DataFrame()
-    # plt.axhline(0, ls='--', color='black')
-    #
-    # for lin in pu.lineage_ID.unique()[:100]:
-    #     vals = pu[pu['lineage_ID'] == lin].copy().sort_values('generation')[variable].dropna().values
-    #
-    #     if len(vals) < 30:
-    #         print(lin, 'skipped', len(vals))
-    #         continue
-    #
-    #     xss = np.arange(len(vals) - 10, dtype=int)
-    #     pcorrs = []
-    #     for k in xss:
-    #         # print(k, type(k))
-    #         # print(len(vals[k:]), len(vals[:len(vals)-k]))
-    #         # print(type(vals))
-    #         pcorrs.append(pearsonr(vals[k:], vals[:len(vals)-k])[0])
-    #
-    #         for m, d in zip(vals[k:], vals[:len(vals)-k]):
-    #             md = md.append({
-    #                 'k': k,
-    #                 'm': m,
-    #                 'd': d
-    #             }, ignore_index=True)
-    #     plt.plot(xss, pcorrs)
-    #
-    # # pooled = [pearsonr(md[md['k'] == k]['m'].values, md[md['k'] == k]['d'].values)[0] for k in md['k'].unique()]
-    # # plt.plot(np.arange(md['k'].unique()), pooled)
-    # plt.tight_layout()
-    # plt.show()
-    # plt.close()
-    # exit()
