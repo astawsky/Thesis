@@ -16,13 +16,13 @@ from matplotlib import cm
 
 def scatter_plot_3d(df, ax):
     # Data for a three-dimensional line
-    ax.scatter3D(df['generationtime'].values, df['division_ratio'].values, df['growth_rate'].values, alpha=1)
+    ax.scatter3D(df['growth_rate'].values, df['generationtime'].values, df['division_ratio'].values, alpha=.2)
     
     
 def plot_manifold(df, ax):
     # gr_domain = np.linspace(- 3 * df['growth_rate'].std() + df['growth_rate'].mean(), + 3 * df['growth_rate'].std() + df['growth_rate'].mean())  # -3.5 *
-    gt_domain = np.linspace(df['generationtime'].min(), df['generationtime'].max())
-    gr_domain = np.linspace(df['growth_rate'].min(), df['growth_rate'].max())
+    gt_domain = np.linspace(0, 2.5)
+    gr_domain = np.linspace(0, 3)
     # gt_domain = np.linspace(- 3 * df['generationtime'].std() + df['generationtime'].mean(), + 3 * df['generationtime'].std() + df['generationtime'].mean())
     
     X, Z = np.meshgrid(
@@ -32,24 +32,26 @@ def plot_manifold(df, ax):
 
     Y = 1 / np.exp(X * Z)  # In the case of ln(f)
     
-    ax.plot_wireframe(X, Y, Z, cmap=cm.hot, alpha=.5)  # plot_surface , alpha=.5
+    ax.plot_wireframe(Z, X, Y, alpha=.5, linewidth=.7)  # plot_surface , alpha=.5
     
     
 def plot_perfect_line(df, ax):
-    # gr_domain = np.linspace(- 3 * df['growth_rate'].std() + df['growth_rate'].mean(), + 3 * df['growth_rate'].std() + df['growth_rate'].mean())
-    gr_domain = np.linspace(df['growth_rate'].min(), df['growth_rate'].max())
+    # gr_domain = np.linspace(0, 3)
+    gt_domain = np.linspace(0, 3)
+    # gr_domain = np.linspace(df['growth_rate'].min(), df['growth_rate'].max())
 
-    gt_domain = np.array([np.log(2) / z for z in gr_domain])
+    gr_domain = np.array([np.log(2) / z for z in gt_domain])
 
     y = np.array([1 / np.exp(gr * gt) for gr, gt in zip(gr_domain, gt_domain)])
-    ax.plot3D(gt_domain, y, gr_domain, color='black', zorder=10000)
+    ax.plot3D(gr_domain, gt_domain, y, color='black', zorder=10000, alpha=1)
     
     
-def script(points_are='pu'):  # can be ta
+def script(ax, points_are='pu'):  # can be ta
+    ax.set_xlim([0, 3])
+    ax.set_ylim([0, 2.5])
+    # ax.set_zlim([0, 3])
     
     total = pd.DataFrame()
-    ax = plt.axes(projection='3d')
-    # plt.hold(True)
     
     for ds in dataset_names[:-1]:
         if ds == 'Pooled_SM':
@@ -104,13 +106,27 @@ def script(points_are='pu'):  # can be ta
             ta = ta.sample(n=min(100, len(pu)), replace=False)
             scatter_plot_3d(ta, ax)
     
-    ax.set_xlabel(r'$\tau$')
+    ax.set_ylabel(r'$\tau$')
     # ax.set_ylabel(r'$\ln(f)$')
-    ax.set_ylabel(r'$f$')
-    ax.set_zlabel(r'$\alpha$')
-    plt.tight_layout()
-    plt.show()
-    plt.close()
-    
-    
-script(points_are='ta')
+    ax.set_zlabel(r'$f$')
+    ax.set_xlabel(r'$\alpha$')
+
+
+scale = 1
+
+# stylistic reasons
+sns.set_context('paper', font_scale=scale)
+sns.set_style("ticks", {'axes.grid': True})
+# fig, axes = plt.subplots(1, 2, tight_layout=True)
+
+fig = plt.figure(figsize=[6.5 * scale, 3 * scale])  # , tight_layout=True
+ax = fig.add_subplot(1, 2, 1, projection='3d')
+script(points_are='pu', ax=ax)
+
+# set up the axes for the second plot
+ax = fig.add_subplot(1, 2, 2, projection='3d')
+
+script(points_are='ta', ax=ax)
+
+plt.show()
+plt.close()

@@ -467,6 +467,38 @@ def add_control_and_cut_extra_intervals(info):
     return new_info
 
 
+def pool_experiments(group, name, outliers=True, dimensions='pu'):
+    pooled = pd.DataFrame()
+    
+    for exp in group:
+        if dimensions == 'pu':
+            df_to_get = 'physical_units'
+        elif dimensions == 'tc':
+            df_to_get = 'trace_centered'
+        elif dimensions == 'ta':
+            df_to_get = 'time_averages'
+        else:
+            raise IOError('Incorrect dimensions. Options are pu, tc or ta.')
+        
+        if outliers:
+            dir_name = f'/Users/alestawsky/PycharmProjects/Thesis/Datasets/{exp}/ProcessedData/{df_to_get}.csv'
+        else:
+            dir_name = f'/Users/alestawsky/PycharmProjects/Thesis/Datasets/{exp}/ProcessedData/z_score_under_3/{df_to_get}_without_outliers.csv'
+            
+        pu_exp = pd.read_csv(dir_name)
+        
+        if len(pooled) == 0:
+            pu_exp['lineage_ID'] = pu_exp['lineage_ID']
+        else:
+            pu_exp['lineage_ID'] = pu_exp['lineage_ID'] + pooled['lineage_ID'].max() + 1  # Re-index the lineage_IDs
+        pu_exp['experiment_group'] = name
+        pu_exp['experiment_name'] = exp
+        
+        pooled = pooled.append(pu_exp, ignore_index=True)
+    
+    return pooled
+
+
 phenotypic_variables = ['div_then_fold', 'div_and_fold', 'fold_then_div', 'fold_growth', 'division_ratio', 'added_length', 'generationtime', 'length_birth', 'length_final', 'growth_rate']
 symbols = {
     'physical_units': dict(
@@ -509,7 +541,7 @@ lexA3_wang_exps = ['20090930_E_coli_MG1655_lexA3_Wang2010', '20090923_E_coli_MG1
 tanouchi_datasets = ['MC4100_25C (Tanouchi 2015)', 'MC4100_27C (Tanouchi 2015)', 'MC4100_37C (Tanouchi 2015)']
 sm_datasets = ['1015_NL', '062718_SL', '071318_SL', '072818_SL_NL', '101218_SL_NL', 'Pooled_SM']
 mm_datasets = ['Lambda_LB', 'Maryam_LongTraces', 'MG1655_inLB_LongTraces']  # 8-31-16 Continue
-dataset_names = sm_datasets + mm_datasets + tanouchi_datasets + wang_datasets
+dataset_names = sm_datasets + mm_datasets + tanouchi_datasets + cgsc_6300_wang_exps + lexA3_wang_exps
 cmap = sns.color_palette('tab10')
 
 phenotypic_variables = ['div_and_fold', 'fold_growth', 'division_ratio', 'added_length', 'generationtime', 'length_birth', 'length_final', 'growth_rate']

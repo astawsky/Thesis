@@ -2,7 +2,8 @@
 
 from AnalysisCode.global_variables import (
     symbols, units, create_folder, phenotypic_variables, shuffle_lineage_generations, cmap, seaborn_preamble, sm_datasets,
-    wang_datasets, get_time_averages_df, trace_center_a_dataframe, cgsc_6300_wang_exps, shuffle_info, lexA3_wang_exps, mm_datasets, tanouchi_datasets, dataset_names, shuffle_lineage_generations
+    wang_datasets, get_time_averages_df, trace_center_a_dataframe, cgsc_6300_wang_exps, shuffle_info, lexA3_wang_exps, mm_datasets, tanouchi_datasets, dataset_names, shuffle_lineage_generations,
+    pool_experiments
 )
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -27,7 +28,7 @@ def dfa_short(lineage, min_ws, max_ws=None, window_size_steps=5, steps_between_w
     window_sizes = np.arange(min_ws, max_ws, window_size_steps, dtype=int)
     
     # Convert it into a random walk of some persistence
-    total_walk = (lineage - lineage.mean()).cumsum()
+    total_walk = ((lineage - lineage.mean()) / lineage.std()).cumsum()
     
     # This is where we keep the rescaled ranges for all partial time-series
     mse_array = []
@@ -171,7 +172,6 @@ def mean_short(lineage, min_ws, max_ws=None, window_size_steps=5, steps_between_
 
 
 def plot_histograms_of_scaling_exponents(figure_folder, histogram_of_regression):
-    
     # Histogram of H of every kind
     for kind in histogram_of_regression.kind.unique():
         seaborn_preamble()
@@ -179,7 +179,7 @@ def plot_histograms_of_scaling_exponents(figure_folder, histogram_of_regression)
         plt.axhline(.5, ls='-', c='k', linewidth=1, zorder=1)
         
         sns.pointplot(data=histogram_of_regression[histogram_of_regression['kind'] == kind], x='variable', y='slope', hue='dataset', order=[symbols['physical_units'][v] for v in phenotypic_variables],
-                    join=False, dodge=True, capsize=.5)  # , capthick=1
+                      join=False, dodge=True, capsize=.5)  # , capthick=1
         # sns.boxplot(data=histogram_of_regression[histogram_of_regression['kind'] == kind], x='variable', y='slope', hue='dataset', order=[symbols['physical_units'][v] for v in phenotypic_variables],
         #             showfliers=False)
         plt.legend(title='')
@@ -306,16 +306,18 @@ def recreate_loglog_plots(loglog_plot_recreation, figure_folder, individuals=Fal
 
 
 def main(args):
-    
     min_ws = 5
     max_ws = None
-    window_size_steps = 2
+    window_size_steps = 4  # 2
     steps_between_windows = 3
     
     # import the labeled measured bacteria in physical units
+    # for ds in args.data_origin:
+    #
     physical_units = pd.read_csv(args['pu'])
     shuffled_lineages = shuffle_lineage_generations(physical_units, mm=True if args['data_origin'] not in sm_datasets else False)
-    
+    # shuffled_lineages = shuffle_lineage_generations(physical_units, mm=True if args['data_origin'] != '(Vashistha et al 2021)' else False)
+
     # This is to see the differences between the slope or intercepts of different lineages from different datasets and using different scaling analyses
     histogram_of_regression = pd.DataFrame(columns=['dataset', 'lineage_ID', 'slope', 'intercept', 'std_err', 'variable', 'kind'])
     
@@ -345,7 +347,7 @@ def main(args):
             types_of_lineages, names_types_of_lineages = [trace, shuffled], ["Trace", "Shuffled"]
             
             for lineage, dataset in zip(types_of_lineages, names_types_of_lineages):
-                for scaling_analysis, kind in zip([dfa_short, mean_short], ['dfa (short)', 'mean (short)']):
+                for scaling_analysis, kind in zip([dfa_short], ['dfa (short)']):
                     
                     # Calculate the scaling of this "lineage" using this "kind" of analysis
                     window_sizes, y_to_regress, slope, intercept, std_err = scaling_analysis(lineage, min_ws=min_ws, max_ws=max_ws, window_size_steps=window_size_steps,
@@ -413,9 +415,48 @@ if __name__ == '__main__':
     
     # Finalize the arguments
     input_args = parser.parse_args()
+
+    # experimental_groups = {
+    #     # '(Tanouchi 2015) 37C': pool_experiments(['MC4100_37C (Tanouchi 2015)'], '(Tanouchi 2015) 37C', outliers=True),
+    #     # '(Tanouchi 2015) 27C': pool_experiments(['MC4100_27C (Tanouchi 2015)'], '(Tanouchi 2015) 27C', outliers=True),
+    #     # '(Tanouchi 2015) 25C': pool_experiments(['MC4100_25C (Tanouchi 2015)'], '(Tanouchi 2015) 25C', outliers=True),
+    #     '(Wang et al 2010) CGSC_6300': pool_experiments(cgsc_6300_wang_exps, '(Wang et al 2010) CGSC_6300', outliers=True),
+    #     '(Wang et al 2010) lexA3': pool_experiments(lexA3_wang_exps, '(Wang et al 2010) lexA3', outliers=True),
+    #     '(Kohram et al 2020, Susman et al 2018)': pool_experiments(mm_datasets, '(Kohram et al 2020, Susman et al 2018)', outliers=True),
+    #     '(Vashistha et al 2021)': pool_experiments(sm_datasets, '(Vashistha et al 2021)', outliers=True)
+    # }
+    #
+    # for data_origin, pooled in experimental_groups.items():
+    #     print(data_origin, len(pooled.lineage_ID.unique()), len(pooled.experiment_name.unique()), sep='\n\n')
+    #
+    #     current_dir = os.path.dirname(os.path.abspath(__file__))
+    #     create_folder(current_dir + '/Scaling Exponents')
+    #     create_folder(current_dir + '/LogLog Recreation')
+    #     create_folder(current_dir + '/Scaling Exponents/' + data_origin)
+    #     create_folder(current_dir + '/LogLog Recreation/' + data_origin)
+    #
+    #     args = {
+    #         'pu': pooled,
+    #         'data_origin': data_origin,
+    #         'Scaling_Exponents': current_dir + '/Scaling Exponents/' + data_origin,
+    #         'LogLog_Recreation': current_dir + '/LogLog Recreation/' + data_origin
+    #     }
+    #
+    #     main(args)
+    #
+    #     df = pd.read_csv('{}/scaling_exponents.csv'.format(args['Scaling_Exponents']))
+    #
+    #     plot_histograms_of_scaling_exponents(args['Scaling_Exponents'], df)
+    #
+    #     df = pd.read_csv('{}/loglog_scaling_recreation.csv'.format(args['LogLog_Recreation']))
+    #
+    #     recreate_loglog_plots(df, args['LogLog_Recreation'], individuals=False)
+    #
+    # exit()
     
     # Do all the Mother and Sister Machine data
-    for data_origin in ['lambda_LB']:  # input_args.dataset_names:
+    for data_origin in lexA3_wang_exps:
+        
         print(data_origin)
         
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -425,8 +466,8 @@ if __name__ == '__main__':
         
         create_folder(current_dir + '/Scaling Exponents')
         create_folder(current_dir + '/LogLog Recreation')
-        create_folder(current_dir + '/Scaling Exponents/'+data_origin)
-        create_folder(current_dir + '/LogLog Recreation/'+data_origin)
+        create_folder(current_dir + '/Scaling Exponents/' + data_origin)
+        create_folder(current_dir + '/LogLog Recreation/' + data_origin)
         
         processed_data = os.path.dirname(current_dir) + '/Datasets/' + data_origin + '/ProcessedData/'
         
@@ -439,8 +480,8 @@ if __name__ == '__main__':
         args = {
             'data_origin': data_origin,
             # Data singularities, long traces with significant filamentation, sudden drop-offs
-            'Scaling_Exponents': current_dir + '/Scaling Exponents/'+data_origin,
-            'LogLog_Recreation': current_dir + '/LogLog Recreation/'+data_origin,
+            'Scaling_Exponents': current_dir + '/Scaling Exponents/' + data_origin,
+            'LogLog_Recreation': current_dir + '/LogLog Recreation/' + data_origin,
             # 'dataframes': current_dir + '/Dataframes/' + data_origin,
             'pu': processed_data + '/physical_units.csv'
         }

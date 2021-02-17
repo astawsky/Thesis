@@ -10,7 +10,10 @@ from scipy.stats import zscore
 from sklearn.mixture import GaussianMixture
 from scipy.signal import find_peaks, peak_prominences
 from sklearn.linear_model import LinearRegression
-from AnalysisCode.global_variables import phenotypic_variables, create_folder, dataset_names, sm_datasets, mm_datasets, wang_datasets, tanouchi_datasets, seaborn_preamble, cgsc_6300_wang_exps
+from AnalysisCode.global_variables import (
+    phenotypic_variables, create_folder, dataset_names, sm_datasets, mm_datasets, wang_datasets, tanouchi_datasets, seaborn_preamble, cgsc_6300_wang_exps,
+    get_time_averages_df, lexA3_wang_exps
+)
 
 """ This function takes care of which statistic we want to subtract the trajectories to get what we asked for """
 
@@ -69,33 +72,32 @@ def linear_regression(clean_lin, raw_lineage, start_indices, end_indices, lin_id
     # the dataframe for our variables
     cycle_variables_lineage = pd.DataFrame(columns=phenotypic_variables + ['lineage_ID', 'generation'])
     
+    # Check that there are no nan values in our data
     if clean_lin.isnull().values.any():
         print('NaNs found!')
         print(clean_lin[clean_lin.isnull()])
         exit()
     
+    # pick out the time and length of the clean data
     rl = clean_lin[['time', 'length']].copy().dropna()
     
     assert len(start_indices) == len(end_indices)
     
-    new_starting = []
-    new_ending = []
+    # plt.plot(clean_lin['time'], clean_lin['length'], color='green')
+    # For every growth cycle fit an exponential
     for start, end, gen in zip(start_indices, end_indices, np.arange(len(start_indices), dtype=int)):
         
-        # for our regression
-        # domain1 = np.linspace(np.min(rl['time'].iloc[start: end].copy().values - rl['time'].iloc[start]),
-        #                      np.max(rl['time'].iloc[start: end].copy().values - rl['time'].iloc[start]),
-        #                      num=int(np.round(np.max(rl['time'].iloc[end] - rl['time'].iloc[start]) / step_size, 0))).reshape(-1, 1)
-        # domain2 = np.arange(
-        #     0.0, np.max(rl['time'].iloc[start: end].copy().values - rl['time'].iloc[start]), step_size
-        # ).reshape(-1, 1)
+        assert end <= len(rl)
         
-        if end > len(rl):
-            print('used the new end!')
-            exit()
-            end_indices = np.where(end_indices == end, len(rl) - 1, end_indices)
-            end = len(rl) - 1
+        # if end > len(rl):
+        #     print('used the new end!')
+        #     exit()
+        #     end_indices = np.where(end_indices == end, len(rl) - 1, end_indices)
+        #     end = len(rl) - 1
+        
         domain = (clean_lin['time'].iloc[start: end + 1].copy().values - clean_lin['time'].iloc[start]).reshape(-1, 1)
+        
+        image = np.log(rl['length'].iloc[start:end + 1].values).reshape(-1, 1)  # the end+1 is due to indexing
         
         if len(domain) == 0:
             print('Only NaNs')
@@ -104,23 +106,10 @@ def linear_regression(clean_lin, raw_lineage, start_indices, end_indices, lin_id
             end_indices = end_indices[np.where(end_indices != end)]
             continue
         
-        # print(domain)
-        # print('{}'*100)
-        
-        # if np.max(domain) != np.max(rl['time'].iloc[start: end].copy().values - rl['time'].iloc[start]):
-        #     print(np.max(domain), np.max(rl['time'].iloc[start: end].copy().values - rl['time'].iloc[start]))
-        
-        # if ppc != len(domain):
-        #     print(ppc, len(domain))
-        #     raise IOError('points per cycle and length of domain are not the same! {} != {}'.format(ppc, len(domain)))
-        
-        # domain = np.linspace(clean_lin['time'].iloc[start], clean_lin['time'].iloc[end], num=end - start + 1).reshape(-1, 1)
-        range = np.log(rl['length'].iloc[start:end + 1].values).reshape(-1, 1)  # the end+1 is due to indexing
-        
         # Make sure they are the same size for the regression!
-        if len(domain) != len(range):
+        if len(domain) != len(image):
             print(len(clean_lin[['time', 'length']].iloc[start: end]))
-            print(len(domain), len(range))
+            print(len(domain), len(image))
             exit()
         
         if (rl['length'].iloc[start:end].values <= 0).any():
@@ -132,11 +121,11 @@ def linear_regression(clean_lin, raw_lineage, start_indices, end_indices, lin_id
         
         # our regression
         try:
-            reg = LinearRegression().fit(domain, range)
+            reg = LinearRegression().fit(domain, image)
         except:
             print('exception!')
             print(domain)
-            print(range)
+            print(image)
             exit()
         
         # If the growth rate is non-positive then it is obviously not a credible cycle, probably a glitch
@@ -177,8 +166,8 @@ def linear_regression(clean_lin, raw_lineage, start_indices, end_indices, lin_id
             cycle['length_final'] = np.exp(reg.predict(domain[-1].reshape(-1, 1))[0][0])
         else:
             # phenotypic variables
-            cycle['length_birth'] = np.exp(range[0][0])
-            cycle['length_final'] = np.exp(range[-1][0])
+            cycle['length_birth'] = np.exp(image[0][0])
+            cycle['length_final'] = np.exp(image[-1][0])
         
         # We define the division ratio as how much length a cell received from its mother,
         # since the first generation has no recorded mother the value will be a NaN.
@@ -186,77 +175,16 @@ def linear_regression(clean_lin, raw_lineage, start_indices, end_indices, lin_id
             cycle['division_ratio'] = np.nan
         else:
             cycle['division_ratio'] = cycle['length_birth'] / cycle_variables_lineage['length_final'].iloc[-1]
-            # try:
-            #     cycle['division_ratio'] = cycle['length_birth'] / cycle_variables_lineage['length_final'].iloc[-1]
-            # except:
-            #     print('+'*200, start, cycle['length_birth'], cycle_variables_lineage, sep='\n')
-            #     exit()
         
         # After defining the lengths, get the added length
         cycle['added_length'] = cycle['length_final'] - cycle['length_birth']
         
         # Add them to the cycle variables of the lineage
         cycle_variables_lineage = cycle_variables_lineage.append(cycle, ignore_index=True)
-        
-        # raw_start = np.where(raw_lineage['length'].values == clean_lin['length'].iloc[start])[0]
-        # raw_end = np.where(raw_lineage['length'].values == clean_lin['length'].iloc[end])[0]
-        #
-        # # print(raw_start, start)
-        # # print(raw_end, end)
-        #
-        # print('raw_start', raw_start, 'raw_end', raw_end, sep='\n')
-        # # print(end_indices)
-        #
-        # if len(raw_start) == 1:
-        #     raw_start = raw_start[0]
-        # else:
-        #     raw_start = raw_start[np.where(raw_start < new_starting[-1])]
-        #     # raw_start = raw_start[[~any([False if (s < n < e) else True for s, e in zip(start_indices, end_indices)]) for n in raw_start]][0]
-        #
-        # if len(raw_end) == 1:
-        #     raw_end = raw_end[0]
-        # else:
-        #     raw_end = raw_end[np.where(raw_end < new_ending[-1])]
-        #     # raw_end = raw_end[[~any([False if (s < n < e) else True for s, e in zip(start_indices, end_indices)]) for n in raw_end]][0]
-        #
-        #     # newn = np.setdiff1d(raw_end, start_indices)
-        #     # raw_end = newn[[~any([False if (s < n < e) else True for s, e in zip(start_indices, end_indices)]) for n in newn]]
-        #
-        # print('raw_start', raw_start, 'raw_end', raw_end, sep='\n')
-        # print('-'*200)
-        
-        # raw_start = raw_start[0] if len(raw_start) == 1 else np.intersect1d(raw_start, start_indices)[0]
-        # raw_end = raw_end[0] if len(raw_end) == 1 else np.intersect1d(raw_end, end_indices)[0]
-        
-        # raw_start = raw_start[0] if len(raw_start) == 1 else raw_start[np.intersect1d(raw_start, new_starting, return_indices=True)[1]][0]
-        # raw_end = raw_end[0] if len(raw_end) > 1 else raw_end[np.intersect1d(raw_end, new_ending, return_indices=True)[1]][0]
-        
-        # np.setdiff1d(raw_start, new_starting)[0]
-        
-        # new_starting.append(raw_start)
-        # new_ending.append(raw_end)
-        
-        # print(start)
-        # print(cycle)
-        # print(cycle_variables_lineage)
-        
-        # Check the regression
-        # print(domain)
-        # print(clean_lin['time'].iloc[start:end+1].values)
-        # plt.plot(domain, [cycle['length_birth'] * np.exp(cycle['growth_rate'] * dom) for dom in domain])
-        # plt.plot(domain, np.exp(range))
-        
-        # plt.plot(clean_lin['time'].values, clean_lin['length'].values, color='orange')
-        # plt.scatter(clean_lin['time'].iloc[start_indices].values, clean_lin['length'].iloc[start_indices].values, color='blue')
-        # plt.plot(clean_lin['time'].iloc[start:end].values, [cycle['length_birth'] * np.exp(cycle['growth_rate'] * dom) for dom in domain])
-        # plt.scatter(clean_lin['time'].iloc[start], cycle['length_birth'])
-        # plt.yscale('log')
-        # plt.show()
-        # plt.close()
     
     # The experimental size variables
     # cycle_variables_lineage['div_then_fold'] = np.append(np.nan, cycle_variables_lineage['division_ratio'].values[:-1] * np.exp(cycle_variables_lineage['fold_growth'].values[1:]))
-    cycle_variables_lineage['div_and_fold'] = cycle_variables_lineage['division_ratio'] * cycle_variables_lineage['fold_growth']
+    cycle_variables_lineage['div_and_fold'] = cycle_variables_lineage['division_ratio'] * np.exp(cycle_variables_lineage['fold_growth'])
     # cycle_variables_lineage['fold_then_div'] = np.append(cycle_variables_lineage['division_ratio'].values[1:] * np.exp(cycle_variables_lineage['fold_growth'].values[:-1]), np.nan)
     
     # Good practice
@@ -281,14 +209,6 @@ def linear_regression(clean_lin, raw_lineage, start_indices, end_indices, lin_id
     cycle_variables_lineage['lineage_ID'] = int(lin_id)
     cycle_variables_lineage['generation'] = np.arange(len(cycle_variables_lineage), dtype=int)
     cycle_variables_lineage = cycle_variables_lineage.sort_values('generation')
-    
-    # print(new_starting, new_ending, sep='\n')
-    
-    # plt.plot(raw_lineage['length'].values)
-    # plt.scatter(new_starting, raw_lineage['length'].values[new_starting], label='start', c='green')
-    # plt.scatter(new_ending, raw_lineage['length'].values[new_ending], label='end', c='red')
-    # plt.show()
-    # plt.close()
     
     return [cycle_variables_lineage.reset_index(drop=True), without_nans, start_indices, end_indices, outlier_start_indices, outlier_end_indices]  # start_indices, end_indices
 
@@ -390,10 +310,10 @@ def clean_up(lineage, window_size_of_interest=200):
     return [new_lineage, new_total_nans, failures, singularities, non_positives]
 
 
-"""  """
+""" check the precision of the division evenets and growth fits """
 
 
-def check_the_division(args, lineages=[], raw_lineages=[], raw_indices=[], pu=[]):
+def check_the_division(args, lineages=[], raw_lineages=[], raw_indices=[], pu=[], ax=[]):
     # lineage, cycle_variables_lineage, start_indices, end_indices, raw_lineage, non_positives, singularities, rises, raw_start, raw_end, step_size, total_nans
     
     if args['data_origin'] == '8-31-16 Continue':
@@ -408,6 +328,8 @@ def check_the_division(args, lineages=[], raw_lineages=[], raw_indices=[], pu=[]
         step_size = 1 / 60
     elif args['data_origin'] in sm_datasets:
         step_size = 3 / 60
+    elif args['data_origin'] == 'Lambda_LB':
+        step_size = 6 / 60
     else:
         raise IOError('This code is not meant to run the data inputted. Please label the data and put it in as an if-statement.')
     
@@ -419,13 +341,16 @@ def check_the_division(args, lineages=[], raw_lineages=[], raw_indices=[], pu=[]
         pu = pd.read_csv(args['processed_data'] + 'z_score_under_3/physical_units_without_outliers.csv')
     if len(lineages) == 0:
         lineages = raw_lineages.lineage_ID.unique()
+    if ax == None:
+        seaborn_preamble()
+        
+        fig, ax = plt.subplots(tight_layout=True, figsize=[13, 6])
     
-    seaborn_preamble()
-    fig, ax = plt.subplots(tight_layout=True, figsize=[13, 6])
     for lin_id in lineages:
+        
         rl = raw_lineages[raw_lineages['lineage_ID'] == lin_id].copy().sort_values('time').reset_index(drop=True)
         ri = raw_indices[raw_indices['lineage_ID'] == lin_id].copy().sort_values('value').reset_index(drop=True)
-        cycle_variables_lineage = pu[pu['lineage_ID'] == lin_id].copy().reset_index(drop=True)
+        cycle_variables_lineage = pu[pu['lineage_ID'] == lin_id].copy().sort_values('generation').reset_index(drop=True)
         
         non_positives = ri[ri['type'] == 'non_positives']['value'].values.copy()
         singularities = ri[ri['type'] == 'singularities']['value'].values.copy()
@@ -433,51 +358,36 @@ def check_the_division(args, lineages=[], raw_lineages=[], raw_indices=[], pu=[]
         start_indices = ri[ri['type'] == 'start']['value'].values.copy()
         end_indices = ri[ri['type'] == 'end']['value'].values.copy()
         
-        plt.plot(rl['length'].values)
+        ax.plot(rl['time'].values, rl['length'].values)
         if len(non_positives) > 0:
             print(non_positives)
             print(rl['length'].iloc[non_positives].values)
-            plt.scatter(non_positives, rl['length'].iloc[non_positives].values, label='non_positives', marker='o')
+            ax.scatter(rl['time'].iloc[non_positives].values, rl['length'].iloc[non_positives].values, label='non_positives', marker='o')
         if len(singularities) > 0:
             print(singularities)
             print(rl['length'].iloc[singularities].values)
-            plt.scatter(singularities, rl['length'].iloc[singularities].values, label='singularities', marker='v')
+            ax.scatter(rl['time'].iloc[singularities].values, rl['length'].iloc[singularities].values, label='singularities', marker='v')
         if len(rises) > 0:
             print(rises)
             print(rl['length'].iloc[rises].values)
-            plt.scatter(rises, rl['length'].iloc[rises].values, label='failures', marker='^')
+            ax.scatter(rl['time'].iloc[rises].values, rl['length'].iloc[rises].values, label='failures', marker='^')
         
-        for start, end, count in zip(start_indices, end_indices, cycle_variables_lineage.generation.unique()):
-            gt = cycle_variables_lineage[cycle_variables_lineage['generation'] == count]['generationtime'].values[0]
-            lb = cycle_variables_lineage[cycle_variables_lineage['generation'] == count]['length_birth'].values[0]
-            gr = cycle_variables_lineage[cycle_variables_lineage['generation'] == count]['growth_rate'].values[0]
+        for start, end, gt, gr, lb in zip(start_indices, end_indices, cycle_variables_lineage.generationtime, cycle_variables_lineage.growth_rate, cycle_variables_lineage.length_birth):
             
             if np.isnan([gt, lb, gr]).any():
                 continue
             
-            # print([type(l) for l in [gt, gr, lb]])
-            #
-            # print(step_size)
-            #
-            # print(type(start), start)
+            line = lb * np.exp(np.arange(0, int(np.round(gt / step_size, 0))) * step_size * gr)
             
-            line = lb * np.exp(np.linspace(0, gt, int(np.round(gt * (1 / step_size), 0))) * gr)
-            
-            # print([type(l) for l in line])
-            
-            # print(start_indices)
-            # print(start, start + len(line))
-            # print('8'*9)
-            # print(line)
-            
-            plt.plot(np.arange(start, start + len(line)), line, color='orange', ls='--')  # , label='cycle variable fit'
+            ax.plot(rl['time'].iloc[int(start):int(start) + len(line)], line, color='orange', ls='--')
         
-        plt.scatter(start_indices, rl['length'].iloc[start_indices].values, color='green', label='start indices')
-        plt.scatter(end_indices, rl['length'].iloc[end_indices].values, color='red', label='end indices')
-        plt.legend()
+        ax.scatter(rl['time'].iloc[start_indices].values, rl['length'].iloc[start_indices].values, color='green', label='start indices')
+        ax.scatter(rl['time'].iloc[end_indices].values, rl['length'].iloc[end_indices].values, color='red', label='end indices')
+        # ax.set_yscale('log')
+        # ax.legend()
         # plt.tight_layout()
-        plt.show()
-        plt.close()
+        # plt.show()
+        # plt.close()
 
 
 """ Create the csv files for physical, trace-centered, and trap-centered units for MM data of a certain type """
@@ -658,7 +568,7 @@ def main_mm(args):
         #         # Wrong labeling of time
         #         lineage['time'] = lineage['time'] * 2
         #     step_size = 6 / 60
-        elif args['data_origin'] == 'lambda_LB':
+        elif args['data_origin'] == 'Lambda_LB':
             # There are quite a lot of files with an extra column at the beginning
             if filename in extra_column:
                 lineage = pd.read_csv(file, delimiter='\t', names=['_', 'time', 'length', 'something similar to length', 'something protein', 'other protein'])[['time', 'length']]
@@ -817,7 +727,6 @@ def main_mm(args):
                     lineage = lineage.drop(np.arange(1515, 1520), axis=0)
                 if (filename == 'xy05_ch12_cell0'):
                     lineage = lineage.drop(np.arange(1322, 1325), axis=0)
-        
         else:
             raise IOError('This code is not meant to run the data inputted. Please label the data and put it in as an if-statement.')
         
@@ -879,6 +788,7 @@ def main_mm(args):
             # start_indices = start_indices[~np.isin(start_indices, total_nans)]
             # end_indices = start_indices[~np.isin(start_indices, total_nans)]
         except:
+            print('could not get the division indices!')
             continue
         
         # plt.plot(np.arange(len(raw_lineage['length']), dtype=int), raw_lineage['length'], color='blue', label='raw_lineage')
@@ -897,8 +807,15 @@ def main_mm(args):
         cycle_variables_lineage, with_outliers, start_indices, \
         end_indices, outsider_start_indices, outsider_end_indices = linear_regression(lineage, raw_lineage, start_indices, end_indices, int(count + 1 - offset), fit_the_lengths=True)
         
-        outsider_start_indices = [int(start + np.sum([start >= l for l in total_nans])) for start in outsider_start_indices]
-        outsider_end_indices = [int(end + np.sum([end >= l for l in total_nans])) for end in outsider_end_indices]
+        # outsider_start_indices = [int(start + np.sum([start >= l for l in total_nans])) for start in outsider_start_indices]
+        # outsider_end_indices = [int(end + np.sum([end >= l for l in total_nans])) for end in outsider_end_indices]
+        
+        outsider_start_indices = [int(
+            start + np.sum([start >= l for l in rises]) + np.sum([start >= l for l in singularities]) + np.sum([start >= l for l in non_positives])
+        ) for start in outsider_start_indices]
+        outsider_end_indices = [int(
+            end + np.sum([end >= l for l in rises]) + np.sum([end >= l for l in singularities]) + np.sum([end >= l for l in non_positives])
+        ) for end in outsider_end_indices]
         
         raw_start = [int(
             start + np.sum([start >= l for l in rises]) + np.sum([start >= l for l in singularities]) + np.sum([start >= l for l in non_positives])
@@ -906,6 +823,9 @@ def main_mm(args):
         raw_end = [int(
             end + np.sum([end >= l for l in rises]) + np.sum([end >= l for l in singularities]) + np.sum([end >= l for l in non_positives])
         ) for end in end_indices]
+        
+        cycle_variables_lineage['start_time'], with_outliers['start_time'] = raw_lineage['time'].iloc[raw_start].values, raw_lineage['time'].iloc[raw_start].values
+        cycle_variables_lineage['end_time'], with_outliers['end_time'] = raw_lineage['time'].iloc[raw_end].values, raw_lineage['time'].iloc[raw_end].values
         
         # raw_start = [int(start + np.sum([start >= l for l in total_nans])) for start in start_indices]
         # raw_end = [int(end + np.sum([end >= l for l in total_nans])) for end in end_indices]
@@ -953,22 +873,28 @@ def main_mm(args):
     # Save the raw data
     raw_data.reset_index(drop=True).sort_values(['lineage_ID']).to_csv(os.path.dirname(os.path.dirname(args['raw_data'])) + '/raw_data_all_in_one.csv', index=False)
     
+    # Save the raw indices that are supposed to be highlighted
+    raw_indices.sort_values(['lineage_ID']).reset_index(drop=True).to_csv(args['processed_data'] + '/raw_indices_processing.csv', index=False)
+    
     # Save the ones with the z score under 3
     without_outliers = args['processed_data'] + 'z_score_under_3'
     create_folder(without_outliers)
-    cycle_variables.reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(without_outliers + '/physical_units_without_outliers.csv', index=False)
+    cycle_variables.sort_values(['lineage_ID', 'generation']).reset_index(drop=True).to_csv(without_outliers + '/physical_units_without_outliers.csv', index=False)
     minusing(cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(
         without_outliers + '/trace_centered_without_outliers.csv',
         index=False)
+    get_time_averages_df(cycle_variables.sort_values(['lineage_ID', 'generation']).reset_index(drop=True),
+                         phenotypic_variables).to_csv(without_outliers + '/time_averages_without_outliers.csv', index=False)
     
     # Save the ones with outliers still
-    with_outliers_cycle_variables.reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args['processed_data'] + '/physical_units.csv', index=False)
+    with_outliers_cycle_variables.sort_values(['lineage_ID', 'generation']).reset_index(drop=True).to_csv(args['processed_data'] + '/physical_units.csv', index=False)
     minusing(with_outliers_cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(
         args['processed_data'] + '/trace_centered.csv',
         index=False)
+    get_time_averages_df(with_outliers_cycle_variables.sort_values(['lineage_ID', 'generation']).reset_index(drop=True),
+                         phenotypic_variables).to_csv(args['processed_data'] + '/time_averages.csv', index=False)
     
-    # Save the raw indices that are supposed to be highlighted
-    raw_indices.sort_values(['lineage_ID']).reset_index(drop=True).to_csv(args['processed_data'] + '/raw_indices_processing.csv', index=False)
+    print(with_outliers_cycle_variables)
 
 
 """ Recreate the raw data from smoothed exponential regression and see how well they compare """
@@ -1129,11 +1055,11 @@ def main_sm(args):
     # minusing(raw_data.reset_index(drop=True), ['length']).sort_values(['dataset', 'trap_ID', 'trace']).reset_index(drop=True).to_csv(args['processed_data'] + '/raw_data_tc.csv', index=False)
     
     # This is the order of the cycle variables in the processed dataframe
-    order = phenotypic_variables + ['dataset', 'trap_ID', 'trace', 'lineage_ID', 'generation']
+    # order = phenotypic_variables + ['dataset', 'trap_ID', 'trace', 'lineage_ID', 'generation']
     
     # The dataframe for our variables
-    cycle_variables = pd.DataFrame(columns=order)
-    with_outliers_cycle_variables = pd.DataFrame(columns=order)
+    cycle_variables = pd.DataFrame()  # columns=order
+    with_outliers_cycle_variables = pd.DataFrame()
     
     step_size = .05
     
@@ -1150,16 +1076,16 @@ def main_sm(args):
         # Figure out the indices for the division events
         start_indices, end_indices = get_division_indices(lineage['length'].values)
         
+        # plt.plot(lineage['time'].values, lineage['length'].values)
+        # plt.scatter(lineage['time'].iloc[start_indices], lineage['length'].iloc[start_indices], color='green')
+        # plt.scatter(lineage['time'].iloc[end_indices], lineage['length'].iloc[end_indices], color='green')
+        # plt.show()
+        # plt.close()
+        
         # add the cycle variables to the overall dataframe
         cycle_variables_lineage, with_outliers, start_indices, \
         end_indices, outsider_start_indices, outsider_end_indices = linear_regression(lineage, raw_lineage, start_indices, end_indices, int(lineage_id),
                                                                                       fit_the_lengths=True)
-        
-        # plt.plot(lineage['length'].values)
-        # plt.scatter(start_indices, lineage['length'].iloc[start_indices])
-        # plt.scatter(end_indices, lineage['length'].iloc[end_indices])
-        # plt.show()
-        # plt.close()
         
         # Add the SM categorical variables
         cycle_variables_lineage['trap_ID'] = lineage['trap_ID'].unique()[0]
@@ -1170,11 +1096,22 @@ def main_sm(args):
         with_outliers['trace'] = lineage['trace'].unique()[0]
         with_outliers['dataset'] = lineage['dataset'].unique()[0]
         
-        outsider_start_indices = [int(start + np.sum([start >= l for l in total_nans])) for start in outsider_start_indices]
-        outsider_end_indices = [int(end + np.sum([end >= l for l in total_nans])) for end in outsider_end_indices]
+        outsider_start_indices = [int(
+            start + np.sum([start >= l for l in rises]) + np.sum([start >= l for l in singularities]) + np.sum([start >= l for l in non_positives])
+        ) for start in outsider_start_indices]
+        outsider_end_indices = [int(
+            end + np.sum([end >= l for l in rises]) + np.sum([end >= l for l in singularities]) + np.sum([end >= l for l in non_positives])
+        ) for end in outsider_end_indices]
         
-        raw_start = [int(start + np.sum([start >= l for l in total_nans])) for start in start_indices]
-        raw_end = [int(end + np.sum([end >= l for l in total_nans])) for end in end_indices]
+        raw_start = [int(
+            start + np.sum([start >= l for l in rises]) + np.sum([start >= l for l in singularities]) + np.sum([start >= l for l in non_positives])
+        ) for start in start_indices]
+        raw_end = [int(
+            end + np.sum([end >= l for l in rises]) + np.sum([end >= l for l in singularities]) + np.sum([end >= l for l in non_positives])
+        ) for end in end_indices]
+        
+        cycle_variables_lineage['start_time'], with_outliers['start_time'] = raw_lineage['time'].iloc[raw_start].values, raw_lineage['time'].iloc[raw_start].values
+        cycle_variables_lineage['end_time'], with_outliers['end_time'] = raw_lineage['time'].iloc[raw_end].values, raw_lineage['time'].iloc[raw_end].values
         
         to_append = {}
         blah = 0
@@ -1198,8 +1135,8 @@ def main_sm(args):
                                                                                                                                            len(rises)))
         
         # Append the cycle variables to the processed dataframe
-        cycle_variables = cycle_variables.append(cycle_variables_lineage[order], ignore_index=True)
-        with_outliers_cycle_variables = with_outliers_cycle_variables.append(with_outliers[order], ignore_index=True)
+        cycle_variables = cycle_variables.append(cycle_variables_lineage, ignore_index=True)
+        with_outliers_cycle_variables = with_outliers_cycle_variables.append(with_outliers, ignore_index=True)
     
     print('processed data:\n', cycle_variables)
     
@@ -1226,11 +1163,15 @@ def main_sm(args):
     minusing(cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(
         without_outliers + '/trace_centered_without_outliers.csv',
         index=False)
+    get_time_averages_df(cycle_variables.sort_values(['lineage_ID', 'generation']).reset_index(drop=True),
+                         phenotypic_variables).to_csv(without_outliers + '/time_averages_without_outliers.csv', index=False)
     
     with_outliers_cycle_variables.reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(args['processed_data'] + '/physical_units.csv', index=False)
     minusing(with_outliers_cycle_variables.reset_index(drop=True), phenotypic_variables).reset_index(drop=True).sort_values(['lineage_ID', 'generation']).to_csv(
         args['processed_data'] + '/trace_centered.csv',
         index=False)
+    get_time_averages_df(with_outliers_cycle_variables.sort_values(['lineage_ID', 'generation']).reset_index(drop=True),
+                         phenotypic_variables).to_csv(args['processed_data'] + '/time_averages.csv', index=False)
     
     # Save the raw indices that are supposed to be highlighted
     raw_indices.reset_index(drop=True).sort_values(['lineage_ID']).to_csv(args['processed_data'] + '/raw_indices_processing.csv', index=False)
@@ -1252,7 +1193,7 @@ def main():
     input_args = parser.parse_args()
     
     # Do all the Mother and Sister Machine data
-    for data_origin in ['Maryam_LongTraces']:  # input_args.dataset_names[21:]:
+    for data_origin in sm_datasets + mm_datasets + cgsc_6300_wang_exps + lexA3_wang_exps + tanouchi_datasets:  # ['Pooled_SM']:
         print(data_origin)
         
         """
@@ -1265,6 +1206,8 @@ def main():
             'raw_data': os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Datasets/' + data_origin + '/RawData/',
             'processed_data': os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/Datasets/' + data_origin + '/ProcessedData/'
         }
+        
+        create_folder(args['processed_data'])
         
         # # Make sure the folders where we place the data are created already
         # create_folder(args['raw_data'])
@@ -1281,7 +1224,7 @@ def main():
         
         print('*' * 200)
         
-        # check_the_division(args, lineages=[275, 273, 266, 263])
+        # check_the_division(args)
 
 
 if __name__ == '__main__':
